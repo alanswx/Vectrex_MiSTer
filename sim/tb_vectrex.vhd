@@ -199,6 +199,11 @@ begin
 		variable in_bounds    : boolean;
 		variable capturing    : boolean := false;
 		variable unblank_ticks : integer := 0;
+		-- Why segments end. vecx produces far fewer segments per frame than
+		-- this extractor does, and these say which rule is over-firing.
+		variable n_blank_end : integer := 0;   -- beam blanked
+		variable n_delta_end : integer := 0;   -- commanded delta changed
+		variable n_col_end   : integer := 0;   -- intensity changed
 
 		-- vecx groups vectors into phosphor-decay periods of VECTREX_MHZ/30
 		-- CPU cycles, i.e. 1/30 s. Marking the same boundaries here is what
@@ -259,7 +264,9 @@ begin
 					-- which looks the same as a stalled CPU from outside.
 					report "frame " & integer'image(frame_no) &
 					       "  segments=" & integer'image(nseg) &
-					       "  unblank_ticks=" & integer'image(unblank_ticks);
+					       "  ends: blank=" & integer'image(n_blank_end) &
+					       " delta=" & integer'image(n_delta_end) &
+					       " intensity=" & integer'image(n_col_end);
 				end if;
 			end if;
 
@@ -284,8 +291,14 @@ begin
 				else
 					if blank_n = '0' then
 						vectoring_on := false;
+						n_blank_end := n_blank_end + 1;
 						if capturing then emit; end if;
 					elsif dx /= dx0 or dy /= dy0 or col /= col0 then
+						if col /= col0 then
+							n_col_end := n_col_end + 1;
+						else
+							n_delta_end := n_delta_end + 1;
+						end if;
 						-- Drawing parameters changed mid-vector: close this
 						-- segment and start a new one from here.
 						if capturing then emit; end if;

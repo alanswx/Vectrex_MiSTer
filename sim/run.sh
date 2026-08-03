@@ -10,11 +10,17 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD="${BUILD:-$ROOT/sim/build}"
 
-CART="${1:?usage: run.sh <cart.bin> [run_ms] [out.txt]}"
+CART="${1:?usage: run.sh <cart.bin> [run_ms] [out.txt] [warm_ms]}"
 # Resolved before the cd into the build directory below.
 CART="$(cd "$(dirname "$CART")" && pwd)/$(basename "$CART")"
 RUN_MS="${2:-100}"
 OUT="${3:-seg.txt}"
+# A second reset a few hundred ms in makes the BIOS skip its title sequence,
+# the same trick Vectrex.sv uses for "Skip logo". Worth it because the intro
+# costs seconds of emulated time, and seconds are expensive here. Note vecx
+# cannot match this (its reset wipes RAM), so only use it when comparing a
+# static pattern, where frame alignment does not matter.
+WARM_MS="${4:-0}"
 
 # ---------------------------------------------------------------- backend --
 # mcode is the default when both backends are installed, but llvm is roughly
@@ -75,12 +81,12 @@ ghdl -e $FLAGS tb_vectrex 2>&1 | grep -vE "compressor|default configuration" || 
 echo "running ${RUN_MS}ms (expect roughly 0.7s of wall clock per emulated ms)"
 if [ -x ./tb_vectrex ]; then
 	./tb_vectrex -gCART_FILE=cart.hex -gCART_MASK=$MASK \
-		-gRUN_MS="$RUN_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
+		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
 else
 	# mcode does not produce a binary; it runs through the driver.
 	# shellcheck disable=SC2086
 	ghdl -r $FLAGS tb_vectrex -gCART_FILE=cart.hex -gCART_MASK=$MASK \
-		-gRUN_MS="$RUN_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
+		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
 fi
 
 echo "segments written to $BUILD/$OUT"
