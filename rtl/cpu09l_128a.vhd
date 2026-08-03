@@ -491,7 +491,7 @@ architecture rtl of cpu09 is
 
 
 	signal cnt_cycles : std_logic_vector(3 downto 0) := "0000" ;
-	signal hold : std_logic;
+	signal hold : std_logic := '0';
 	
 begin
 

@@ -234,33 +234,33 @@ signal ramp_integrator_n : std_logic;
 signal beam_blank_n      : std_logic;
 
 signal dac             : signed(8 downto 0);
-signal dac_y           : signed(8 downto 0);
-signal dac_z           : std_logic_vector(7 downto 0);
-signal ref_level       : signed(8 downto 0);
+signal dac_y           : signed(8 downto 0) := (others => '0');
+signal dac_z           : std_logic_vector(7 downto 0) := (others => '0');
+signal ref_level       : signed(8 downto 0) := (others => '0');
 signal dac_sound       : std_logic_vector(7 downto 0);
 
-signal integrator_x    : signed(19 downto 0);
-signal integrator_y    : signed(19 downto 0);
+signal integrator_x    : signed(19 downto 0) := (others => '0');
+signal integrator_y    : signed(19 downto 0) := (others => '0');
 
-signal shifted_x       : signed(19 downto 0);
-signal shifted_y       : signed(19 downto 0);
+signal shifted_x       : signed(19 downto 0) := (others => '0');
+signal shifted_y       : signed(19 downto 0) := (others => '0');
 
-signal limited_x       : integer;
-signal limited_y       : integer;
-signal lim_x           : integer;
-signal lim_y           : integer;
+signal limited_x       : integer := 0;
+signal limited_y       : integer := 0;
+signal lim_x           : integer := 0;
+signal lim_y           : integer := 0;
 
-signal beam_h          : unsigned(9 downto 0);
-signal beam_v          : unsigned(9 downto 0);
+signal beam_h          : unsigned(9 downto 0) := (others => '0');
+signal beam_v          : unsigned(9 downto 0) := (others => '0');
 
-signal beam_hd         : unsigned(9 downto 0);
-signal beam_vd         : unsigned(9 downto 0);
-signal beam_cnt        : integer;
+signal beam_hd         : unsigned(9 downto 0) := (others => '0');
+signal beam_vd         : unsigned(9 downto 0) := (others => '0');
+signal beam_cnt        : integer := 0;
 
-signal beam_blank_buffer    : std_logic_vector(5 downto 0);
+signal beam_blank_buffer    : std_logic_vector(5 downto 0) := (others => '0');
 signal beam_blank_n_delayed : std_logic;
 
-signal beam_video_addr : std_logic_vector(19 downto 0);
+signal beam_video_addr : std_logic_vector(19 downto 0) := (others => '0');
 signal scan_video_addr : std_logic_vector(19 downto 0);
 signal video_addr      : std_logic_vector(17 downto 0);
 
@@ -288,8 +288,8 @@ signal write_1         : std_logic_vector(vram_width-1 downto 0);
 signal write_2         : std_logic_vector(vram_width-1 downto 0);
 signal write_3         : std_logic_vector(vram_width-1 downto 0);
 
-signal hcnt            : std_logic_vector(9 downto 0);
-signal vcnt            : std_logic_vector(9 downto 0);
+signal hcnt            : std_logic_vector(9 downto 0) := (others => '0');
+signal vcnt            : std_logic_vector(9 downto 0) := (others => '0');
 
 signal hblank          : std_logic;
 signal vblank          : std_logic;
@@ -325,7 +325,7 @@ signal pix             : std_logic_vector(7 downto 0);
 signal pix_fx          : std_logic_vector(7 downto 0);
 signal pix_c           : std_logic_vector(7 downto 0);
 signal pix_cc          : std_logic_vector(7 downto 0);
-signal dac_ob          : std_logic_vector(7 downto 0);
+signal dac_ob          : std_logic_vector(7 downto 0) := (others => '0');
 
 component mc6809 is port
 (
