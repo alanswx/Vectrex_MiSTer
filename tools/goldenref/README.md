@@ -60,3 +60,30 @@ Note that dashed and dotted output is often authentic: Vectrex text is drawn by
 the VIA shift register toggling BLANK per bit, so broken-looking glyphs are
 correct. The linearity grid, by contrast, is solid — use it, not text, to judge
 whether the renderer is dropping segments.
+
+## Comparing against the core
+
+`sim/tb_vectrex.vhd` extracts the same kind of segment list from the FPGA core
+running under ghdl, marking 1/30 s boundaries so the two line up frame by
+frame. `compare.py` renders both into one raster and reports mutual coverage:
+
+```
+ghdl -r --std=08 -fsynopsys -frelaxed tb_vectrex \
+     -gCART_FILE=cart.hex -gCART_MASK=4095 -gRUN_MS=500 -gDUMP_FILE=seg.txt
+
+./compare.py --fpga seg.txt --frame 8 --golden gold/frame0000.vec --out cmp.png
+```
+
+Red is FPGA-only, green is golden-only, yellow is agreement.
+
+Two things to line up before trusting a comparison:
+
+**Frame numbering.** The testbench writes `# frame N` at `N/30` s, so the
+segments following that marker belong to vecx frame index `N`. `vecdump --skip
+K` makes its `frame0000.vec` the vecx frame at index `K`, so `--skip 8` pairs
+with `--frame 8`.
+
+**Axes are transposed.** `vectrex.vhd` derives `beam_v` from `lim_x` and
+`beam_h` from `lim_y`, so the core's integrator X axis drives screen rows while
+vecx's X drives columns. `compare.py` applies the swap; anything reading the
+raw `.txt` dumps needs to do the same.
