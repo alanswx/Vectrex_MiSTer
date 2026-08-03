@@ -103,6 +103,37 @@ def render(segs):
     return fb
 
 
+def bbox(segs):
+    xs = [v for s in segs for v in (s[0], s[2])]
+    ys = [v for s in segs for v in (s[1], s[3])]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def calibrate(src, ref):
+    """Fit a per-axis scale+offset taking src onto ref by matching extents.
+
+    vecx's 33000x41000 space and the core's +/-180000 x +/-135000 are
+    independent conventions, chosen so that a typical image fills the screen
+    but with no guarantee the two agree on gain or centre. Comparing raw
+    normalised coordinates therefore measures the difference between two
+    arbitrary scales, not the renderer's geometry error. Aligning extents
+    first removes that, so what is left is the part worth looking at:
+    non-uniform stretch, rotation, and per-vector drift.
+
+    This assumes both sides drew the same outermost figure, which holds for
+    frames with a full-screen border and not much else.
+    """
+    sx0, sy0, sx1, sy1 = bbox(src)
+    rx0, ry0, rx1, ry1 = bbox(ref)
+    sw, sh = (sx1 - sx0) or 1, (sy1 - sy0) or 1
+    ax, ay = (rx1 - rx0) / sw, (ry1 - ry0) / sh
+    bx, by = rx0 - sx0 * ax, ry0 - sy0 * ay
+    out = [(x0 * ax + bx, y0 * ay + by, x1 * ax + bx, y1 * ay + by, z)
+           for x0, y0, x1, y1, z in src]
+    return [(int(round(a)), int(round(b)), int(round(c)), int(round(d)), z)
+            for a, b, c, d, z in out], (ax, ay, bx, by)
+
+
 def dilate(fb, r=2):
     """Widen strokes so near-misses count as agreement."""
     out = bytearray(W * H)
@@ -162,6 +193,9 @@ def main():
     ap.add_argument("--frame", type=int, default=None,
                     help="only use this frame from the FPGA dump")
     ap.add_argument("--out", default=None, help="write an overlay PNG")
+    ap.add_argument("--calibrate", action="store_true",
+                    help="align extents first, so the residual reflects "
+                         "geometry rather than the two arbitrary scales")
     args = ap.parse_args()
 
     f = load_fpga(args.fpga, args.frame)
@@ -171,6 +205,10 @@ def main():
     if not f or not g:
         print("nothing to compare")
         return 1
+
+    if args.calibrate:
+        f, (ax, ay, bx, by) = calibrate(f, g)
+        print(f"calibration: x*{ax:.4f}{bx:+.1f}   y*{ay:.4f}{by:+.1f}")
 
     fa, ga = render(f), render(g)
     fcov, flit = coverage(fa, dilate(ga))
