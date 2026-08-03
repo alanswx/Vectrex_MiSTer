@@ -35,14 +35,38 @@ approximate ones.
 the beam's current position. If the beam advanced more than a pixel per tick,
 lines would come out dashed. It does not, anywhere measured:
 
-| content | mean advance | worst | dashed vectors |
-|---|---|---|---|
-| Test Cartridge title | 0.159 px/tick | 0.249 | 0 of 1038 |
+| content | segments | mean advance | worst | dashed |
+|---|---|---|---|---|
+| Test Cartridge title | 1 038 | 0.159 px/tick | 0.249 | 0 |
+| Mine Storm title | 52 373 | 0.147 px/tick | 0.249 | 0 |
+| Linearity grid | 57 838 | 0.189 px/tick | 0.256 | 0 |
 
-Roughly 6 writes land on each pixel. That is the opposite of the failure mode
-assumed at the outset, and it explains `dac_ob` (rtl/vectrex.vhd:490): it adds
-5 per repeated write and saturates, standing in for beam dwell time because
-nothing else models it.
+Roughly 5 to 6 writes land on each pixel. That is the opposite of the failure
+mode assumed at the outset, and it explains `dac_ob` (rtl/vectrex.vhd:490): it
+adds 5 per repeated write and saturates, standing in for beam dwell time
+because nothing else models it.
+
+The worst case barely moves across content whose vectors differ by a factor of
+twenty in length — 11.9px over 48 ticks on one screen, 261.6px over 1023 on
+another — because it is not a property of the content. Port A is 8 bits, sign
+extended to 9 (rtl/vectrex.vhd:440), so `ref_level` and `dac_y` are both in
+[-128, 127] and the per-tick integrator step in
+
+    integrator_x <= integrator_x + (ref_level - dac_y)      -- :469
+
+cannot exceed 255 units. That is a hard ceiling on beam velocity:
+
+| framebuffer | worst px/tick | |
+|---|---|---|
+| 540x720 (current) | 0.51 | solid, 2x margin |
+| 1080p 3:4 | 0.77 | solid |
+| 1440p 3:4 | 1.02 | marginal |
+| 4K 3:4 | 1.53 | dashed |
+
+Measured content peaks at 0.256, half the ceiling, so games use at most about
+half the available DAC swing per step. **Point splatting is sufficient by
+construction through 1080p**; only past roughly 1440p does sampling itself
+force an analytic rasteriser.
 
 Dashes visible in text are the VIA shift register toggling BLANK per bit, which
 is authentic. The linearity grid, drawn solid, is the pattern to judge dropped
@@ -64,6 +88,12 @@ the rest of the core.
 So higher resolution requires moving the framebuffer off-chip, which is what
 `videodr0me_fb` does with DDR3 plus SDRAM and a tile cache. Removing the
 overlay path (which owned the SDRAM) was the prerequisite.
+
+Note which constraint binds first. Memory rules out 1080p outright, while
+sampling stays adequate there and only fails past about 1440p. So the reason to
+move off-chip is capacity, and an analytic rasteriser is worth having for
+quality — stroke width, antialiasing, dwell-correct brightness — rather than
+because vectors are being dropped.
 
 ## Timing was a constraint bug
 
