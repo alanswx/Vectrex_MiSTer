@@ -199,6 +199,11 @@ begin
 		variable in_bounds    : boolean;
 		variable capturing    : boolean := false;
 		variable unblank_ticks : integer := 0;
+		-- Ticks the beam spent inside the current segment. The core writes at
+		-- most one framebuffer pixel per clken_12 tick, so comparing a
+		-- segment's length in pixels against its tick count says directly
+		-- whether the beam outran the splatter and left gaps.
+		variable seg_ticks   : integer := 0;
 		-- Why segments end. vecx produces far fewer segments per frame than
 		-- this extractor does, and these say which rule is over-firing.
 		variable n_blank_end : integer := 0;   -- beam blanked
@@ -232,14 +237,15 @@ begin
 			write(lo, y0); write(lo, string'(" "));
 			write(lo, x1); write(lo, string'(" "));
 			write(lo, y1); write(lo, string'(" "));
-			write(lo, col0);
+			write(lo, col0); write(lo, string'(" "));
+			write(lo, seg_ticks);
 			writeline(f, lo);
 			nseg := nseg + 1;
 		end procedure;
 	begin
 		file_open(st, f, DUMP_FILE, write_mode);
 		assert st = open_ok report "cannot open dump file" severity failure;
-		write(l, string'("# x0 y0 x1 y1 z   (integrator units, +/-"
+		write(l, string'("# x0 y0 x1 y1 z ticks   (integrator units, +/-"
 		                 & integer'image(MAX_X) & " x +/-" & integer'image(MAX_Y) & ")"));
 		writeline(f, l);
 
@@ -285,6 +291,7 @@ begin
 				if not vectoring_on then
 					if blank_n = '1' and in_bounds then
 						vectoring_on := true;
+						seg_ticks := 0;
 						x0 := x; y0 := y; x1 := x; y1 := y;
 						dx0 := dx; dy0 := dy; col0 := col;
 					end if;
@@ -303,6 +310,7 @@ begin
 						-- segment and start a new one from here.
 						if capturing then emit; end if;
 						if in_bounds then
+							seg_ticks := 0;
 							x0 := x; y0 := y; x1 := x; y1 := y;
 							dx0 := dx; dy0 := dy; col0 := col;
 						else
@@ -311,8 +319,11 @@ begin
 					end if;
 				end if;
 
-				if vectoring_on and in_bounds then
-					x1 := x; y1 := y;
+				if vectoring_on then
+					seg_ticks := seg_ticks + 1;
+					if in_bounds then
+						x1 := x; y1 := y;
+					end if;
 				end if;
 
 				prev_x := x;
