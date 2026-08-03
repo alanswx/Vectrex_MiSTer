@@ -208,6 +208,13 @@ begin
 		variable in_bounds    : boolean;
 		variable capturing    : boolean := false;
 
+		-- vecx groups vectors into phosphor-decay periods of VECTREX_MHZ/30
+		-- CPU cycles, i.e. 1/30 s. Marking the same boundaries here is what
+		-- makes a frame-by-frame diff against tools/goldenref possible.
+		constant FRAME_PERIOD : time := 1 sec / 30;
+		variable frame_at     : time := 1 sec / 30;
+		variable frame_no     : integer := 0;
+
 		-- The core draws with the delayed blank, not the raw CB2, so that is
 		-- what the extracted segments must follow to describe what the current
 		-- renderer actually puts on screen.
@@ -242,6 +249,16 @@ begin
 
 			if not capturing then
 				capturing := now >= (SKIP_MS * 1 ms);
+			end if;
+
+			if now >= frame_at then
+				frame_at := frame_at + FRAME_PERIOD;
+				frame_no := frame_no + 1;
+				if capturing then
+					write(l, string'("# frame "));
+					write(l, frame_no);
+					writeline(f, l);
+				end if;
 			end if;
 
 			if clken_12 = '1' then
