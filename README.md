@@ -8,4 +8,6 @@ Supports both digital and analog joystick/gamepad
 Copy the *.rbf file at the root of the SD card. Copy *.vec/*.bin files to Vectrex folder.
 
 ### Overlays
-Place overlay to the same folder with the same name as ROM with extension OVR. It will be loaded automatically.
+Overlay support is temporarily removed while the vector rendering engine is
+rebuilt. The artwork in `overlays/` is retained and overlays will return once
+the new renderer lands.
