@@ -87,3 +87,36 @@ with `--frame 8`.
 `beam_h` from `lim_y`, so the core's integrator X axis drives screen rows while
 vecx's X drives columns. `compare.py` applies the swap; anything reading the
 raw `.txt` dumps needs to do the same.
+
+## Result: the core's beam geometry is correct
+
+Measured on the Linearity Pattern, which is the right target because it is a
+full-screen figure both sides draw identically, static, and free of the
+shift-register text whose dot placement is timing-sensitive. Reached in
+simulation with `run.sh ... 6000 seg_grid.txt 200`, and in vecx at `--skip
+450`.
+
+Agreement after calibration, by how many pixels of slack are allowed:
+
+| tolerance | fpga within golden | golden within fpga |
+|---|---|---|
+| exact pixel | 48.0% | 48.2% |
+| ±1 px | 89.9% | 91.4% |
+| ±2 px | 100.0% | 100.0% |
+
+So the two renderings agree everywhere to within 2 pixels on a 540x720 raster,
+under 0.4%, with ~90% matching to within one. Given both sides rasterise
+independently with different quantisation, that is as close as this method can
+resolve. Distinct segment counts are 240 against 224, a 7% gap, far tighter
+than the 26% seen on a text screen.
+
+The calibration it needs, `x*1.0229 y*1.0954`, is the same on the title frame
+(`x*1.0225 y*1.0963`), and their ratio is 1.071 against the 1.0732 predicted by
+the two full-scale conventions above. The scale difference is therefore an
+artefact of vecx's constants, not core geometry.
+
+What this rules out is static geometric error: no pin cushion, barreling,
+keystone, drift, or dropped vectors, which is exactly the list the service
+manual says this pattern tests. It says nothing yet about the fast-moving beam,
+dot brightness, or the resolution limit of the point-splatting renderer, and
+those remain the open questions.
