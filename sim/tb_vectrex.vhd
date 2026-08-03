@@ -29,6 +29,7 @@ entity tb_vectrex is
 		SKIP_MS    : integer := 0;       -- emulated ms to run before capturing
 		RUN_MS     : integer := 50;      -- emulated ms to capture
 		WARM_MS    : integer := 0;       -- warm reset at this time; 0 disables
+		PRESS_MS   : integer := 0;       -- tap button 1 at this time; 0 disables
 		DUMP_FILE  : string  := "seg.txt"
 	);
 end tb_vectrex;
@@ -48,6 +49,11 @@ architecture sim of tb_vectrex is
 	signal cart_mask_s : std_logic_vector(14 downto 0) :=
 	                     std_logic_vector(to_unsigned(CART_MASK, 15));
 	signal cart_wr     : std_logic := '0';
+
+	-- up_1..rt_1 are the four action buttons; the core folds them into
+	-- players_switches. Games sit on their title screen until one is pressed,
+	-- so reaching gameplay in simulation needs this.
+	signal btn1 : std_logic := '0';
 
 	signal beam_x, beam_y : signed(19 downto 0);
 	signal beam_blank_n   : std_logic;
@@ -93,7 +99,7 @@ begin
 		speech_mode  => '0',
 		audio_out    => audio,
 
-		up_1 => '0', dn_1 => '0', lf_1 => '0', rt_1 => '0',
+		up_1 => btn1, dn_1 => '0', lf_1 => '0', rt_1 => '0',
 		pot_x_1 => (others => '0'), pot_y_1 => (others => '0'),
 
 		up_2 => '0', dn_2 => '0', lf_2 => '0', rt_2 => '0',
@@ -154,7 +160,16 @@ begin
 			reset <= '0';
 		end if;
 
-		wait for (SKIP_MS + RUN_MS) * 1 ms;
+		if PRESS_MS > 0 then
+			wait for PRESS_MS * 1 ms;
+			report "button 1 press";
+			btn1 <= '1';
+			wait for 120 ms;          -- comfortably longer than a poll interval
+			btn1 <= '0';
+			wait for (SKIP_MS + RUN_MS) * 1 ms - (PRESS_MS * 1 ms) - 120 ms;
+		else
+			wait for (SKIP_MS + RUN_MS) * 1 ms;
+		end if;
 		halt <= true;
 		report "simulation complete";
 		wait;

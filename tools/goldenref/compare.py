@@ -90,7 +90,9 @@ def load_fpga(path, frame=None):
             continue
         if frame is not None and cur != frame:
             continue
-        ix0, iy0, ix1, iy1, z = (int(v) for v in line.split())
+        # Dumps carry a trailing tick count since beamspeed.py wanted one;
+        # take the leading five fields so both formats load.
+        ix0, iy0, ix1, iy1, z = (int(v) for v in line.split()[:5])
         # integrator X -> row, integrator Y -> column
         r0 = (ix0 + MAX_X) * H // (2 * MAX_X)
         r1 = (ix1 + MAX_X) * H // (2 * MAX_X)

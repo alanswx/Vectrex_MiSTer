@@ -21,6 +21,8 @@ OUT="${3:-seg.txt}"
 # cannot match this (its reset wipes RAM), so only use it when comparing a
 # static pattern, where frame alignment does not matter.
 WARM_MS="${4:-0}"
+# Time to tap button 1, which is what gets a game off its title screen.
+PRESS_MS="${5:-0}"
 
 # ---------------------------------------------------------------- backend --
 # mcode is the default when both backends are installed, but llvm is roughly
@@ -81,12 +83,12 @@ ghdl -e $FLAGS tb_vectrex 2>&1 | grep -vE "compressor|default configuration" || 
 echo "running ${RUN_MS}ms (expect roughly 0.7s of wall clock per emulated ms)"
 if [ -x ./tb_vectrex ]; then
 	./tb_vectrex -gCART_FILE=cart.hex -gCART_MASK=$MASK \
-		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
+		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gPRESS_MS="$PRESS_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
 else
 	# mcode does not produce a binary; it runs through the driver.
 	# shellcheck disable=SC2086
 	ghdl -r $FLAGS tb_vectrex -gCART_FILE=cart.hex -gCART_MASK=$MASK \
-		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
+		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gPRESS_MS="$PRESS_MS" -gDUMP_FILE="$OUT" --ieee-asserts=disable
 fi
 
 echo "segments written to $BUILD/$OUT"
