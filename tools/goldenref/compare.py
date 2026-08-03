@@ -36,6 +36,20 @@ MAX_Y = 5625 * 3 * 8      # 135000, integrator Y full scale
 ALG_MAX_X = 33000
 ALG_MAX_Y = 41000
 
+# The two full-scale conventions do not share an aspect ratio:
+#
+#   core   max_x / max_y     = 180000 / 135000 = 1.3333  (exactly 4:3, and it
+#                                                         matches the 540x720
+#                                                         framebuffer)
+#   vecx   ALG_MAX_Y / ALG_MAX_X = 41000 / 33000 = 1.2424
+#
+# so normalising each against its own full scale stretches vecx by 1.0732
+# relative to the core. Measured on the Test Cartridge title frame the two
+# sides' height/width ratios differ by 1.0730, i.e. this factor accounts for
+# all of it. It is a property of vecx's constants, not a geometry error in the
+# core, so do not read an uncalibrated vertical mismatch as one.
+ASPECT_SKEW = (MAX_X / MAX_Y) / (ALG_MAX_Y / ALG_MAX_X)   # 1.0732
+
 
 def blank():
     return bytearray(W * H)
