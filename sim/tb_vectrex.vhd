@@ -9,7 +9,7 @@
 -- Running it here rather than in RTL means the algorithm can be validated
 -- against tools/goldenref output before any of it goes into vectrex.vhd.
 --
--- The core is not modified; internals are reached via VHDL-2008 external names.
+-- Beam state is read through the core's dbg_* ports.
 --
 -- Emitting segments rather than per-tick samples matters: the core produces
 -- 12M beam ticks per emulated second, which is far too much text to write.
@@ -48,6 +48,11 @@ architecture sim of tb_vectrex is
 	signal cart_mask_s : std_logic_vector(14 downto 0) :=
 	                     std_logic_vector(to_unsigned(CART_MASK, 15));
 	signal cart_wr     : std_logic := '0';
+
+	signal beam_x, beam_y : signed(19 downto 0);
+	signal beam_blank_n   : std_logic;
+	signal beam_z         : std_logic_vector(7 downto 0);
+	signal beam_ce        : std_logic;
 
 	signal video_r, video_g, video_b  : std_logic_vector(7 downto 0);
 	signal hblank, vblank, frame_line : std_logic;
@@ -92,7 +97,13 @@ begin
 		pot_x_1 => (others => '0'), pot_y_1 => (others => '0'),
 
 		up_2 => '0', dn_2 => '0', lf_2 => '0', rt_2 => '0',
-		pot_x_2 => (others => '0'), pot_y_2 => (others => '0')
+		pot_x_2 => (others => '0'), pot_y_2 => (others => '0'),
+
+		dbg_beam_x  => beam_x,
+		dbg_beam_y  => beam_y,
+		dbg_blank_n => beam_blank_n,
+		dbg_z       => beam_z,
+		dbg_ce      => beam_ce
 	);
 
 	-- ------------------------------------------------------------------
@@ -153,36 +164,15 @@ begin
 	-- Progress heartbeat. Cheap, and it makes a stalled CPU or a beam that
 	-- never unblanks obvious without dumping a waveform.
 	-- ------------------------------------------------------------------
+	-- External names in this process fault under the llvm backend, so the
+	-- beam-side diagnostics live in the vectoring process below, which already
+	-- holds those aliases. This is a plain time heartbeat.
 	monitor : process
-		alias cpu_addr  is << signal dut.cpu_addr     : std_logic_vector(15 downto 0) >>;
-		alias blank_raw is << signal dut.beam_blank_n : std_logic >>;
-		alias via_pb    is << signal dut.via_pb_o     : std_logic_vector(7 downto 0) >>;
-		variable changes   : integer := 0;
-		variable unblanked : integer := 0;
-		variable prev_a    : std_logic_vector(15 downto 0) := (others => '0');
-		variable t_next    : time := 10 ms;
 	begin
 		loop
-			loop
-				wait until rising_edge(clock);
-				exit when halt or now >= t_next;
-				if cpu_addr /= prev_a then
-					changes := changes + 1;
-					prev_a  := cpu_addr;
-				end if;
-				if blank_raw = '1' then
-					unblanked := unblanked + 1;
-				end if;
-			end loop;
-			t_next := t_next + 10 ms;
+			wait for 10 ms;
 			exit when halt;
-			-- addr_changes near zero means the CPU is stalled rather than the
-			-- program simply not drawing yet; unblank_ticks is the first sign of
-			-- the beam being used at all.
-			report "t=" & time'image(now) &
-			       "  addr_changes=" & integer'image(changes) &
-			       "  unblank_ticks=" & integer'image(unblanked) &
-			       "  via_pb=" & integer'image(to_integer(unsigned(via_pb)));
+			report "t=" & integer'image(now / 1 ms) & "ms";
 		end loop;
 		wait;
 	end process;
@@ -192,8 +182,9 @@ begin
 	-- ------------------------------------------------------------------
 	vectoring : process
 		file     f  : text;
-		variable l  : line;
-		variable st : file_open_status;
+		variable l   : line;
+		variable lframe : line;
+		variable st  : file_open_status;
 
 		variable vectoring_on : boolean := false;
 		variable x0, y0       : integer := 0;
@@ -207,6 +198,7 @@ begin
 		variable nseg         : integer := 0;
 		variable in_bounds    : boolean;
 		variable capturing    : boolean := false;
+		variable unblank_ticks : integer := 0;
 
 		-- vecx groups vectors into phosphor-decay periods of VECTREX_MHZ/30
 		-- CPU cycles, i.e. 1/30 s. Marking the same boundaries here is what
@@ -215,23 +207,28 @@ begin
 		variable frame_at     : time := 1 sec / 30;
 		variable frame_no     : integer := 0;
 
-		-- The core draws with the delayed blank, not the raw CB2, so that is
-		-- what the extracted segments must follow to describe what the current
-		-- renderer actually puts on screen.
-		alias clken_12 is << signal dut.clken_12             : std_logic >>;
-		alias int_x    is << signal dut.integrator_x         : signed(19 downto 0) >>;
-		alias int_y    is << signal dut.integrator_y         : signed(19 downto 0) >>;
-		alias blank_n  is << signal dut.beam_blank_n_delayed : std_logic >>;
-		alias dacz     is << signal dut.dac_z                : std_logic_vector(7 downto 0) >>;
+		-- Read through the core's dbg_* ports rather than VHDL-2008 external
+		-- names, which fault under ghdl's llvm backend. The core taps its
+		-- delayed blank, not the raw CB2, so these segments describe what the
+		-- current renderer actually puts on screen.
+		alias clken_12 is beam_ce;
+		alias int_x    is beam_x;
+		alias int_y    is beam_y;
+		alias blank_n  is beam_blank_n;
+		alias dacz     is beam_z;
 
-		procedure emit(variable lv : inout line) is
+		-- Builds and flushes its own line. Passing a shared line as inout
+		-- breaks under the llvm backend, which is stricter than mcode about
+		-- writeline leaving the line null.
+		procedure emit is
+			variable lo : line;
 		begin
-			write(lv, x0); write(lv, string'(" "));
-			write(lv, y0); write(lv, string'(" "));
-			write(lv, x1); write(lv, string'(" "));
-			write(lv, y1); write(lv, string'(" "));
-			write(lv, col0);
-			writeline(f, lv);
+			write(lo, x0); write(lo, string'(" "));
+			write(lo, y0); write(lo, string'(" "));
+			write(lo, x1); write(lo, string'(" "));
+			write(lo, y1); write(lo, string'(" "));
+			write(lo, col0);
+			writeline(f, lo);
 			nseg := nseg + 1;
 		end procedure;
 	begin
@@ -255,9 +252,14 @@ begin
 				frame_at := frame_at + FRAME_PERIOD;
 				frame_no := frame_no + 1;
 				if capturing then
-					write(l, string'("# frame "));
-					write(l, frame_no);
-					writeline(f, l);
+					write(lframe, string'("# frame "));
+					write(lframe, frame_no);
+					writeline(f, lframe);
+					-- Segments stalling at zero means the beam never unblanks,
+					-- which looks the same as a stalled CPU from outside.
+					report "frame " & integer'image(frame_no) &
+					       "  segments=" & integer'image(nseg) &
+					       "  unblank_ticks=" & integer'image(unblank_ticks);
 				end if;
 			end if;
 
@@ -267,6 +269,9 @@ begin
 				dx  := x - prev_x;
 				dy  := y - prev_y;
 				col := to_integer(unsigned(dacz));
+				if blank_n = '1' then
+					unblank_ticks := unblank_ticks + 1;
+				end if;
 				in_bounds := (x > -MAX_X) and (x < MAX_X) and
 				             (y > -MAX_Y) and (y < MAX_Y);
 
@@ -279,11 +284,11 @@ begin
 				else
 					if blank_n = '0' then
 						vectoring_on := false;
-						if capturing then emit(l); end if;
+						if capturing then emit; end if;
 					elsif dx /= dx0 or dy /= dy0 or col /= col0 then
 						-- Drawing parameters changed mid-vector: close this
 						-- segment and start a new one from here.
-						if capturing then emit(l); end if;
+						if capturing then emit; end if;
 						if in_bounds then
 							x0 := x; y0 := y; x1 := x; y1 := y;
 							dx0 := dx; dy0 := dy; col0 := col;

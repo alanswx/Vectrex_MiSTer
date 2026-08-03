@@ -165,7 +165,16 @@ port
 	lf_2         : in  std_logic;
 	rt_2         : in  std_logic;
 	pot_x_2      : in  signed(7 downto 0);
-	pot_y_2      : in  signed(7 downto 0)
+	pot_y_2      : in  signed(7 downto 0);
+
+	-- Beam state, exposed for the simulation testbench and for the
+	-- segment extractor. Leave unconnected in synthesis; the logic is
+	-- already there and these only tap it.
+	dbg_beam_x   : out signed(19 downto 0);
+	dbg_beam_y   : out signed(19 downto 0);
+	dbg_blank_n  : out std_logic;
+	dbg_z        : out std_logic_vector(7 downto 0);
+	dbg_ce       : out std_logic
 );
 end vectrex;
 
@@ -414,6 +423,13 @@ begin
 		end if;
 	end if;
 end process;
+
+-- beam state taps (see entity comment)
+dbg_beam_x  <= integrator_x;
+dbg_beam_y  <= integrator_y;
+dbg_blank_n <= beam_blank_n_delayed;
+dbg_z       <= dac_z;
+dbg_ce      <= clken_12;
 
 sh_dac            <= via_pb_o_d(0);
 dac_mux           <= via_pb_o_d(2 downto 1);

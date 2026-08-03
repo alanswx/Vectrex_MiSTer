@@ -46,3 +46,6 @@ refs/
 tools/goldenref/vecdump
 tools/goldenref/gen_*.c
 tools/goldenref/*.o
+
+# ghdl simulation build output
+sim/build/
