@@ -77,16 +77,18 @@ def draw(fb, x0, y0, x1, y1, c=255):
 
 def load_fpga(path, frame=None):
     """Integrator units -> raster, following vectrex.vhd's own mapping."""
-    segs, cur, seen_marker = [], 0, False
+    # Segments before the first marker belong to frame 0, the partial period
+    # between reset and the first 1/30s boundary. Treating "no marker seen
+    # yet" as "matches any frame" silently added that block to every frame.
+    segs, cur = [], 0
     for line in open(path):
         line = line.strip()
         if line.startswith("# frame"):
-            seen_marker = True
             cur = int(line.split()[-1])
             continue
         if not line or line.startswith("#"):
             continue
-        if frame is not None and seen_marker and cur != frame:
+        if frame is not None and cur != frame:
             continue
         ix0, iy0, ix1, iy1, z = (int(v) for v in line.split())
         # integrator X -> row, integrator Y -> column
@@ -214,8 +216,15 @@ def main():
 
     f = load_fpga(args.fpga, args.frame)
     g = load_golden(args.golden)
-    print(f"fpga   segments: {len(f)}")
-    print(f"golden segments: {len(g)}")
+    # Raw counts are not comparable. A 1/30s window spans about 1.67 display
+    # redraws, and vecx collapses repeats via a hash on exact coordinates
+    # (alg_addline). The core's integrator units are fine enough that its own
+    # repeats differ slightly, so nothing collapses until both are quantised
+    # to pixels. On a static screen that takes the ratio from 2.16 to 1.26.
+    fq = {s[:4] for s in f}
+    gq = {s[:4] for s in g}
+    print(f"fpga   segments: {len(f):5d}  ({len(fq)} distinct at pixel resolution)")
+    print(f"golden segments: {len(g):5d}  ({len(gq)} distinct at pixel resolution)")
     if not f or not g:
         print("nothing to compare")
         return 1
