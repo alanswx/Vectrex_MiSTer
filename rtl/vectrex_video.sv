@@ -37,6 +37,7 @@ module vectrex_video
 
 	// Presentation controls, from the OSD.
 	input   [1:0] buffer_mode,
+	input   [1:0] tone_mapping,
 	input   [2:0] dot_mode,
 	input   [2:0] osd_bloom_width,
 	input   [2:0] osd_bloom_curve,
@@ -188,7 +189,7 @@ assign ce_pixel  = ce_pix;
 logic signed [20:0] off_x, off_y;
 logic        [51:0] mul_x, mul_y;
 logic        [11:0] pix_x, pix_y;
-logic         [7:0] z_q;
+wire          [7:0] z_q;
 logic               on_q;
 logic         [2:0] tick_pipe;
 
@@ -205,10 +206,25 @@ always_ff @(posedge clk_sys) begin
 	pix_x <= (mul_x[51:SHIFT] >= fb_width)  ? (fb_width  - 12'd1) : mul_x[SHIFT+11:SHIFT];
 	pix_y <= (mul_y[51:SHIFT] >= fb_height) ? (fb_height - 12'd1) : mul_y[SHIFT+11:SHIFT];
 
-	z_q       <= beam_z;
 	on_q      <= beam_on;
 	tick_pipe <= {tick_pipe[1:0], beam_tick};
 end
+
+// ----------------------------------------------------------- intensity ---
+// Z goes through the framebuffer's own tone mapper rather than straight in,
+// which is what the Atari cores do. Passing dac_z raw gives a very dim
+// picture, and it is also where the two brightness defects documented in
+// docs/renderer-analysis.md get addressed: the core's own path has no beam
+// cutoff and no dwell term.
+vfb_tone_mapper tone_mapper
+(
+	.clk_source(clk_sys),
+	.reset(reset),
+	.beam_on(beam_on),
+	.raw_intensity(beam_z),
+	.tone_mapping(tone_mapping),
+	.mapped_intensity(z_q)
+);
 
 // --------------------------------------------------------- frame marker ---
 // The Vectrex has no frame signal. Its BIOS recalibrates once per display
