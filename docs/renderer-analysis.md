@@ -212,6 +212,41 @@ cutoff is not simply absent, it is set far too low.
 This is what `vfb_tone_mapper.sv` addresses in Videodr0me's cores, and it is a
 better argument for the renderer work than anything about dropped vectors.
 
+## Port status
+
+videodr0me_fb is instantiated and renders on hardware. The Test Cartridge's
+linearity pattern comes through complete, and against the old core on the same
+pattern:
+
+    new renderer vs old core   99.9% / 100.0%
+
+so geometry survives the port. Block memory drops from 3.87 Mbit to 2.26 and
+RAM blocks from 491 to 304 despite gaining the whole CRT pipeline, which is the
+1080p ceiling lifted.
+
+Settled by measurement:
+
+  * the frame marker heuristic works. Detecting the BIOS's long blanked
+    recalibration produces presentable frames rather than a black screen,
+    which was the most likely thing to be wrong
+  * Z must go through vfb_tone_mapper. Feeding dac_z straight in gives a very
+    dim picture
+  * COLOR is {Rhi, Rlo, G, B}, so the 4'b1111 taken from Asteroids weights red
+    double. Presentation now selects CHANNEL_BW, and lit pixels measure
+    [55.4, 55.4, 55.4]
+
+Not settled:
+
+  * timing does not close. -10.6ns on the 125 MHz clock, every worst path from
+    the HPS f2sdram bridge into vfb_ddr_arbiter. Both ends are the same clock,
+    so it is a long route out of a hard block rather than a crossing. Matching
+    Major Havoc's fitter settings moved it 0.07ns. Worth raising with
+    Videodr0me, who runs the same bridge into the same arbiter at 125 MHz
+  * whether the wobble is fixed. Across three captures of a static screen the
+    lines are stable, 20191/20221/19619 lit pixels above a mid threshold, but
+    brightness and halo vary. Some of that is phosphor decay doing its job.
+    Stills cannot separate the two; this needs someone watching the screen
+
 ## Timing was a constraint bug
 
 The core reported -12.5ns setup slack and 18.45MHz against a 24MHz clock.
