@@ -111,36 +111,36 @@ localparam integer SHIFT = 22;
 logic [11:0] fb_width, fb_height;
 logic [11:0] h_total, v_total, hs_start, hs_end, vs_start, vs_end;
 logic [31:0] scale_x, scale_y;
-logic        is_240p;
+logic  [2:0] pix_div;
 
 always_comb begin
 	if (hdmi_height >= 12'd1080) begin
 		fb_width  = 12'd810;  fb_height = 12'd1080;
-		h_total   = 12'd1851; v_total   = 12'd1124;
-		hs_start  = 12'd1600; hs_end    = 12'd1688;
+		h_total   = 12'd927;  v_total   = 12'd1124;
+		hs_start  = 12'd845;  hs_end    = 12'd889;
 		vs_start  = 12'd1088; vs_end    = 12'd1093;
-		is_240p   = 1'b0;
+		pix_div   = 2'd1;                            // 62.50 MHz
 	end
 	else if (hdmi_height >= 12'd720) begin
 		fb_width  = 12'd540;  fb_height = 12'd720;
-		h_total   = 12'd1388; v_total   = 12'd748;
-		hs_start  = 12'd1108; hs_end    = 12'd1196;
+		h_total   = 12'd696;  v_total   = 12'd748;
+		hs_start  = 12'd578;  hs_end    = 12'd622;
 		vs_start  = 12'd728;  vs_end    = 12'd733;
-		is_240p   = 1'b0;
+		pix_div   = 2'd2;                            // 31.25 MHz
 	end
 	else if (hdmi_height >= 12'd480) begin
 		fb_width  = 12'd360;  fb_height = 12'd480;
-		h_total   = 12'd992;  v_total   = 12'd524;
-		hs_start  = 12'd720;  hs_end    = 12'd816;
+		h_total   = 12'd497;  v_total   = 12'd524;
+		hs_start  = 12'd400;  hs_end    = 12'd448;
 		vs_start  = 12'd490;  vs_end    = 12'd492;
-		is_240p   = 1'b0;
+		pix_div   = 2'd3;                            // 15.62 MHz
 	end
 	else begin
 		fb_width  = 12'd180;  fb_height = 12'd240;
-		h_total   = 12'd993;  v_total   = 12'd261;
-		hs_start  = 12'd720;  hs_end    = 12'd816;
+		h_total   = 12'd498;  v_total   = 12'd261;
+		hs_start  = 12'd380;  hs_end    = 12'd428;
 		vs_start  = 12'd245;  vs_end    = 12'd248;
-		is_240p   = 1'b1;
+		pix_div   = 2'd4;                            //  7.81 MHz
 	end
 
 	scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_Y);
@@ -156,12 +156,19 @@ logic [10:0] v_cnt = 11'd0;
 logic        raw_hsync, raw_vsync, raw_hblank, raw_vblank;
 logic        ce_pix = 1'b0;
 
-// 125 MHz halved gives 62.5 MHz of pixel rate, which covers every mode here.
+// The pixel rate is sized per mode so that horizontal blanking stays sane.
+// Running every mode at 125/2 forces h_total to 1388 to reach 60Hz, which
+// against a 540 pixel raster is 61% blanking; ascal and the HDMI output path
+// do not cope with that, and it is what broke HDMI sync on hardware while VGA
+// still worked.
+logic [4:0] div_cnt = 5'd0;
 always_ff @(posedge clk_125) begin
-	ce_pix <= ~ce_pix;
+	div_cnt <= div_cnt + 5'd1;
+	ce_pix  <= ((div_cnt & ((5'd1 << pix_div) - 5'd1)) == 5'd0);
 	if (reset) begin
-		h_cnt <= 11'd0;
-		v_cnt <= 11'd0;
+		h_cnt   <= 11'd0;
+		v_cnt   <= 11'd0;
+		div_cnt <= 5'd0;
 	end
 	else if (ce_pix) begin
 		if (h_cnt >= h_total) begin

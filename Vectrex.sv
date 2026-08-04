@@ -40,19 +40,6 @@ assign HDMI_FREEZE = 0;
 assign HDMI_BLACKOUT = 0;
 assign HDMI_BOB_DEINT = 0;
 
-wire [1:0] ar = status[17:16];
-video_freak video_freak
-(
-	.*,
-	.VGA_DE_IN(VGA_DE),
-	.VGA_DE(),
-
-	.ARX((!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1)),
-	.ARY((!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0),
-	.CROP_SIZE(0),
-	.CROP_OFF(0),
-	.SCALE(status[19:18])
-);
 
 `include "build_id.v" 
 localparam CONF_STR = {
@@ -257,7 +244,6 @@ vectrex #(.INTERNAL_FB(0)) vectrex
 // dwell term, and is single buffered.
 // ---------------------------------------------------------------------------
 wire        vfb_hblank, vfb_vblank;
-wire [12:0] vfb_arx, vfb_ary;
 
 vectrex_video vectrex_video
 (
@@ -301,8 +287,8 @@ vectrex_video vectrex_video
 	.vga_vs(VGA_VS),
 	.vga_hblank(vfb_hblank),
 	.vga_vblank(vfb_vblank),
-	.video_arx(vfb_arx),
-	.video_ary(vfb_ary),
+	.video_arx(VIDEO_ARX),
+	.video_ary(VIDEO_ARY),
 
 	.ddram_clk(DDRAM_CLK),
 	.ddram_busy(DDRAM_BUSY),
