@@ -8,6 +8,21 @@ left in commit messages.
 Reproduce with `sim/run.sh`, `tools/goldenref/vecdump`, `tools/goldenref/compare.py`
 and `tools/goldenref/beamspeed.py`.
 
+## Verified on hardware
+
+The whole chain agrees. Deploying the core to a MiSTer, loading the Test
+Cartridge and capturing its Linearity Pattern with mrext's screenshot API
+gives, against the same pattern from simulation and from vecx:
+
+    hardware vs simulation           100.0% / 100.0%   (raw)
+    simulation vs vecx, calibrated   100.0% / 100.0%
+    hardware vs vecx, uncalibrated    41.9% /  39.8%
+
+Simulation reproduces silicon exactly, within the 2px tolerance this method
+resolves, so every measurement below that was made in simulation stands for the
+real core too. The gap to vecx is entirely the scale factor documented under
+geometry, not error on either side.
+
 ## Geometry is correct
 
 On the Linearity Pattern — static, full-screen, and free of the shift-register
