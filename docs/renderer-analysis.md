@@ -102,6 +102,41 @@ move off-chip is capacity, and an analytic rasteriser is worth having for
 quality — stroke width, antialiasing, dwell-correct brightness — rather than
 because vectors are being dropped.
 
+## Brightness ignores dwell time
+
+This is the first thing measurement has found actually wrong.
+
+On a CRT a pixel's brightness is beam current multiplied by the time the beam
+spends on it. The core writes, at `rtl/vectrex.vhd:583`:
+
+    pix_fx <= dac_z(6 downto 0) & dac_z(6)   when overburn = '0'
+         else X"FF"                          when (dac_z + dac_ob) > 255
+         else dac_z + dac_ob;
+
+and the framebuffer write is an overwrite, not an accumulate. So with
+`overburn = '0'`, which is the menu default, brightness is the commanded Z
+scaled and nothing else. A pixel written four times and a pixel written sixteen
+times come out identical.
+
+Dwell is not a small effect. On one static screen, the linearity grid, writes
+per pixel range from 3.9 to 15.6 across vectors:
+
+    dwell (writes/px)   min 3.9   median 3.9   max 15.6   spread 4.0x
+
+so vectors that should differ fourfold in brightness are rendered the same.
+
+`dac_ob` is the only thing that models dwell at all, and only partially:
+
+  * it is gated behind the Overburn option, off by default
+  * it accumulates a flat +5 per tick while `beam_v`/`beam_h` are unchanged
+    (`:505`), so it is additive where the physics is multiplicative
+  * it saturates at 255, clipping exactly the bright vectors it exists for
+  * it resets the moment the beam moves a pixel, so it captures a stationary
+    dot's dwell but not a slow-moving stroke's
+
+This is what `vfb_tone_mapper.sv` addresses in Videodr0me's cores, and it is a
+better argument for the renderer work than anything about dropped vectors.
+
 ## Timing was a constraint bug
 
 The core reported -12.5ns setup slack and 18.45MHz against a 24MHz clock.
@@ -125,8 +160,10 @@ Everything above concerns static or near-static screens. Not yet measured:
   can exceed 0.51 px/tick whatever it draws. Four screens totalling 177k
   segments all peak at half that. Worth closing anyway, since a measurement
   beats an argument.
-- whether brightness tracks dwell time correctly, which the Intensity test on
-  page 21 gives a pass/fail criterion for (17 lines, the 2nd to 4th from the
-  top must be extinguished)
+- the Intensity test on page 21, which gives a pass/fail criterion (17 lines,
+  the 2nd to 4th from the top must be extinguished). Brightness is already
+  known to ignore dwell from the RTL, but that test would say whether the Z
+  scaling itself is right. Reaching it means walking the Test Cartridge menu
+  with button 3, which is around 13s of emulated time.
 - phosphor persistence, currently a blind whole-buffer decrement
   (rtl/vectrex.vhd:528) with no per-pixel timing

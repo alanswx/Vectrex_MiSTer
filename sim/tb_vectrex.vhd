@@ -29,7 +29,10 @@ entity tb_vectrex is
 		SKIP_MS    : integer := 0;       -- emulated ms to run before capturing
 		RUN_MS     : integer := 50;      -- emulated ms to capture
 		WARM_MS    : integer := 0;       -- warm reset at this time; 0 disables
-		PRESS_MS   : integer := 0;       -- tap button 1 at this time; 0 disables
+		PRESS_MS    : integer := 0;      -- first button tap; 0 disables
+		PRESS_COUNT : integer := 1;      -- how many taps
+		PRESS_EVERY : integer := 1000;   -- ms between taps
+		PRESS_BTN   : integer := 1;      -- 1..4; the Test Cartridge wants 3
 		DUMP_FILE  : string  := "seg.txt"
 	);
 end tb_vectrex;
@@ -53,7 +56,9 @@ architecture sim of tb_vectrex is
 	-- up_1..rt_1 are the four action buttons; the core folds them into
 	-- players_switches. Games sit on their title screen until one is pressed,
 	-- so reaching gameplay in simulation needs this.
-	signal btn1 : std_logic := '0';
+	-- The core folds up_1..rt_1 into players_switches as buttons 1..4. Note
+	-- button 4 is also wired to the CPU's nFIRQ, so menu walking uses 3.
+	signal btn : std_logic_vector(4 downto 1) := (others => '0');
 
 	signal beam_x, beam_y : signed(19 downto 0);
 	signal beam_blank_n   : std_logic;
@@ -99,7 +104,7 @@ begin
 		speech_mode  => '0',
 		audio_out    => audio,
 
-		up_1 => btn1, dn_1 => '0', lf_1 => '0', rt_1 => '0',
+		up_1 => btn(1), dn_1 => btn(2), lf_1 => btn(3), rt_1 => btn(4),
 		pot_x_1 => (others => '0'), pot_y_1 => (others => '0'),
 
 		up_2 => '0', dn_2 => '0', lf_2 => '0', rt_2 => '0',
@@ -162,11 +167,16 @@ begin
 
 		if PRESS_MS > 0 then
 			wait for PRESS_MS * 1 ms;
-			report "button 1 press";
-			btn1 <= '1';
-			wait for 120 ms;          -- comfortably longer than a poll interval
-			btn1 <= '0';
-			wait for (SKIP_MS + RUN_MS) * 1 ms - (PRESS_MS * 1 ms) - 120 ms;
+			for i in 1 to PRESS_COUNT loop
+				report "button " & integer'image(PRESS_BTN) & " press " &
+				       integer'image(i) & " of " & integer'image(PRESS_COUNT);
+				btn(PRESS_BTN) <= '1';
+				wait for 120 ms;      -- comfortably longer than a poll interval
+				btn(PRESS_BTN) <= '0';
+				wait for (PRESS_EVERY - 120) * 1 ms;
+			end loop;
+			wait for (SKIP_MS + RUN_MS) * 1 ms
+			         - (PRESS_MS * 1 ms) - (PRESS_COUNT * PRESS_EVERY * 1 ms);
 		else
 			wait for (SKIP_MS + RUN_MS) * 1 ms;
 		end if;
