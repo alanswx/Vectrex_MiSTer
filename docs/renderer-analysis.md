@@ -87,8 +87,14 @@ A 3:4 framebuffer at 1080p needs 7.00 Mbit and at 1440p 12.44 Mbit, against
 the rest of the core.
 
 So higher resolution requires moving the framebuffer off-chip, which is what
-`videodr0me_fb` does with DDR3 plus SDRAM and a tile cache. Removing the
-overlay path (which owned the SDRAM) was the prerequisite.
+Videodr0me's `videodr0me_fb` does with DDR3 plus SDRAM and a tile cache.
+Removing the overlay path (which owned the SDRAM) was the prerequisite.
+
+Port from Major Havoc (2026-07-31), not Asteroids. It is the newest of his
+cores and its framebuffer has moved on considerably: 4295 changed lines across
+every file plus a new `vfb_layout_pkg.sv`, with the largest edits in
+`vfb_halo_wide` (958), `vfb_sdram_delay` (461), `vfb_readout` (458) and
+`vfb_rle_encoder` (444).
 
 Note which constraint binds first. Memory rules out 1080p outright, while
 sampling stays adequate there and only fails past about 1440p. So the reason to
