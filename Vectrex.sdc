@@ -1,8 +1,6 @@
 derive_pll_clocks
 derive_clock_uncertainty
 
-set_multicycle_path -from {emu|vectrex|limited_*} -setup 2
-set_multicycle_path -from {emu|vectrex|limited_*} -hold 1
 
 set_false_path -from {emu|hps_io|status*}
 
@@ -25,5 +23,18 @@ set core_clk [get_clocks {emu|pll|pll_inst|altera_pll_i|general[0].gpll~PLL_OUTP
 set vfb_clk  [get_clocks {emu|pll_vfb|pll_vfb_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk}]
 set hps_clk  [get_clocks {*|h2f_user0_clk}]
 
-set_clock_groups -asynchronous -group $core_clk -group $vfb_clk
-set_clock_groups -asynchronous -group $hps_clk  -group $vfb_clk
+# The audio and HDMI PLLs are framework clocks with no data relationship to
+# the renderer, but Quartus still associates some HPS f2sdram bridge registers
+# with them, so paths from those into vfb_ddr_arbiter get timed. With periods
+# of 40.682ns and 6.732ns against the renderer's 8ns, the worst alignment over
+# their least common multiple leaves a 0.752ns capture window, which is why the
+# arbiter appeared to miss by 10.5ns on a path only two logic levels deep.
+set aud_clk  [get_clocks {pll_audio|*divclk}]
+set hdmi_clk [get_clocks {pll_hdmi|*output_counter|divclk}]
+
+set_clock_groups -asynchronous \
+	-group $core_clk \
+	-group $vfb_clk \
+	-group $hps_clk \
+	-group $aud_clk \
+	-group $hdmi_clk
