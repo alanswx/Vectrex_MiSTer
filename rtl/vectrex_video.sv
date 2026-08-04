@@ -99,6 +99,19 @@ module vectrex_video
 localparam integer MAX_X = 5625 * 4 * 8;   // 180000, vertical full scale
 localparam integer MAX_Y = 5625 * 3 * 8;   // 135000, horizontal full scale
 
+// ----------------------------------------------------------------- reset ---
+// The top level's reset is a combinational OR of several sources in the core's
+// clock domain. Feeding it straight into the 125 MHz logic leaves an
+// unsynchronised crossing, which STA reports as a 2-level path from reset_req
+// into vfb_phosphor_timing missing by 2.4ns. Asynchronous assert, synchronous
+// release, the same shape as major_havoc_reset_sync.
+logic [1:0] reset_pipe_125 = 2'b11;
+always_ff @(posedge clk_125 or posedge reset) begin
+	if (reset) reset_pipe_125 <= 2'b11;
+	else       reset_pipe_125 <= {reset_pipe_125[0], 1'b0};
+end
+wire reset_125 = reset_pipe_125[1];
+
 // ---------------------------------------------------------------- modes ---
 // Raster sizes are 3:4 to match the Vectrex tube, sized to the display
 // height. Scale factors are precomputed rather than divided at runtime:
@@ -165,7 +178,7 @@ logic [4:0] div_cnt = 5'd0;
 always_ff @(posedge clk_125) begin
 	div_cnt <= div_cnt + 5'd1;
 	ce_pix  <= ((div_cnt & ((5'd1 << pix_div) - 5'd1)) == 5'd0);
-	if (reset) begin
+	if (reset_125) begin
 		h_cnt   <= 11'd0;
 		v_cnt   <= 11'd0;
 		div_cnt <= 5'd0;
@@ -271,8 +284,8 @@ vfb_top framebuffer
 	.clk_sys(clk_125),
 	.clk_source(clk_sys),
 	.source_tick(tick_pipe[2]),
-	.reset(reset),
-	.video_timing_reset(reset),
+	.reset(reset_125),
+	.video_timing_reset(reset_125),
 
 	.X_VECTOR(pix_x[10:0]),
 	.Y_VECTOR(pix_y[10:0]),
