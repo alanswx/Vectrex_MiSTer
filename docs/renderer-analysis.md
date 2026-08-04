@@ -247,6 +247,28 @@ Not settled:
     brightness and halo vary. Some of that is phosphor decay doing its job.
     Stills cannot separate the two; this needs someone watching the screen
 
+## The frame marker is wrong
+
+The Vectrex has no frame signal, so vectrex_video guesses one: it watches for
+an unusually long stretch with the beam blanked, on the theory that the BIOS
+recalibrates once per display pass. That guess is wrong, and there is now a
+clean experiment proving it.
+
+vfb_top's BUFFER_MODE selects when the framebuffer swaps: 0 is end-of-frame
+plus vertical blank, 1 is vertical blank only, 2 is end-of-frame only. Mode 1
+ignores FRAME_DONE entirely.
+
+  mode 1, ignoring FRAME_DONE   renders correctly, but tears
+  mode 0, honouring FRAME_DONE  mostly black with fragments of the pattern
+
+So the marker is not landing on real frame boundaries. Mode 1 is what ships for
+now, which is why the picture tears against the beam.
+
+Deriving it properly needs a signal the beam actually produces. The BIOS's
+Wait_Recal pulls CA2 low to zero the integrators for an extended period once
+per pass, so a long assertion of zero_integrator_n is a better candidate than a
+long blank. That signal is not currently on the dbg_* taps.
+
 ## Timing was a constraint bug
 
 The core reported -12.5ns setup slack and 18.45MHz against a 24MHz clock.

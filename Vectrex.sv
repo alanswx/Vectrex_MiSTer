@@ -280,7 +280,14 @@ vectrex_video vectrex_video
 	.hdmi_height(HDMI_HEIGHT),
 
 	.profile(3'd2),          // PROFILE_TYPICAL
-	.buffer_mode(2'd0),      // EOF + VBL: present on the beam's frame
+	// EOF + VBL (mode 0) is correct in principle, but it only swaps buffers
+	// when FRAME_DONE fires, and doing that produced a mostly black screen
+	// with fragments of the pattern. So the long-blank frame marker in
+	// vectrex_video is not finding real frame boundaries. Mode 1 ignores it
+	// and swaps on video vblank, which renders correctly but leaves the
+	// picture tearing against the beam. Staying on 1 until the marker is
+	// derived properly.
+	.buffer_mode(2'd1),      // VBL only
 	.osd_slot_mask_rows(1'b0),
 
 	.clk_video(CLK_VIDEO),
