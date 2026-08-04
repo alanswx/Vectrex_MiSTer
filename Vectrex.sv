@@ -103,6 +103,17 @@ pll pll
    .locked(pll_locked)
 );
 
+// videodr0me_fb runs at 125 MHz; see rtl/pll_vfb for why it needs its own PLL.
+wire clk_125;
+wire pll_vfb_locked;
+pll_vfb pll_vfb
+(
+	.refclk(CLK_50M),
+	.rst(0),
+	.outclk_0(clk_125),
+	.locked(pll_vfb_locked)
+);
+
 ///////////////////////////////////////////////////
 
 wire [31:0] status;

@@ -11,6 +11,9 @@ set_global_assignment -name VHDL_FILE rtl/cpu09l_128a.vhd
 set_global_assignment -name VERILOG_FILE rtl/mc6809is.v
 set_global_assignment -name VERILOG_FILE rtl/mc6809.v
 set_global_assignment -name VHDL_FILE rtl/vectrex.vhd
+set_global_assignment -name VERILOG_FILE rtl/pll_vfb/pll_vfb_core.v
+set_global_assignment -name VERILOG_FILE rtl/pll_vfb/pll_vfb.v
+set_global_assignment -name QIP_FILE rtl/pll_vfb/pll_vfb.qip
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_layout_pkg.sv
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_rasterizer.sv
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_phosphor_timing.sv
