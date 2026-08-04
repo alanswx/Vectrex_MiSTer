@@ -119,28 +119,28 @@ always_comb begin
 		h_total   = 12'd927;  v_total   = 12'd1124;
 		hs_start  = 12'd845;  hs_end    = 12'd889;
 		vs_start  = 12'd1088; vs_end    = 12'd1093;
-		pix_div   = 2'd1;                            // 62.50 MHz
+		pix_div   = 3'd1;                            // 62.50 MHz
 	end
 	else if (hdmi_height >= 12'd720) begin
 		fb_width  = 12'd540;  fb_height = 12'd720;
 		h_total   = 12'd696;  v_total   = 12'd748;
 		hs_start  = 12'd578;  hs_end    = 12'd622;
 		vs_start  = 12'd728;  vs_end    = 12'd733;
-		pix_div   = 2'd2;                            // 31.25 MHz
+		pix_div   = 3'd2;                            // 31.25 MHz
 	end
 	else if (hdmi_height >= 12'd480) begin
 		fb_width  = 12'd360;  fb_height = 12'd480;
 		h_total   = 12'd497;  v_total   = 12'd524;
 		hs_start  = 12'd400;  hs_end    = 12'd448;
 		vs_start  = 12'd490;  vs_end    = 12'd492;
-		pix_div   = 2'd3;                            // 15.62 MHz
+		pix_div   = 3'd3;                            // 15.62 MHz
 	end
 	else begin
 		fb_width  = 12'd180;  fb_height = 12'd240;
 		h_total   = 12'd498;  v_total   = 12'd261;
 		hs_start  = 12'd380;  hs_end    = 12'd428;
 		vs_start  = 12'd245;  vs_end    = 12'd248;
-		pix_div   = 2'd4;                            //  7.81 MHz
+		pix_div   = 3'd4;                            //  7.81 MHz
 	end
 
 	scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_Y);
