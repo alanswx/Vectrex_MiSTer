@@ -179,6 +179,13 @@ wire [9:0]  height[2] = '{720, 410};
 
 wire frame_line;
 
+// Aspect ratio, restored from what video_freak used to carry. 9:11 rather
+// than the raster's 3:4 is a deliberate choice from commit 30aabc1, so the
+// port should not quietly revert it, and the menu's own options still apply.
+wire [1:0] ar = status[17:16];
+assign VIDEO_ARX = (!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1);
+assign VIDEO_ARY = (!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0;
+
 // Beam taps from the core, feeding the new renderer.
 wire signed [19:0] dbg_beam_x, dbg_beam_y;
 wire  [7:0] dbg_z;
@@ -299,8 +306,8 @@ vectrex_video vectrex_video
 	.vga_vs(VGA_VS),
 	.vga_hblank(vfb_hblank),
 	.vga_vblank(vfb_vblank),
-	.video_arx(VIDEO_ARX),
-	.video_ary(VIDEO_ARY),
+	.video_arx(),
+	.video_ary(),
 
 	.ddram_clk(DDRAM_CLK),
 	.ddram_busy(DDRAM_BUSY),
