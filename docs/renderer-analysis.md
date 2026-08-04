@@ -176,6 +176,30 @@ Across the two that is a 22x range in how long the beam sits on a pixel, all
 of it rendered at the same value. Gameplay is where the error is worst, not
 the test patterns.
 
+### The core fails the manual's Intensity test
+
+Page 21 gives a criterion: 17 evenly spaced horizontal lines, of which the
+2nd, 3rd and 4th from the top must be extinguished and the 5th, which sits on
+the word INTENSITY, must be visible. Captured from hardware:
+
+    line   peak   width    expected        actual
+      1     191    76%     visible         visible
+      2      16     0%     extinguished    extinguished
+      3      32    73%     extinguished    VISIBLE
+      4      48    73%     extinguished    VISIBLE
+      5     255    73%     visible         visible
+
+Lines 3 and 4 should not be on screen at all. This is a second brightness
+defect, separate from dwell: a real tube has a cutoff, below which grid voltage
+produces no beam current and the vector simply does not appear. The core has
+none. `pix_fx` at `:583` maps `dac_z` linearly with
+
+    dac_z(6 downto 0) & dac_z(6)
+
+so every non-zero Z produces a lit pixel, and intensities the hardware would
+swallow get drawn. Note the failure is asymmetric: line 2 does vanish, so the
+cutoff is not simply absent, it is set far too low.
+
 `dac_ob` is the only thing that models dwell at all, and only partially:
 
   * it is gated behind the Overburn option, off by default
