@@ -41,6 +41,7 @@ lines would come out dashed. It does not, anywhere measured:
 | Mine Storm title | 52 373 | 0.147 px/tick | 0.249 | 0 |
 | Mine Storm, past start | 65 556 | 0.148 px/tick | 0.249 | 0 |
 | Linearity grid | 57 838 | 0.189 px/tick | 0.256 | 0 |
+| Mine Storm playfield | 26 677 | 0.023 px/tick | 0.176 | 0 |
 
 Roughly 5 to 6 writes land on each pixel. That is the opposite of the failure
 mode assumed at the outset, and it explains `dac_ob` (rtl/vectrex.vhd:490): it
@@ -118,12 +119,15 @@ and the framebuffer write is an overwrite, not an accumulate. So with
 scaled and nothing else. A pixel written four times and a pixel written sixteen
 times come out identical.
 
-Dwell is not a small effect. On one static screen, the linearity grid, writes
-per pixel range from 3.9 to 15.6 across vectors:
+Dwell is not a small effect, and it is largest exactly where the picture is
+sparsest. A game screen has few vectors, so the beam lingers:
 
-    dwell (writes/px)   min 3.9   median 3.9   max 15.6   spread 4.0x
+    linearity grid          min  3.9   median 7.4   max 15.6
+    Mine Storm playfield    min  5.7   median 9.5   max 84.1
 
-so vectors that should differ fourfold in brightness are rendered the same.
+Across the two that is a 22x range in how long the beam sits on a pixel, all
+of it rendered at the same value. Gameplay is where the error is worst, not
+the test patterns.
 
 `dac_ob` is the only thing that models dwell at all, and only partially:
 
@@ -150,16 +154,8 @@ Constraining the destinations instead: +3.978ns, TNS 0.000.
 
 ## What remains unexamined
 
-Everything above concerns static or near-static screens. Not yet measured:
+Not yet measured:
 
-- beam speed on a moving playfield. Simulating a button press gets Mine Storm
-  off its title and as far as its PLAYER 1 screen, but 9s of emulated time
-  still does not reach the playfield, and at roughly 0.7s of wall clock per
-  emulated millisecond each attempt is expensive. The conclusion above does not
-  rest on it: 255 units per tick is a property of the datapath, so no content
-  can exceed 0.51 px/tick whatever it draws. Four screens totalling 177k
-  segments all peak at half that. Worth closing anyway, since a measurement
-  beats an argument.
 - the Intensity test on page 21, which gives a pass/fail criterion (17 lines,
   the 2nd to 4th from the top must be extinguished). Brightness is already
   known to ignore dwell from the RTL, but that test would say whether the Z
