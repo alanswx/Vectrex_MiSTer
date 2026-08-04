@@ -39,6 +39,7 @@ lines would come out dashed. It does not, anywhere measured:
 |---|---|---|---|---|
 | Test Cartridge title | 1 038 | 0.159 px/tick | 0.249 | 0 |
 | Mine Storm title | 52 373 | 0.147 px/tick | 0.249 | 0 |
+| Mine Storm, past start | 65 556 | 0.148 px/tick | 0.249 | 0 |
 | Linearity grid | 57 838 | 0.189 px/tick | 0.256 | 0 |
 
 Roughly 5 to 6 writes land on each pixel. That is the opposite of the failure
@@ -110,7 +111,14 @@ Constraining the destinations instead: +3.978ns, TNS 0.000.
 
 Everything above concerns static or near-static screens. Not yet measured:
 
-- beam speed during actual gameplay rather than test patterns and title screens
+- beam speed on a moving playfield. Simulating a button press gets Mine Storm
+  off its title and as far as its PLAYER 1 screen, but 9s of emulated time
+  still does not reach the playfield, and at roughly 0.7s of wall clock per
+  emulated millisecond each attempt is expensive. The conclusion above does not
+  rest on it: 255 units per tick is a property of the datapath, so no content
+  can exceed 0.51 px/tick whatever it draws. Four screens totalling 177k
+  segments all peak at half that. Worth closing anyway, since a measurement
+  beats an argument.
 - whether brightness tracks dwell time correctly, which the Intensity test on
   page 21 gives a pass/fail criterion for (17 lines, the 2nd to 4th from the
   top must be extinguished)
