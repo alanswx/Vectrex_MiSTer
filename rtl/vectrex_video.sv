@@ -40,6 +40,11 @@ module vectrex_video
 	// is how BUFFER_MODE ended up on "VBL only", ignoring FRAME_DONE.
 	input   [2:0] profile,
 	input   [1:0] buffer_mode,
+	// Drives VGA straight from the timing generator with a generated pattern,
+	// bypassing vfb_top entirely. If HDMI syncs here but not otherwise, the
+	// fault is in the framebuffer's output or its configuration; if it fails
+	// here too, the fault is in this module's timing.
+	input         test_pattern,
 	input         osd_slot_mask_rows,
 
 	// Video out
@@ -296,6 +301,31 @@ always_ff @(posedge clk_sys) begin
 	end
 end
 
+// -------------------------------------------------------- test pattern ---
+// Deliberately plain: full-screen colour bars, a one pixel white border and a
+// centre cross. Everything comes from h_cnt/v_cnt, so it exercises the timing
+// generator and nothing else.
+wire [7:0] fb_vga_r, fb_vga_g, fb_vga_b;
+wire       fb_vga_hs, fb_vga_vs, fb_vga_hblank, fb_vga_vblank;
+
+wire [2:0] bar = (fb_width == 12'd0) ? 3'd0 : 3'((h_cnt * 8) / fb_width);
+wire       border = (h_cnt == 11'd0) || (h_cnt == 11'(fb_width  - 12'd1)) ||
+                    (v_cnt == 11'd0) || (v_cnt == 11'(fb_height - 12'd1));
+wire       centre_line  = (h_cnt == 11'(fb_width >> 1)) || (v_cnt == 11'(fb_height >> 1));
+wire       active = !raw_hblank && !raw_vblank;
+
+wire [7:0] tp_r = !active ? 8'd0 : (border | centre_line) ? 8'hFF : {8{bar[2]}};
+wire [7:0] tp_g = !active ? 8'd0 : (border | centre_line) ? 8'hFF : {8{bar[1]}};
+wire [7:0] tp_b = !active ? 8'd0 : (border | centre_line) ? 8'hFF : {8{bar[0]}};
+
+assign vga_r      = test_pattern ? tp_r        : fb_vga_r;
+assign vga_g      = test_pattern ? tp_g        : fb_vga_g;
+assign vga_b      = test_pattern ? tp_b        : fb_vga_b;
+assign vga_hs     = test_pattern ? raw_hsync   : fb_vga_hs;
+assign vga_vs     = test_pattern ? raw_vsync   : fb_vga_vs;
+assign vga_hblank = test_pattern ? raw_hblank  : fb_vga_hblank;
+assign vga_vblank = test_pattern ? raw_vblank  : fb_vga_vblank;
+
 // ------------------------------------------------------------- profile ---
 wire [2:0] p_dot_mode, p_bloom_width, p_bloom_curve, p_halo_filter, p_halo_curve;
 wire [2:0] p_presentation_color;
@@ -379,13 +409,13 @@ vfb_top framebuffer
 	.RENDER_WIDTH(fb_width),
 	.RENDER_HEIGHT(fb_height),
 
-	.VGA_R(vga_r),
-	.VGA_G(vga_g),
-	.VGA_B(vga_b),
-	.VGA_HS(vga_hs),
-	.VGA_VS(vga_vs),
-	.VGA_HBLANK(vga_hblank),
-	.VGA_VBLANK(vga_vblank),
+	.VGA_R(fb_vga_r),
+	.VGA_G(fb_vga_g),
+	.VGA_B(fb_vga_b),
+	.VGA_HS(fb_vga_hs),
+	.VGA_VS(fb_vga_vs),
+	.VGA_HBLANK(fb_vga_hblank),
+	.VGA_VBLANK(fb_vga_vblank),
 
 	.h_cnt(h_cnt),
 	.v_cnt(v_cnt),

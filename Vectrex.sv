@@ -69,6 +69,7 @@ localparam CONF_STR = {
 	"O23,Phosphor persistance,1,2,3,4;",
 	"O56,Pseudocolor,Off,1,2,3;",
 	"O8,Overburn,No,Yes;",
+	"OD,HDMI test pattern,Off,On;",
 	"-;",
 	"OC,Port 2,Joystick,Speech;",
 	"OA,CPU Model,1,2;",
@@ -279,6 +280,7 @@ vectrex_video vectrex_video
 
 	.hdmi_height(HDMI_HEIGHT),
 
+	.test_pattern(status[13]),
 	.profile(3'd2),          // PROFILE_TYPICAL
 	// EOF + VBL (mode 0) is correct in principle, but it only swaps buffers
 	// when FRAME_DONE fires, and doing that produced a mostly black screen
