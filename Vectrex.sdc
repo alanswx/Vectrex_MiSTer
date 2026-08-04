@@ -32,9 +32,16 @@ set hps_clk  [get_clocks {*|h2f_user0_clk}]
 set aud_clk  [get_clocks {pll_audio|*divclk}]
 set hdmi_clk [get_clocks {pll_hdmi|*output_counter|divclk}]
 
+# The board oscillators reach the renderer only through reset, which sysmem
+# resynchronises into the ram1 domain itself. Timing FPGA_CLK2_50 against the
+# 125 MHz clock makes that reset look like a 1.3ns violation on a single level
+# of logic, which is the same shape as the other crossings here.
+set brd_clk  [get_clocks {FPGA_CLK1_50 FPGA_CLK2_50 FPGA_CLK3_50}]
+
 set_clock_groups -asynchronous \
 	-group $core_clk \
 	-group $vfb_clk \
 	-group $hps_clk \
 	-group $aud_clk \
-	-group $hdmi_clk
+	-group $hdmi_clk \
+	-group $brd_clk

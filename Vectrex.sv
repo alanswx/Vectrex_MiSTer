@@ -40,6 +40,18 @@ assign HDMI_FREEZE = 0;
 assign HDMI_BLACKOUT = 0;
 assign HDMI_BOB_DEINT = 0;
 
+// The framework's alternative framebuffer video path is unused, but its
+// outputs are declared unconditionally in sys/emu_ports.vh, so drive them
+// rather than leaving them floating.
+assign FB_EN          = 0;
+assign FB_FORMAT      = 0;
+assign FB_WIDTH       = 0;
+assign FB_HEIGHT      = 0;
+assign FB_BASE        = 0;
+assign FB_STRIDE      = 0;
+assign FB_FORCE_BLANK = 0;
+
+
 
 `include "build_id.v" 
 localparam CONF_STR = {
