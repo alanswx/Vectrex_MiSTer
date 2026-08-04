@@ -33,6 +33,9 @@ entity tb_vectrex is
 		PRESS_COUNT : integer := 1;      -- how many taps
 		PRESS_EVERY : integer := 1000;   -- ms between taps
 		PRESS_BTN   : integer := 1;      -- 1..4; the Test Cartridge wants 3
+		PRESS_HOLD  : integer := 15;     -- ms held. The ROM polls per frame and
+		                                 -- counts every poll while held, so 120ms
+		                                 -- advances a menu about six stages.
 		DUMP_FILE  : string  := "seg.txt"
 	);
 end tb_vectrex;
@@ -171,9 +174,9 @@ begin
 				report "button " & integer'image(PRESS_BTN) & " press " &
 				       integer'image(i) & " of " & integer'image(PRESS_COUNT);
 				btn(PRESS_BTN) <= '1';
-				wait for 120 ms;      -- comfortably longer than a poll interval
+				wait for PRESS_HOLD * 1 ms;
 				btn(PRESS_BTN) <= '0';
-				wait for (PRESS_EVERY - 120) * 1 ms;
+				wait for (PRESS_EVERY - PRESS_HOLD) * 1 ms;
 			end loop;
 			wait for (SKIP_MS + RUN_MS) * 1 ms
 			         - (PRESS_MS * 1 ms) - (PRESS_COUNT * PRESS_EVERY * 1 ms);
