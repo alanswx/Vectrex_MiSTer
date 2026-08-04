@@ -28,11 +28,7 @@ assign ADC_BUS  = 'Z;
 assign USER_OUT = '1;
 assign {UART_RTS, UART_TXD, UART_DTR} = 0;
 assign {SD_SCK, SD_MOSI, SD_CS} = 'Z;
-assign {DDRAM_CLK, DDRAM_BURSTCNT, DDRAM_ADDR, DDRAM_DIN, DDRAM_BE, DDRAM_RD, DDRAM_WE} = 0;
 
-// SDRAM is unused since the overlay renderer was removed. The upcoming
-// framebuffer-based vector renderer will claim it back.
-assign {SDRAM_DQ, SDRAM_A, SDRAM_BA, SDRAM_CLK, SDRAM_CKE, SDRAM_DQML, SDRAM_DQMH, SDRAM_nWE, SDRAM_nCAS, SDRAM_nRAS, SDRAM_nCS} = 'Z;
 
 assign LED_USER  = ioctl_download;
 assign LED_DISK  = 0;
@@ -173,25 +169,23 @@ end
 
 wire hblank, vblank;
 
-assign CLK_VIDEO = clk_sys;
-assign CE_PIXEL = 1;
 assign VGA_SL = 0;
 assign VGA_F1 = 0;
 
-assign VGA_HS = hblank;
-assign VGA_VS = vblank;
-assign VGA_DE = ~(hblank | vblank);
+assign VGA_DE = ~(vfb_hblank | vfb_vblank);
 
 wire [4:0]  pers[4]   = '{8,4,2,1};
 wire [9:0]  width[2]  = '{540, 332};
 wire [9:0]  height[2] = '{720, 410};
 
 wire frame_line;
+
+// Beam taps from the core, feeding the new renderer.
+wire signed [19:0] dbg_beam_x, dbg_beam_y;
+wire  [7:0] dbg_z;
+wire        dbg_blank_n, dbg_ce;
 wire [7:0] r,g,b;
 
-assign VGA_R = status[9] & frame_line ? 8'h40 : r;
-assign VGA_G = status[9] & frame_line ? 8'h00 : g;
-assign VGA_B = status[9] & frame_line ? 8'h00 : b;
 
 wire rom_download = ioctl_download && (ioctl_index[4:0] <= 1) && (ioctl_index[9:8] == 0);
 
@@ -204,7 +198,7 @@ always @(posedge clk_sys) begin
 	if(rom_download && ioctl_wr && (ioctl_addr[14:0] & ~addr_mask)) addr_mask <= ((addr_mask<<1)|15'd1);
 end
 
-vectrex vectrex
+vectrex #(.INTERNAL_FB(0)) vectrex
 (
 	.reset(reset),
 	.clock(clk_sys),
@@ -246,7 +240,93 @@ vectrex vectrex
 	.lf_2(joystick_1[6]),
 	.rt_2(joystick_1[7]),
 	.pot_x_2(joya_1[7:0]  ? joya_1[7:0]   : {joystick_1[1], {7{joystick_1[0]}}}),
-	.pot_y_2(joya_1[15:8] ? ~joya_1[15:8] : {joystick_1[2], {7{joystick_1[3]}}})
+	.pot_y_2(joya_1[15:8] ? ~joya_1[15:8] : {joystick_1[2], {7{joystick_1[3]}}}),
+
+	.dbg_beam_x(dbg_beam_x),
+	.dbg_beam_y(dbg_beam_y),
+	.dbg_blank_n(dbg_blank_n),
+	.dbg_z(dbg_z),
+	.dbg_ce(dbg_ce)
+);
+
+
+// ---------------------------------------------------------------------------
+// Vector presentation. vectrex.vhd is now only a beam source; everything from
+// the raster onward lives in videodr0me_fb. See docs/renderer-analysis.md for
+// why: the internal framebuffer cannot reach 1080p, has no beam cutoff, no
+// dwell term, and is single buffered.
+// ---------------------------------------------------------------------------
+wire        vfb_hblank, vfb_vblank;
+wire [12:0] vfb_arx, vfb_ary;
+
+vectrex_video vectrex_video
+(
+	.clk_sys(clk_sys),
+	.clk_125(clk_125),
+	.reset(reset),
+	.reset_source(reset),
+
+	.beam_x(dbg_beam_x),
+	.beam_y(dbg_beam_y),
+	.beam_z(dbg_z),
+	.beam_on(dbg_blank_n),
+	.beam_tick(dbg_ce),
+
+	.hdmi_height(HDMI_HEIGHT),
+
+	.buffer_mode(2'd1),
+	.dot_mode(3'd0),
+	.osd_bloom_width(3'd2),
+	.osd_bloom_curve(3'd2),
+	.osd_expand_highlights(1'b0),
+	.osd_halo_filter(3'd2),
+	.osd_halo_curve(3'd2),
+	.osd_halo_knee(2'd1),
+	.osd_halo_spread(2'd1),
+	.osd_phosphor_mode(2'd1),
+	.osd_inter_frame_phosphor_mode(2'd1),
+	.osd_color_space(1'b0),
+	.osd_presentation_color(3'd0),
+	.osd_slot_mask(1'b0),
+	.osd_slot_mask_rows(1'b0),
+	.osd_full_bypass(1'b0),
+
+	.clk_video(CLK_VIDEO),
+	.ce_pixel(CE_PIXEL),
+	.vga_r(VGA_R),
+	.vga_g(VGA_G),
+	.vga_b(VGA_B),
+	.vga_hs(VGA_HS),
+	.vga_vs(VGA_VS),
+	.vga_hblank(vfb_hblank),
+	.vga_vblank(vfb_vblank),
+	.video_arx(vfb_arx),
+	.video_ary(vfb_ary),
+
+	.ddram_clk(DDRAM_CLK),
+	.ddram_busy(DDRAM_BUSY),
+	.ddram_burstcnt(DDRAM_BURSTCNT),
+	.ddram_addr(DDRAM_ADDR),
+	.ddram_dout(DDRAM_DOUT),
+	.ddram_dout_ready(DDRAM_DOUT_READY),
+	.ddram_rd(DDRAM_RD),
+	.ddram_din(DDRAM_DIN),
+	.ddram_be(DDRAM_BE),
+	.ddram_we(DDRAM_WE),
+
+	.sdram_dq(SDRAM_DQ),
+	.sdram_clk(SDRAM_CLK),
+	.sdram_cke(SDRAM_CKE),
+	.sdram_ncs(SDRAM_nCS),
+	.sdram_nras(SDRAM_nRAS),
+	.sdram_ncas(SDRAM_nCAS),
+	.sdram_nwe(SDRAM_nWE),
+	.sdram_dqml(SDRAM_DQML),
+	.sdram_dqmh(SDRAM_DQMH),
+	.sdram_a(SDRAM_A),
+	.sdram_ba(SDRAM_BA),
+
+	.fifo_full_led()
 );
 
 endmodule

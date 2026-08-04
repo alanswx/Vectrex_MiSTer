@@ -123,6 +123,14 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
 entity vectrex is
+generic
+(
+	-- The internal framebuffer and its scanner. Off when rendering is
+	-- handed to rtl/vectrex_video.sv, because the four scan buffers are
+	-- 3.11 Mbit and the device only has 5.66, so the two cannot coexist.
+	-- Everything downstream of them is left in place and pruned as unused.
+	INTERNAL_FB : integer := 1
+);
 port
 (
 	clock		    : in  std_logic;
@@ -596,17 +604,25 @@ video_r <= pixel when color = "00" else pix_c when pix_r = '1' else pix_cc;
 video_g <= pixel when color = "00" else pix_c when pix_g = '1' else pix_cc;
 video_b <= pixel when color = "00" else pix_c when pix_b = '1' else pix_cc;
 
-buf_0 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
-port map( clk => not clock, we => video_we_0, addr => video_addr, d => write_0, q => read_0b);
+fb : if INTERNAL_FB /= 0 generate
+	buf_0 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
+	port map( clk => not clock, we => video_we_0, addr => video_addr, d => write_0, q => read_0b);
 
-buf_1 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
-port map( clk => not clock, we => video_we_1, addr => video_addr, d => write_1, q => read_1b);
+	buf_1 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
+	port map( clk => not clock, we => video_we_1, addr => video_addr, d => write_1, q => read_1b);
 
-buf_2 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
-port map( clk => not clock, we => video_we_2, addr => video_addr, d => write_2, q => read_2b);
+	buf_2 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
+	port map( clk => not clock, we => video_we_2, addr => video_addr, d => write_2, q => read_2b);
 
-buf_3 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
-port map( clk => not clock, we => video_we_3, addr => video_addr, d => write_3, q => read_3b);
+	buf_3 : entity work.gen_ram generic map( dWidth => vram_width, aWidth => 18, nWords => max_h*max_v/4)
+	port map( clk => not clock, we => video_we_3, addr => video_addr, d => write_3, q => read_3b);
+end generate;
+no_fb : if INTERNAL_FB = 0 generate
+	read_0b <= (others => '0');
+	read_1b <= (others => '0');
+	read_2b <= (others => '0');
+	read_3b <= (others => '0');
+end generate;
 
 -------------------
 -- Video scanner --
