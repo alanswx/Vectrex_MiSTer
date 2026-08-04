@@ -1,0 +1,326 @@
+//============================================================================
+//  Vectrex high-resolution vector presentation.
+//
+//  Drives Videodr0me's videodr0me_fb (see rtl/videodr0me_fb/PROVENANCE.md)
+//  from the core's beam. Structured after major_havoc_video.sv, which is the
+//  reference for how that framebuffer expects to be fed.
+//
+//  Three things this has to do:
+//    * pick a raster size from the display height and generate video timing,
+//      because vfb_top consumes h_cnt/v_cnt/ce_pix and syncs rather than
+//      producing them
+//    * map the core's integrator coordinates into that raster
+//    * mark frame boundaries, which the Vectrex has no hardware signal for
+//
+//  The Vectrex screen is portrait 3:4, so the raster is taller than wide and
+//  the display pillarboxes it. That is the opposite of the Atari cores this
+//  framebuffer was written for, and the reason the mode table below is not
+//  simply copied.
+//============================================================================
+
+module vectrex_video
+(
+	input         clk_sys,        // 24 MHz, the core's clock
+	input         clk_125,        // framebuffer and SDRAM clock
+	input         reset,
+	input         reset_source,
+
+	// Beam, from vectrex.vhd's dbg_* taps. X drives rows, Y drives columns;
+	// see vectrex.vhd's beam_v/beam_h derivation.
+	input  signed [19:0] beam_x,
+	input  signed [19:0] beam_y,
+	input   [7:0] beam_z,
+	input         beam_on,
+	input         beam_tick,      // clken_12
+
+	input  [11:0] hdmi_height,
+
+	// Presentation controls, from the OSD.
+	input   [1:0] buffer_mode,
+	input   [2:0] dot_mode,
+	input   [2:0] osd_bloom_width,
+	input   [2:0] osd_bloom_curve,
+	input         osd_expand_highlights,
+	input   [2:0] osd_halo_filter,
+	input   [2:0] osd_halo_curve,
+	input   [1:0] osd_halo_knee,
+	input   [1:0] osd_halo_spread,
+	input   [1:0] osd_phosphor_mode,
+	input   [1:0] osd_inter_frame_phosphor_mode,
+	input         osd_color_space,
+	input   [2:0] osd_presentation_color,
+	input         osd_slot_mask,
+	input         osd_slot_mask_rows,
+	input         osd_full_bypass,
+
+	// Video out
+	output        clk_video,
+	output        ce_pixel,
+	output  [7:0] vga_r,
+	output  [7:0] vga_g,
+	output  [7:0] vga_b,
+	output        vga_hs,
+	output        vga_vs,
+	output        vga_hblank,
+	output        vga_vblank,
+	output [12:0] video_arx,
+	output [12:0] video_ary,
+
+	// Framebuffer memory
+	output        ddram_clk,
+	input         ddram_busy,
+	output  [7:0] ddram_burstcnt,
+	output [28:0] ddram_addr,
+	input  [63:0] ddram_dout,
+	input         ddram_dout_ready,
+	output        ddram_rd,
+	output [63:0] ddram_din,
+	output  [7:0] ddram_be,
+	output        ddram_we,
+
+	inout  [15:0] sdram_dq,
+	output        sdram_clk,
+	output        sdram_cke,
+	output        sdram_ncs,
+	output        sdram_nras,
+	output        sdram_ncas,
+	output        sdram_nwe,
+	output        sdram_dqml,
+	output        sdram_dqmh,
+	output [12:0] sdram_a,
+	output  [1:0] sdram_ba,
+
+	output        fifo_full_led
+);
+
+// From rtl/vectrex.vhd: the integrators run +/-max_x by +/-max_y, and max_x
+// drives rows while max_y drives columns.
+localparam integer MAX_X = 5625 * 4 * 8;   // 180000, vertical full scale
+localparam integer MAX_Y = 5625 * 3 * 8;   // 135000, horizontal full scale
+
+// ---------------------------------------------------------------- modes ---
+// Raster sizes are 3:4 to match the Vectrex tube, sized to the display
+// height. Scale factors are precomputed rather than divided at runtime:
+// vectrex.vhd:477 divides by a signal and that cost the core its timing
+// closure, so the same mistake is not repeated here.
+//
+//   scale = raster_dimension * 2^SHIFT / full_scale_span
+localparam integer SHIFT = 22;
+
+logic [11:0] fb_width, fb_height;
+logic [11:0] h_total, v_total, hs_start, hs_end, vs_start, vs_end;
+logic [31:0] scale_x, scale_y;
+logic        is_240p;
+
+always_comb begin
+	if (hdmi_height >= 12'd1080) begin
+		fb_width  = 12'd810;  fb_height = 12'd1080;
+		h_total   = 12'd1851; v_total   = 12'd1124;
+		hs_start  = 12'd1600; hs_end    = 12'd1688;
+		vs_start  = 12'd1088; vs_end    = 12'd1093;
+		is_240p   = 1'b0;
+	end
+	else if (hdmi_height >= 12'd720) begin
+		fb_width  = 12'd540;  fb_height = 12'd720;
+		h_total   = 12'd1388; v_total   = 12'd748;
+		hs_start  = 12'd1108; hs_end    = 12'd1196;
+		vs_start  = 12'd728;  vs_end    = 12'd733;
+		is_240p   = 1'b0;
+	end
+	else if (hdmi_height >= 12'd480) begin
+		fb_width  = 12'd360;  fb_height = 12'd480;
+		h_total   = 12'd992;  v_total   = 12'd524;
+		hs_start  = 12'd720;  hs_end    = 12'd816;
+		vs_start  = 12'd490;  vs_end    = 12'd492;
+		is_240p   = 1'b0;
+	end
+	else begin
+		fb_width  = 12'd180;  fb_height = 12'd240;
+		h_total   = 12'd993;  v_total   = 12'd261;
+		hs_start  = 12'd720;  hs_end    = 12'd816;
+		vs_start  = 12'd245;  vs_end    = 12'd248;
+		is_240p   = 1'b1;
+	end
+
+	scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_Y);
+	scale_y = (32'(fb_height) << SHIFT) / (2 * MAX_X);
+end
+
+assign video_arx = 13'h1000 | 13'(fb_width);
+assign video_ary = 13'h1000 | 13'(fb_height);
+
+// -------------------------------------------------------------- timing ---
+logic [10:0] h_cnt = 11'd0;
+logic [10:0] v_cnt = 11'd0;
+logic        raw_hsync, raw_vsync, raw_hblank, raw_vblank;
+logic        ce_pix = 1'b0;
+
+// 125 MHz halved gives 62.5 MHz of pixel rate, which covers every mode here.
+always_ff @(posedge clk_125) begin
+	ce_pix <= ~ce_pix;
+	if (reset) begin
+		h_cnt <= 11'd0;
+		v_cnt <= 11'd0;
+	end
+	else if (ce_pix) begin
+		if (h_cnt >= h_total) begin
+			h_cnt <= 11'd0;
+			v_cnt <= (v_cnt >= v_total) ? 11'd0 : v_cnt + 11'd1;
+		end
+		else begin
+			h_cnt <= h_cnt + 11'd1;
+		end
+	end
+end
+
+assign raw_hsync  = (h_cnt >= hs_start) && (h_cnt < hs_end);
+assign raw_vsync  = (v_cnt >= vs_start) && (v_cnt < vs_end);
+assign raw_hblank = (h_cnt >= fb_width);
+assign raw_vblank = (v_cnt >= fb_height);
+
+assign clk_video = clk_125;
+assign ce_pixel  = ce_pix;
+
+// ------------------------------------------------------------ geometry ---
+// Integrator coordinates are signed and centred; shift to unsigned, scale into
+// the raster, and clamp. Registered in stages so the multiply gets its own
+// clock rather than sitting in a long combinational path.
+logic signed [20:0] off_x, off_y;
+logic        [51:0] mul_x, mul_y;
+logic        [11:0] pix_x, pix_y;
+logic         [7:0] z_q;
+logic               on_q;
+logic         [2:0] tick_pipe;
+
+always_ff @(posedge clk_sys) begin
+	// stage 1: centre
+	off_y <= 21'(beam_y) + 21'(MAX_Y);   // horizontal
+	off_x <= 21'(beam_x) + 21'(MAX_X);   // vertical
+
+	// stage 2: scale
+	mul_x <= $unsigned(off_y[20] ? 21'd0 : off_y) * scale_x;
+	mul_y <= $unsigned(off_x[20] ? 21'd0 : off_x) * scale_y;
+
+	// stage 3: clamp into the raster
+	pix_x <= (mul_x[51:SHIFT] >= fb_width)  ? (fb_width  - 12'd1) : mul_x[SHIFT+11:SHIFT];
+	pix_y <= (mul_y[51:SHIFT] >= fb_height) ? (fb_height - 12'd1) : mul_y[SHIFT+11:SHIFT];
+
+	z_q       <= beam_z;
+	on_q      <= beam_on;
+	tick_pipe <= {tick_pipe[1:0], beam_tick};
+end
+
+// --------------------------------------------------------- frame marker ---
+// The Vectrex has no frame signal. Its BIOS recalibrates once per display
+// pass, which shows up as an unusually long stretch with the beam blanked, so
+// that is what this looks for. A plain timer would tear against whatever the
+// program is drawing.
+localparam integer BLANK_GAP = 2000;      // beam_tick counts, about 167us
+
+logic [15:0] blank_run = 16'd0;
+logic        frame_done = 1'b0;
+
+always_ff @(posedge clk_sys) begin
+	frame_done <= 1'b0;
+	if (tick_pipe[0]) begin
+		if (on_q) begin
+			blank_run <= 16'd0;
+		end
+		else if (blank_run < 16'hFFFF) begin
+			blank_run <= blank_run + 16'd1;
+			if (blank_run == BLANK_GAP) frame_done <= 1'b1;
+		end
+	end
+end
+
+// --------------------------------------------------------- framebuffer ---
+logic        sdram_dq_oe;
+logic [15:0] sdram_dq_out;
+logic  [1:0] sdram_dqm;
+
+assign sdram_clk = ~clk_125;
+assign sdram_dq  = sdram_dq_oe ? sdram_dq_out : 16'hzzzz;
+assign sdram_dqml = sdram_dqm[0];
+assign sdram_dqmh = sdram_dqm[1];
+
+vfb_top framebuffer
+(
+	.clk_sys(clk_125),
+	.clk_source(clk_sys),
+	.source_tick(tick_pipe[2]),
+	.reset(reset),
+	.video_timing_reset(reset),
+
+	.X_VECTOR(pix_x[10:0]),
+	.Y_VECTOR(pix_y[10:0]),
+	.Z_VECTOR(z_q),
+	.COLOR(4'b1111),
+	.IS_DOT(1'b0),
+	.BEAM_ON(on_q),
+
+	.DDRAM_CLK(ddram_clk),
+	.DDRAM_BUSY(ddram_busy),
+	.DDRAM_BURSTCNT(ddram_burstcnt),
+	.DDRAM_ADDR(ddram_addr),
+	.DDRAM_DOUT(ddram_dout),
+	.DDRAM_DOUT_READY(ddram_dout_ready),
+	.DDRAM_RD(ddram_rd),
+	.DDRAM_DIN(ddram_din),
+	.DDRAM_BE(ddram_be),
+	.DDRAM_WE(ddram_we),
+
+	.SDRAM_DQ_IN(sdram_dq),
+	.SDRAM_DQ_OUT(sdram_dq_out),
+	.SDRAM_DQ_OE(sdram_dq_oe),
+	.SDRAM_CKE(sdram_cke),
+	.SDRAM_nCS(sdram_ncs),
+	.SDRAM_nRAS(sdram_nras),
+	.SDRAM_nCAS(sdram_ncas),
+	.SDRAM_nWE(sdram_nwe),
+	.SDRAM_DQM(sdram_dqm),
+	.SDRAM_A(sdram_a),
+	.SDRAM_BA(sdram_ba),
+
+	.RENDER_WIDTH(fb_width),
+	.RENDER_HEIGHT(fb_height),
+
+	.VGA_R(vga_r),
+	.VGA_G(vga_g),
+	.VGA_B(vga_b),
+	.VGA_HS(vga_hs),
+	.VGA_VS(vga_vs),
+	.VGA_HBLANK(vga_hblank),
+	.VGA_VBLANK(vga_vblank),
+
+	.h_cnt(h_cnt),
+	.v_cnt(v_cnt),
+	.ce_pix(ce_pix),
+	.hsync(raw_hsync),
+	.vsync(raw_vsync),
+	.hblank(raw_hblank),
+	.vblank(raw_vblank),
+
+	.FLASH_PARAM(8'd0),
+	.OSD_120HZ(1'b0),
+	.FRAME_DONE(frame_done),
+	.BUFFER_MODE(buffer_mode),
+	.DOT_MODE(dot_mode),
+	.FIFO_FULL_LED(fifo_full_led),
+
+	.osd_bloom_width(osd_bloom_width),
+	.osd_bloom_curve(osd_bloom_curve),
+	.osd_expand_highlights(osd_expand_highlights),
+	.osd_halo_filter(osd_halo_filter),
+	.osd_halo_curve(osd_halo_curve),
+	.osd_halo_knee(osd_halo_knee),
+	.osd_phosphor_mode(osd_phosphor_mode),
+	.osd_inter_frame_phosphor_mode(osd_inter_frame_phosphor_mode),
+	.osd_halo_spread(osd_halo_spread),
+	.osd_color_space(osd_color_space),
+	.osd_presentation_color(osd_presentation_color),
+	.osd_slot_mask(osd_slot_mask),
+	.osd_slot_mask_rows(osd_slot_mask_rows),
+	.osd_full_bypass(osd_full_bypass)
+);
+
+endmodule
