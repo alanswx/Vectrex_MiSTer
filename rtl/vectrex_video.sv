@@ -112,6 +112,45 @@ always_ff @(posedge clk_125 or posedge reset) begin
 end
 wire reset_125 = reset_pipe_125[1];
 
+// ------------------------------------------------------------ mode gate ---
+// hdmi_height comes from the framework and is not guaranteed stable. Deriving
+// h_total and the sync positions combinationally from it means the raster can
+// change mid-frame, which loses sync. Major Havoc gates its timing on a
+// mode_ready signal for exactly this reason; this is the same idea, holding
+// the mode until the input has been unchanged for a while and keeping the
+// timing generator in reset across the change.
+localparam integer MODE_SETTLE = 125000;   // 1ms at 125 MHz
+
+logic [11:0] height_meta = 12'd720;
+logic [11:0] height_seen = 12'd720;
+logic [11:0] height_q    = 12'd720;
+logic [17:0] settle_cnt  = 18'd0;
+logic        mode_ready  = 1'b0;
+
+always_ff @(posedge clk_125) begin
+	height_meta <= hdmi_height;
+	height_seen <= height_meta;
+
+	if (reset_125) begin
+		height_q   <= height_seen;
+		settle_cnt <= 18'd0;
+		mode_ready <= 1'b0;
+	end
+	else if (height_seen != height_q) begin
+		height_q   <= height_seen;   // adopt, then wait for it to hold
+		settle_cnt <= 18'd0;
+		mode_ready <= 1'b0;
+	end
+	else if (settle_cnt < MODE_SETTLE) begin
+		settle_cnt <= settle_cnt + 18'd1;
+	end
+	else begin
+		mode_ready <= 1'b1;
+	end
+end
+
+wire timing_reset = reset_125 || !mode_ready;
+
 // ---------------------------------------------------------------- modes ---
 // Raster sizes are 3:4 to match the Vectrex tube, sized to the display
 // height. Scale factors are precomputed rather than divided at runtime:
@@ -127,21 +166,21 @@ logic [31:0] scale_x, scale_y;
 logic  [2:0] pix_div;
 
 always_comb begin
-	if (hdmi_height >= 12'd1080) begin
+	if (height_q >= 12'd1080) begin
 		fb_width  = 12'd810;  fb_height = 12'd1080;
 		h_total   = 12'd927;  v_total   = 12'd1124;
 		hs_start  = 12'd845;  hs_end    = 12'd889;
 		vs_start  = 12'd1088; vs_end    = 12'd1093;
 		pix_div   = 3'd1;                            // 62.50 MHz
 	end
-	else if (hdmi_height >= 12'd720) begin
+	else if (height_q >= 12'd720) begin
 		fb_width  = 12'd540;  fb_height = 12'd720;
 		h_total   = 12'd696;  v_total   = 12'd748;
 		hs_start  = 12'd578;  hs_end    = 12'd622;
 		vs_start  = 12'd728;  vs_end    = 12'd733;
 		pix_div   = 3'd2;                            // 31.25 MHz
 	end
-	else if (hdmi_height >= 12'd480) begin
+	else if (height_q >= 12'd480) begin
 		fb_width  = 12'd360;  fb_height = 12'd480;
 		h_total   = 12'd497;  v_total   = 12'd524;
 		hs_start  = 12'd400;  hs_end    = 12'd448;
@@ -178,7 +217,7 @@ logic [4:0] div_cnt = 5'd0;
 always_ff @(posedge clk_125) begin
 	div_cnt <= div_cnt + 5'd1;
 	ce_pix  <= ((div_cnt & ((5'd1 << pix_div) - 5'd1)) == 5'd0);
-	if (reset_125) begin
+	if (timing_reset) begin
 		h_cnt   <= 11'd0;
 		v_cnt   <= 11'd0;
 		div_cnt <= 5'd0;
@@ -285,7 +324,7 @@ vfb_top framebuffer
 	.clk_source(clk_sys),
 	.source_tick(tick_pipe[2]),
 	.reset(reset_125),
-	.video_timing_reset(reset_125),
+	.video_timing_reset(timing_reset),
 
 	.X_VECTOR(pix_x[10:0]),
 	.Y_VECTOR(pix_y[10:0]),
