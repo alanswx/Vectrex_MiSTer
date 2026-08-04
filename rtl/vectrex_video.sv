@@ -35,24 +35,12 @@ module vectrex_video
 
 	input  [11:0] hdmi_height,
 
-	// Presentation controls, from the OSD.
+	// Presentation. A profile resolves the whole effects chain coherently,
+	// which is what the Atari cores do; hand-picking the individual settings
+	// is how BUFFER_MODE ended up on "VBL only", ignoring FRAME_DONE.
+	input   [2:0] profile,
 	input   [1:0] buffer_mode,
-	input   [1:0] tone_mapping,
-	input   [2:0] dot_mode,
-	input   [2:0] osd_bloom_width,
-	input   [2:0] osd_bloom_curve,
-	input         osd_expand_highlights,
-	input   [2:0] osd_halo_filter,
-	input   [2:0] osd_halo_curve,
-	input   [1:0] osd_halo_knee,
-	input   [1:0] osd_halo_spread,
-	input   [1:0] osd_phosphor_mode,
-	input   [1:0] osd_inter_frame_phosphor_mode,
-	input         osd_color_space,
-	input   [2:0] osd_presentation_color,
-	input         osd_slot_mask,
 	input         osd_slot_mask_rows,
-	input         osd_full_bypass,
 
 	// Video out
 	output        clk_video,
@@ -281,7 +269,7 @@ vfb_tone_mapper tone_mapper
 	.reset(reset),
 	.beam_on(beam_on),
 	.raw_intensity(beam_z),
-	.tone_mapping(tone_mapping),
+	.tone_mapping(p_tonemapping),
 	.mapped_intensity(z_q)
 );
 
@@ -307,6 +295,38 @@ always_ff @(posedge clk_sys) begin
 		end
 	end
 end
+
+// ------------------------------------------------------------- profile ---
+wire [2:0] p_dot_mode, p_bloom_width, p_bloom_curve, p_halo_filter, p_halo_curve;
+wire [2:0] p_presentation_color;
+wire [1:0] p_tonemapping, p_halo_spread, p_halo_knee, p_inter_decay, p_intra_decay;
+wire       p_color_space, p_slot_mask, p_full_bypass;
+
+vfb_profile_resolver profile_resolver
+(
+	.profile(profile),
+	.fb_height(fb_height),
+	.off_dot_mode(3'd0),
+	.off_tonemapping(2'd0),
+	.off_inter_frame_decay(2'd0),
+	.off_intra_frame_decay(2'd0),
+	.custom1_settings(30'd0),
+	.custom2_settings(30'd0),
+	.dot_mode(p_dot_mode),
+	.tonemapping(p_tonemapping),
+	.bloom_width(p_bloom_width),
+	.bloom_curve(p_bloom_curve),
+	.halo_filter(p_halo_filter),
+	.halo_curve(p_halo_curve),
+	.halo_spread(p_halo_spread),
+	.halo_knee(p_halo_knee),
+	.inter_frame_decay(p_inter_decay),
+	.intra_frame_decay(p_intra_decay),
+	.color_space(p_color_space),
+	.presentation_color(p_presentation_color),
+	.slot_mask(p_slot_mask),
+	.full_bypass(p_full_bypass)
+);
 
 // --------------------------------------------------------- framebuffer ---
 logic        sdram_dq_oe;
@@ -382,20 +402,20 @@ vfb_top framebuffer
 	.DOT_MODE(dot_mode),
 	.FIFO_FULL_LED(fifo_full_led),
 
-	.osd_bloom_width(osd_bloom_width),
-	.osd_bloom_curve(osd_bloom_curve),
-	.osd_expand_highlights(osd_expand_highlights),
-	.osd_halo_filter(osd_halo_filter),
-	.osd_halo_curve(osd_halo_curve),
-	.osd_halo_knee(osd_halo_knee),
-	.osd_phosphor_mode(osd_phosphor_mode),
-	.osd_inter_frame_phosphor_mode(osd_inter_frame_phosphor_mode),
-	.osd_halo_spread(osd_halo_spread),
-	.osd_color_space(osd_color_space),
-	.osd_presentation_color(osd_presentation_color),
-	.osd_slot_mask(osd_slot_mask),
+	.osd_bloom_width(p_bloom_width),
+	.osd_bloom_curve(p_bloom_curve),
+	.osd_expand_highlights(p_tonemapping == 2'd2),
+	.osd_halo_filter(p_halo_filter),
+	.osd_halo_curve(p_halo_curve),
+	.osd_halo_knee(p_halo_knee),
+	.osd_phosphor_mode(p_intra_decay),
+	.osd_inter_frame_phosphor_mode(p_inter_decay),
+	.osd_halo_spread(p_halo_spread),
+	.osd_color_space(p_color_space),
+	.osd_presentation_color(3'd6),
+	.osd_slot_mask(p_slot_mask),
 	.osd_slot_mask_rows(osd_slot_mask_rows),
-	.osd_full_bypass(osd_full_bypass)
+	.osd_full_bypass(p_full_bypass)
 );
 
 endmodule

@@ -279,23 +279,9 @@ vectrex_video vectrex_video
 
 	.hdmi_height(HDMI_HEIGHT),
 
-	.buffer_mode(2'd1),
-	.tone_mapping(2'd1),
-	.dot_mode(3'd0),
-	.osd_bloom_width(3'd2),
-	.osd_bloom_curve(3'd2),
-	.osd_expand_highlights(1'b0),
-	.osd_halo_filter(3'd2),
-	.osd_halo_curve(3'd2),
-	.osd_halo_knee(2'd1),
-	.osd_halo_spread(2'd1),
-	.osd_phosphor_mode(2'd1),
-	.osd_inter_frame_phosphor_mode(2'd1),
-	.osd_color_space(1'b0),
-	.osd_presentation_color(3'd6),  // CHANNEL_BW
-	.osd_slot_mask(1'b0),
+	.profile(3'd2),          // PROFILE_TYPICAL
+	.buffer_mode(2'd0),      // EOF + VBL: present on the beam's frame
 	.osd_slot_mask_rows(1'b0),
-	.osd_full_bypass(1'b0),
 
 	.clk_video(CLK_VIDEO),
 	.ce_pixel(CE_PIXEL),
