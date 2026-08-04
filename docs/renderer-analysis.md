@@ -118,6 +118,38 @@ move off-chip is capacity, and an analytic rasteriser is worth having for
 quality — stroke width, antialiasing, dwell-correct brightness — rather than
 because vectors are being dropped.
 
+## The picture wobbles because the framebuffer is single buffered
+
+Reported from hardware: the image is "very wobbly". It is not beam instability.
+Across 66 frames of the same static linearity pattern the drawn geometry barely
+moves at all:
+
+    centre row   sd 0.056 px, range 0.15 px
+    centre col   sd 0.027 px, range 0.06 px
+    height       sd 0.084 px
+
+The cause is that there is one framebuffer and both sides use it at once. The
+phase machine at `rtl/vectrex.vhd:520` interleaves scanout reads and persistence
+writes on phases 00 and 10 with beam writes on 01 and 11, into the same four
+banks. Nothing is double buffered.
+
+Meanwhile the two sides run at unrelated rates. The video scanner is
+554 clocks by 722 lines at 24 MHz, which is 60.002 Hz, while the Vectrex
+program redraws at roughly 50 Hz, whatever its own display loop happens to
+take. So the scanner is always showing an image that is partly the current
+redraw and partly the previous one, with the boundary sweeping at the ~10 Hz
+difference. The rate is program dependent, so the artefact drifts rather than
+sitting still, which is what makes it read as wobble rather than as a clean
+rolling bar.
+
+Persistence makes it worse: the decay pass at `:528` subtracts as the scanner
+walks the frame, so brightness is being reduced progressively down the screen
+while the beam is independently redrawing it.
+
+`vfb_top` takes `BUFFER_MODE` and a `FRAME_DONE` marker precisely so that
+scanout reads a completed frame. This is a fourth reason for the port, and the
+only one a user can see without measuring anything.
+
 ## Brightness ignores dwell time
 
 This is the first thing measurement has found actually wrong.
