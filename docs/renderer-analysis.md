@@ -157,9 +157,19 @@ Constraining the destinations instead: +3.978ns, TNS 0.000.
 Not yet measured:
 
 - the Intensity test on page 21, which gives a pass/fail criterion (17 lines,
-  the 2nd to 4th from the top must be extinguished). Brightness is already
-  known to ignore dwell from the RTL, but that test would say whether the Z
-  scaling itself is right. Reaching it means walking the Test Cartridge menu
-  with button 3, which is around 13s of emulated time.
+  the 2nd to 4th from the top must be extinguished). This would say whether the
+  Z *scaling* is right, separately from the dwell problem above, which is
+  already established from the RTL.
+
+  Not reached in simulation, and abandoned there on cost. Driving the Test
+  Cartridge menu means simulated button presses, and the ROM advances several
+  stages per press regardless of how short the press is: a 15ms tap, well
+  inside one poll interval, still lands on the terminal KEYS screen. Each
+  attempt is around three hours of wall clock, so iterating on it is poor value
+  against what it adds.
+
+  It is trivial on real hardware. Load the Test Cartridge on a MiSTer, press
+  button 3 to the Intensity screen, and look at which of the 17 lines are lit.
+  That is the sensible way to close this one.
 - phosphor persistence, currently a blind whole-buffer decrement
   (rtl/vectrex.vhd:528) with no per-pixel timing
