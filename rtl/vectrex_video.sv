@@ -413,11 +413,16 @@ logic        sdram_dq_oe;
 logic [15:0] sdram_dq_out;
 logic  [1:0] sdram_dqm;
 
-assign sdram_clk = ~clk_125;
-assign sdram_dq  = sdram_dq_oe ? sdram_dq_out : 16'hzzzz;
+assign sdram_dq   = sdram_dq_oe ? sdram_dq_out : 16'hzzzz;
+assign sdram_clk  = DIAG_SIMPLE ? 1'b0 : ~clk_125;
 assign sdram_dqml = sdram_dqm[0];
 assign sdram_dqmh = sdram_dqm[1];
 
+// With DIAG_SIMPLE the framebuffer is left out entirely rather than merely
+// having its video ignored. It still drives DDR3 otherwise, and ascal needs
+// DDR3 for the HDMI scaler, so leaving it running would not isolate whether
+// that traffic is what breaks the output stages.
+generate if (!DIAG_SIMPLE) begin : gen_fb
 vfb_top framebuffer
 (
 	.clk_sys(clk_125),
@@ -497,5 +502,32 @@ vfb_top framebuffer
 	.osd_slot_mask_rows(osd_slot_mask_rows),
 	.osd_full_bypass(p_full_bypass)
 );
+end else begin : gen_no_fb
+	assign fb_vga_r = 8'd0;
+	assign fb_vga_g = 8'd0;
+	assign fb_vga_b = 8'd0;
+	assign fb_vga_hs = 1'b0;
+	assign fb_vga_vs = 1'b0;
+	assign fb_vga_hblank = 1'b1;
+	assign fb_vga_vblank = 1'b1;
+	assign ddram_clk = 1'b0;
+	assign ddram_burstcnt = 8'd0;
+	assign ddram_addr = 29'd0;
+	assign ddram_rd = 1'b0;
+	assign ddram_din = 64'd0;
+	assign ddram_be = 8'd0;
+	assign ddram_we = 1'b0;
+	assign sdram_cke = 1'b0;
+	assign sdram_ncs = 1'b1;
+	assign sdram_nras = 1'b1;
+	assign sdram_ncas = 1'b1;
+	assign sdram_nwe = 1'b1;
+	assign sdram_a = 13'd0;
+	assign sdram_ba = 2'd0;
+	assign sdram_dq_oe = 1'b0;
+	assign sdram_dq_out = 16'd0;
+	assign sdram_dqm = 2'b11;
+	assign fifo_full_led = 1'b0;
+end endgenerate
 
 endmodule
