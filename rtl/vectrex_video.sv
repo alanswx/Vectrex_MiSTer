@@ -373,8 +373,8 @@ assign vga_g      = use_diag ? d_g        : fb_vga_g;
 assign vga_b      = use_diag ? d_b        : fb_vga_b;
 assign vga_hs     = use_diag ? d_hblank   : fb_vga_hs;   // as the original
 assign vga_vs     = use_diag ? d_vblank   : fb_vga_vs;
-assign vga_hblank = test_pattern ? d_hblank   : fb_vga_hblank;
-assign vga_vblank = test_pattern ? d_vblank   : fb_vga_vblank;
+assign vga_hblank = use_diag ? d_hblank   : fb_vga_hblank;
+assign vga_vblank = use_diag ? d_vblank   : fb_vga_vblank;
 
 // ------------------------------------------------------------- profile ---
 wire [2:0] p_dot_mode, p_bloom_width, p_bloom_curve, p_halo_filter, p_halo_curve;
