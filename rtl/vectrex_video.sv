@@ -231,8 +231,19 @@ assign raw_vsync  = (v_cnt >= vs_start) && (v_cnt < vs_end);
 assign raw_hblank = (h_cnt >= fb_width);
 assign raw_vblank = (v_cnt >= fb_height);
 
-assign clk_video = clk_125;
-assign ce_pixel  = ce_pix;
+// CLK_VIDEO cannot be muxed in fabric: it feeds hdmi_clk_sw and vga_clk_sw,
+// hardware Clock Select Blocks, which Quartus requires be driven straight from
+// a PLL output or a clock pin. So the diagnostic is a build-time constant,
+// which elaborates away and leaves a direct PLL connection.
+//
+// DIAG_SIMPLE reproduces the original core's video arrangement exactly: 24 MHz
+// with CE_PIXEL tied high, its 554x722 raster, and blanking reused as sync.
+// That combination is known to drive HDMI on this hardware. Set it to 0 for
+// normal operation.
+localparam bit DIAG_SIMPLE = 1'b1;
+
+assign clk_video = DIAG_SIMPLE ? clk_sys : clk_125;
+assign ce_pixel  = DIAG_SIMPLE ? 1'b1    : ce_pix;
 
 // ------------------------------------------------------------ geometry ---
 // Integrator coordinates are signed and centred; shift to unsigned, scale into
@@ -301,6 +312,42 @@ always_ff @(posedge clk_sys) begin
 	end
 end
 
+// ------------------------------------------------- simple diagnostic path ---
+// The test pattern reached VGA but HDMI still would not sync, so the fault is
+// not vfb_top. What is left is the clocking: the original core ran CLK_VIDEO
+// at 24 MHz with CE_PIXEL tied high, and HDMI worked. This reproduces that
+// exactly, on clk_sys, with the original's 554x722 raster and its habit of
+// using blanking as sync, so the only variable left is the clock arrangement.
+logic [10:0] d_h = 11'd0;
+logic [10:0] d_v = 11'd0;
+logic        d_hblank = 1'b1;
+logic        d_vblank = 1'b1;
+
+localparam integer D_W = 540, D_H = 720;
+localparam integer D_HT = D_W + 14;   // 554, as the original
+localparam integer D_VT = D_H + 2;    // 722
+
+always_ff @(posedge clk_sys) begin
+	if (d_h >= 11'(D_HT - 1)) begin
+		d_h <= 11'd0;
+		d_v <= (d_v >= 11'(D_VT - 1)) ? 11'd0 : d_v + 11'd1;
+	end
+	else d_h <= d_h + 11'd1;
+
+	if (d_h == 11'd3)            d_hblank <= 1'b0;
+	if (d_h == 11'(D_W + 3))     d_hblank <= 1'b1;
+	if (d_v == 11'd0)            d_vblank <= 1'b0;
+	if (d_v == 11'(D_H))         d_vblank <= 1'b1;
+end
+
+wire       d_active = !d_hblank && !d_vblank;
+wire [2:0] d_bar = 3'((d_h * 8) / D_W);
+wire       d_border = (d_h == 11'd3) || (d_h == 11'(D_W + 2)) ||
+                      (d_v == 11'd0) || (d_v == 11'(D_H - 1));
+wire [7:0] d_r = !d_active ? 8'd0 : d_border ? 8'hFF : {8{d_bar[2]}};
+wire [7:0] d_g = !d_active ? 8'd0 : d_border ? 8'hFF : {8{d_bar[1]}};
+wire [7:0] d_b = !d_active ? 8'd0 : d_border ? 8'hFF : {8{d_bar[0]}};
+
 // -------------------------------------------------------- test pattern ---
 // Deliberately plain: full-screen colour bars, a one pixel white border and a
 // centre cross. Everything comes from h_cnt/v_cnt, so it exercises the timing
@@ -318,13 +365,14 @@ wire [7:0] tp_r = !active ? 8'd0 : (border | centre_line) ? 8'hFF : {8{bar[2]}};
 wire [7:0] tp_g = !active ? 8'd0 : (border | centre_line) ? 8'hFF : {8{bar[1]}};
 wire [7:0] tp_b = !active ? 8'd0 : (border | centre_line) ? 8'hFF : {8{bar[0]}};
 
-assign vga_r      = test_pattern ? tp_r        : fb_vga_r;
-assign vga_g      = test_pattern ? tp_g        : fb_vga_g;
-assign vga_b      = test_pattern ? tp_b        : fb_vga_b;
-assign vga_hs     = test_pattern ? raw_hsync   : fb_vga_hs;
-assign vga_vs     = test_pattern ? raw_vsync   : fb_vga_vs;
-assign vga_hblank = test_pattern ? raw_hblank  : fb_vga_hblank;
-assign vga_vblank = test_pattern ? raw_vblank  : fb_vga_vblank;
+wire use_diag = DIAG_SIMPLE || test_pattern;
+assign vga_r      = use_diag ? d_r        : fb_vga_r;
+assign vga_g      = use_diag ? d_g        : fb_vga_g;
+assign vga_b      = use_diag ? d_b        : fb_vga_b;
+assign vga_hs     = use_diag ? d_hblank   : fb_vga_hs;   // as the original
+assign vga_vs     = use_diag ? d_vblank   : fb_vga_vs;
+assign vga_hblank = test_pattern ? d_hblank   : fb_vga_hblank;
+assign vga_vblank = test_pattern ? d_vblank   : fb_vga_vblank;
 
 // ------------------------------------------------------------- profile ---
 wire [2:0] p_dot_mode, p_bloom_width, p_bloom_curve, p_halo_filter, p_halo_curve;
