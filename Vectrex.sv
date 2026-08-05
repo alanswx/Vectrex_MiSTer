@@ -190,8 +190,37 @@ wire frame_line;
 // than the raster's 3:4 is a deliberate choice from commit 30aabc1, so the
 // port should not quietly revert it, and the menu's own options still apply.
 wire [1:0] ar = status[17:16];
-assign VIDEO_ARX = (!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1);
-assign VIDEO_ARY = (!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0;
+
+generate if (LEGACY_VIDEO) begin : gen_legacy_video
+	assign CLK_VIDEO = clk_sys;
+	assign CE_PIXEL  = 1;
+	assign VGA_HS    = hblank;
+	assign VGA_VS    = vblank;
+	assign VGA_R     = status[9] & frame_line ? 8'h40 : r;
+	assign VGA_G     = status[9] & frame_line ? 8'h00 : g;
+	assign VGA_B     = status[9] & frame_line ? 8'h00 : b;
+
+	video_freak video_freak
+	(
+		.CLK_VIDEO(CLK_VIDEO),
+		.CE_PIXEL(CE_PIXEL),
+		.VGA_VS(VGA_VS),
+		.HDMI_WIDTH(HDMI_WIDTH),
+		.HDMI_HEIGHT(HDMI_HEIGHT),
+		.VGA_DE(),
+		.VIDEO_ARX(VIDEO_ARX),
+		.VIDEO_ARY(VIDEO_ARY),
+		.VGA_DE_IN(VGA_DE),
+		.ARX((!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1)),
+		.ARY((!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0),
+		.CROP_SIZE(0),
+		.CROP_OFF(0),
+		.SCALE(status[19:18])
+	);
+end else begin : gen_new_video
+	assign VIDEO_ARX = (!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1);
+	assign VIDEO_ARY = (!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0;
+end endgenerate
 
 // Beam taps from the core, feeding the new renderer.
 wire signed [19:0] dbg_beam_x, dbg_beam_y;
