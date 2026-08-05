@@ -172,7 +172,13 @@ wire hblank, vblank;
 assign VGA_SL = 0;
 assign VGA_F1 = 0;
 
-assign VGA_DE = ~(vfb_hblank | vfb_vblank);
+// LEGACY_VIDEO restores the original core's entire video path: its internal
+// framebuffer, video_freak, and CLK_VIDEO straight off clk_sys. That
+// combination is known to drive HDMI on real hardware, so it is the baseline
+// to build the new renderer back onto rather than debugging blind.
+localparam bit LEGACY_VIDEO = 1'b1;
+
+assign VGA_DE = LEGACY_VIDEO ? ~(hblank | vblank) : ~(vfb_hblank | vfb_vblank);
 
 wire [4:0]  pers[4]   = '{8,4,2,1};
 wire [9:0]  width[2]  = '{540, 332};
@@ -205,7 +211,7 @@ always @(posedge clk_sys) begin
 	if(rom_download && ioctl_wr && (ioctl_addr[14:0] & ~addr_mask)) addr_mask <= ((addr_mask<<1)|15'd1);
 end
 
-vectrex #(.INTERNAL_FB(0)) vectrex
+vectrex #(.INTERNAL_FB(LEGACY_VIDEO ? 1 : 0)) vectrex
 (
 	.reset(reset),
 	.clock(clk_sys),
@@ -292,13 +298,13 @@ vectrex_video vectrex_video
 	.buffer_mode(2'd1),      // VBL only
 	.osd_slot_mask_rows(1'b0),
 
-	.clk_video(CLK_VIDEO),
-	.ce_pixel(CE_PIXEL),
-	.vga_r(VGA_R),
-	.vga_g(VGA_G),
-	.vga_b(VGA_B),
-	.vga_hs(VGA_HS),
-	.vga_vs(VGA_VS),
+	.clk_video(),
+	.ce_pixel(),
+	.vga_r(),
+	.vga_g(),
+	.vga_b(),
+	.vga_hs(),
+	.vga_vs(),
 	.vga_hblank(vfb_hblank),
 	.vga_vblank(vfb_vblank),
 	.video_arx(),
