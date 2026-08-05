@@ -341,7 +341,8 @@ always_ff @(posedge clk_sys) begin
 end
 
 wire       d_active = !d_hblank && !d_vblank;
-wire [2:0] d_bar = 3'((d_h * 8) / D_W);
+wire [13:0] d_h_x8 = {3'b000, d_h} << 3;   // widen before scaling
+wire [2:0]  d_bar  = 3'(d_h_x8 / D_W);
 wire       d_border = (d_h == 11'd3) || (d_h == 11'(D_W + 2)) ||
                       (d_v == 11'd0) || (d_v == 11'(D_H - 1));
 wire [7:0] d_r = !d_active ? 8'd0 : d_border ? 8'hFF : {8{d_bar[2]}};
@@ -355,7 +356,8 @@ wire [7:0] d_b = !d_active ? 8'd0 : d_border ? 8'hFF : {8{d_bar[0]}};
 wire [7:0] fb_vga_r, fb_vga_g, fb_vga_b;
 wire       fb_vga_hs, fb_vga_vs, fb_vga_hblank, fb_vga_vblank;
 
-wire [2:0] bar = (fb_width == 12'd0) ? 3'd0 : 3'((h_cnt * 8) / fb_width);
+wire [13:0] h_cnt_x8 = {3'b000, h_cnt} << 3;
+wire [2:0]  bar = (fb_width == 12'd0) ? 3'd0 : 3'(h_cnt_x8 / fb_width);
 wire       border = (h_cnt == 11'd0) || (h_cnt == 11'(fb_width  - 12'd1)) ||
                     (v_cnt == 11'd0) || (v_cnt == 11'(fb_height - 12'd1));
 wire       centre_line  = (h_cnt == 11'(fb_width >> 1)) || (v_cnt == 11'(fb_height >> 1));
