@@ -45,6 +45,7 @@ module vectrex_video
 	// bypassing vfb_top entirely. If HDMI syncs here but not otherwise, the
 	// fault is in the framebuffer's output or its configuration; if it fails
 	// here too, the fault is in this module's timing.
+	input         v_orient,       // 1 = rotate 90deg for a vertically mounted display
 	input         test_pattern,
 	input         osd_slot_mask_rows,
 
@@ -115,14 +116,14 @@ wire reset_125 = reset_pipe_125[1];
 // timing generator in reset across the change.
 localparam integer MODE_SETTLE = 125000;   // 1ms at 125 MHz
 
-logic [11:0] height_meta = 12'd720;
-logic [11:0] height_seen = 12'd720;
-logic [11:0] height_q    = 12'd720;
+logic [12:0] height_meta = 13'd720;
+logic [12:0] height_seen = 13'd720;
+logic [12:0] height_q    = 13'd720;
 logic [17:0] settle_cnt  = 18'd0;
 logic        mode_ready  = 1'b0;
 
 always_ff @(posedge clk_125) begin
-	height_meta <= hdmi_height;
+	height_meta <= {v_orient, hdmi_height};
 	height_seen <= height_meta;
 
 	if (reset_125) begin
@@ -160,21 +161,21 @@ logic [31:0] scale_x, scale_y;
 logic  [2:0] pix_div;
 
 always_comb begin
-	if (height_q >= 12'd1080) begin
+	if (height_q[11:0] >= 12'd1080) begin
 		fb_width  = 12'd810;  fb_height = 12'd1080;
 		h_total   = 12'd927;  v_total   = 12'd1124;
 		hs_start  = 12'd845;  hs_end    = 12'd889;
 		vs_start  = 12'd1088; vs_end    = 12'd1093;
 		pix_div   = 3'd1;                            // 62.50 MHz
 	end
-	else if (height_q >= 12'd720) begin
+	else if (height_q[11:0] >= 12'd720) begin
 		fb_width  = 12'd540;  fb_height = 12'd720;
 		h_total   = 12'd696;  v_total   = 12'd748;
 		hs_start  = 12'd578;  hs_end    = 12'd622;
 		vs_start  = 12'd728;  vs_end    = 12'd733;
 		pix_div   = 3'd2;                            // 31.25 MHz
 	end
-	else if (height_q >= 12'd480) begin
+	else if (height_q[11:0] >= 12'd480) begin
 		fb_width  = 12'd360;  fb_height = 12'd480;
 		h_total   = 12'd497;  v_total   = 12'd524;
 		hs_start  = 12'd400;  hs_end    = 12'd448;
@@ -189,8 +190,45 @@ always_comb begin
 		pix_div   = 3'd4;                            //  7.81 MHz
 	end
 
-	scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_Y);
-	scale_y = (32'(fb_height) << SHIFT) / (2 * MAX_X);
+	// Vertical orientation rotates the content 90 degrees, which needs a
+	// landscape raster. Totals are chosen to keep each mode's pixel rate at
+	// its portrait refresh (h_total * v_total within 0.2% of the portrait
+	// product), with sync pulses the same width, placed inside the blank.
+	if (height_q[12]) begin
+		if (height_q[11:0] >= 12'd1080) begin
+			fb_width  = 12'd1080; fb_height = 12'd810;
+			h_total   = 12'd1197; v_total   = 12'd871;
+			hs_start  = 12'd1110; hs_end    = 12'd1154;
+			vs_start  = 12'd818;  vs_end    = 12'd823;
+		end
+		else if (height_q[11:0] >= 12'd720) begin
+			fb_width  = 12'd720;  fb_height = 12'd540;
+			h_total   = 12'd876;  v_total   = 12'd594;
+			hs_start  = 12'd758;  hs_end    = 12'd802;
+			vs_start  = 12'd548;  vs_end    = 12'd553;
+		end
+		else if (height_q[11:0] >= 12'd480) begin
+			fb_width  = 12'd480;  fb_height = 12'd360;
+			h_total   = 12'd617;  v_total   = 12'd422;
+			hs_start  = 12'd517;  hs_end    = 12'd565;
+			vs_start  = 12'd370;  vs_end    = 12'd372;
+		end
+		else begin
+			fb_width  = 12'd240;  fb_height = 12'd180;
+			h_total   = 12'd558;  v_total   = 12'd233;
+			hs_start  = 12'd440;  hs_end    = 12'd488;
+			vs_start  = 12'd185;  vs_end    = 12'd188;
+		end
+	end
+
+	if (height_q[12]) begin
+		scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_X);
+		scale_y = (32'(fb_height) << SHIFT) / (2 * MAX_Y);
+	end
+	else begin
+		scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_Y);
+		scale_y = (32'(fb_height) << SHIFT) / (2 * MAX_X);
+	end
 end
 
 assign video_arx = 13'h1000 | 13'(fb_width);
@@ -259,9 +297,11 @@ logic               zero_q;
 logic         [2:0] tick_pipe;
 
 always_ff @(posedge clk_sys) begin
-	// stage 1: centre
-	off_y <= 21'(beam_y) + 21'(MAX_Y);   // horizontal
-	off_x <= 21'(beam_x) + 21'(MAX_X);   // vertical
+	// stage 1: centre. Rotated, the columns come from the X integrator and
+	// the rows from the mirrored Y integrator, the same swap vectrex.vhd's
+	// lim_x/lim_y make for its internal framebuffer.
+	off_y <= height_q[12] ? (21'(beam_x) + 21'(MAX_X)) : (21'(beam_y) + 21'(MAX_Y));   // horizontal
+	off_x <= height_q[12] ? (21'(MAX_Y) - 21'(beam_y)) : (21'(beam_x) + 21'(MAX_X));   // vertical
 
 	// stage 2: scale
 	mul_x <= $unsigned(off_y[20] ? 21'd0 : off_y) * scale_x;

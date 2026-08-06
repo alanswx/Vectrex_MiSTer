@@ -352,6 +352,7 @@ vectrex_video vectrex_video
 
 	.hdmi_height(HDMI_HEIGHT),
 
+	.v_orient(status[20]),
 	.test_pattern(status[13]),
 	.profile(vfb_profile),
 	// Mode 0 swaps on FRAME_DONE + VBL. The marker is now derived from
