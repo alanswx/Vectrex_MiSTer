@@ -176,7 +176,7 @@ assign VGA_F1 = 0;
 // framebuffer, video_freak, and CLK_VIDEO straight off clk_sys. That
 // combination is known to drive HDMI on real hardware, so it is the baseline
 // to build the new renderer back onto rather than debugging blind.
-localparam bit LEGACY_VIDEO = 1'b1;
+localparam bit LEGACY_VIDEO = 1'b0;
 
 assign VGA_DE = LEGACY_VIDEO ? ~(hblank | vblank) : ~(vfb_hblank | vfb_vblank);
 
@@ -190,6 +190,10 @@ wire frame_line;
 // than the raster's 3:4 is a deliberate choice from commit 30aabc1, so the
 // port should not quietly revert it, and the menu's own options still apply.
 wire [1:0] ar = status[17:16];
+
+wire        vfb_clk_video, vfb_ce_pixel;
+wire  [7:0] vfb_r, vfb_g, vfb_b;
+wire        vfb_hs, vfb_vs;
 
 generate if (LEGACY_VIDEO) begin : gen_legacy_video
 	assign CLK_VIDEO = clk_sys;
@@ -220,6 +224,13 @@ generate if (LEGACY_VIDEO) begin : gen_legacy_video
 end else begin : gen_new_video
 	assign VIDEO_ARX = (!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1);
 	assign VIDEO_ARY = (!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0;
+	assign CLK_VIDEO = vfb_clk_video;
+	assign CE_PIXEL  = vfb_ce_pixel;
+	assign VGA_R     = vfb_r;
+	assign VGA_G     = vfb_g;
+	assign VGA_B     = vfb_b;
+	assign VGA_HS    = vfb_hs;
+	assign VGA_VS    = vfb_vs;
 end endgenerate
 
 // Beam taps from the core, feeding the new renderer.
@@ -327,13 +338,13 @@ vectrex_video vectrex_video
 	.buffer_mode(2'd1),      // VBL only
 	.osd_slot_mask_rows(1'b0),
 
-	.clk_video(),
-	.ce_pixel(),
-	.vga_r(),
-	.vga_g(),
-	.vga_b(),
-	.vga_hs(),
-	.vga_vs(),
+	.clk_video(vfb_clk_video),
+	.ce_pixel(vfb_ce_pixel),
+	.vga_r(vfb_r),
+	.vga_g(vfb_g),
+	.vga_b(vfb_b),
+	.vga_hs(vfb_hs),
+	.vga_vs(vfb_vs),
 	.vga_hblank(vfb_hblank),
 	.vga_vblank(vfb_vblank),
 	.video_arx(),

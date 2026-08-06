@@ -240,7 +240,7 @@ assign raw_vblank = (v_cnt >= fb_height);
 // with CE_PIXEL tied high, its 554x722 raster, and blanking reused as sync.
 // That combination is known to drive HDMI on this hardware. Set it to 0 for
 // normal operation.
-localparam bit DIAG_SIMPLE = 1'b1;
+localparam bit DIAG_SIMPLE = 1'b0;
 
 assign clk_video = DIAG_SIMPLE ? clk_sys : clk_125;
 assign ce_pixel  = DIAG_SIMPLE ? 1'b1    : ce_pix;
