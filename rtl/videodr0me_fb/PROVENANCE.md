@@ -23,3 +23,18 @@ wiring around them (`Vectrex.sv`, the geometry and beam mapping) rather than
 here, so that picking up his later releases stays a copy rather than a merge.
 
 If a change to these files turns out to be unavoidable, note it here.
+
+## Local changes
+
+- `vfb_overlay.sv`: `valid_dimensions` and `expected_pixels` whitelist the
+  artwork plane sizes, and shipped with the Asteroids cabinet's rasters
+  hardcoded (1360x1080, 916x720, 640x480, 640x240). Replaced with the
+  Vectrex renderer's rasters in both orientations (810x1080, 540x720,
+  360x480, 180x240 and their rotations). Found by simulating the upload:
+  a valid container validated fully but package_valid never rose because
+  every plane failed the dimension whitelist (2026-08-06).
+- `vfb_overlay.sv`: upload writes are dropped once past `VFB_ARTWORK_LAST`.
+  The Asteroids flow only ever streams an MRA part that fits the window;
+  this core's F2 slot streams whatever file the user picked, and an
+  oversized file must fail validation rather than write past the window
+  over the rest of the DDR map.

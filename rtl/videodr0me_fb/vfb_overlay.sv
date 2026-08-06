@@ -106,11 +106,18 @@ module vfb_overlay #(
 		input logic [11:0] height
 	);
 		begin
+			// Local change (see PROVENANCE.md): the plane whitelist is the
+			// Vectrex renderer's rasters, portrait and rotated, instead of
+			// the Asteroids cabinet set this file shipped with.
 			valid_dimensions =
-				((width == 12'd1360) && (height == 12'd1080)) ||
-				((width == 12'd916)  && (height == 12'd720))  ||
-				((width == 12'd640)  && (height == 12'd480))  ||
-				((width == 12'd640)  && (height == 12'd240));
+				((width == 12'd810)  && (height == 12'd1080)) ||
+				((width == 12'd540)  && (height == 12'd720))  ||
+				((width == 12'd360)  && (height == 12'd480))  ||
+				((width == 12'd180)  && (height == 12'd240))  ||
+				((width == 12'd1080) && (height == 12'd810))  ||
+				((width == 12'd720)  && (height == 12'd540))  ||
+				((width == 12'd480)  && (height == 12'd360))  ||
+				((width == 12'd240)  && (height == 12'd180));
 		end
 	endfunction
 
@@ -120,10 +127,15 @@ module vfb_overlay #(
 	);
 		begin
 			case ({width, height})
-				{12'd1360, 12'd1080}: expected_pixels = 32'd1468800;
-				{12'd916,  12'd720}:  expected_pixels = 32'd659520;
-				{12'd640,  12'd480}:  expected_pixels = 32'd307200;
-				{12'd640,  12'd240}:  expected_pixels = 32'd153600;
+				// Local change (see PROVENANCE.md): Vectrex rasters.
+				{12'd810,  12'd1080}: expected_pixels = 32'd874800;
+				{12'd540,  12'd720}:  expected_pixels = 32'd388800;
+				{12'd360,  12'd480}:  expected_pixels = 32'd172800;
+				{12'd180,  12'd240}:  expected_pixels = 32'd43200;
+				{12'd1080, 12'd810}:  expected_pixels = 32'd874800;
+				{12'd720,  12'd540}:  expected_pixels = 32'd388800;
+				{12'd480,  12'd360}:  expected_pixels = 32'd172800;
+				{12'd240,  12'd180}:  expected_pixels = 32'd43200;
 				default:               expected_pixels = 32'd0;
 			endcase
 		end
@@ -494,7 +506,12 @@ module vfb_overlay #(
 					next_pack_data[upload_event_addr[2:0] * 8 +: 8] = upload_event_data;
 					next_pack_be[upload_event_addr[2:0]] = 1'b1;
 					if (upload_event_addr[2:0] == 3'd7) begin
-						upload_qword_pending <= 1'b1;
+						// Local change (see PROVENANCE.md): drop writes past
+						// the artwork window. The F2 path streams whatever
+						// file the user picked, and an oversized one must
+						// fail validation, not scribble over the DDR map.
+						upload_qword_pending <= (ARTWORK_BASE +
+						    {5'd0, upload_event_addr[26:3]}) <= ARTWORK_LAST;
 						upload_qword_addr <= ARTWORK_BASE +
 						                     {5'd0, upload_event_addr[26:3]};
 						upload_qword_data <= next_pack_data;
@@ -601,8 +618,12 @@ module vfb_overlay #(
 
 				if (upload_event_end && upload_in_progress) begin
 					upload_finalize <= 1'b1;
-					upload_final_write <= (upload_pack_be != 8'd0);
-					if (upload_pack_be != 8'd0) begin
+					upload_final_write <= (upload_pack_be != 8'd0) &&
+					    ((ARTWORK_BASE + {5'd0, upload_expected_addr[26:3]})
+					     <= ARTWORK_LAST);
+					if ((upload_pack_be != 8'd0) &&
+					    ((ARTWORK_BASE + {5'd0, upload_expected_addr[26:3]})
+					     <= ARTWORK_LAST)) begin
 						upload_qword_pending <= 1'b1;
 						upload_qword_addr <= ARTWORK_BASE +
 						                     {5'd0, upload_expected_addr[26:3]};
