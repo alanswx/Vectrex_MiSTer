@@ -119,6 +119,7 @@
 
 library ieee;
 use ieee.std_logic_1164.ALL;
+use work.vectrex_analog_pkg.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
@@ -241,9 +242,11 @@ type delay_buffer_t is array(0 to 255) of std_logic_vector(17 downto 0);
 signal delay_buffer    : delay_buffer_t;
 
 signal via_ca2_o_d     : std_logic;
-signal via_cb2_o_d     : std_logic;
 signal via_pa_o_d      : std_logic_vector(7 downto 0);
-signal via_pb_o_d      : std_logic_vector(7 downto 0);
+signal sh_dac_d        : std_logic;
+signal dac_mux_d       : std_logic_vector(1 downto 0);
+signal ramp_d          : std_logic;
+signal blank_d         : std_logic;
 
 signal sh_dac          : std_logic;
 signal dac_mux         : std_logic_vector(2 downto 1);
@@ -411,10 +414,9 @@ begin
 -- beam control
 
 
--- integrator related signals have to be delayed with respect to blank signal
--- tuned value : ~94 @ clock_12
--- (port A, port B, CA2 and CB2 are declared to be delayed. Unsued delayed signals/buffers
--- will be removed automaticaly by compiler so no ressources will be wasted)
+-- Each analog path gets its own delay tap; the constants and their
+-- rationale live in vectrex_analog_pkg. The buffer still shifts the whole
+-- VIA output group, and unused taps cost nothing after synthesis.
 
 process (clock)
 begin
@@ -425,10 +427,12 @@ begin
 				delay_buffer(i) <= delay_buffer(i-1) ;
 			end loop;
 
-			via_pa_o_d  <= delay_buffer(94)( 7 downto 0);
-			via_pb_o_d  <= delay_buffer(94)(15 downto 8);
-			via_ca2_o_d <= delay_buffer(94)(16);
-			--via_cb2_o_d <= delay_buffer(94)(17);
+			via_pa_o_d  <= delay_buffer(C_DELAY_DAC)( 7 downto 0);
+			sh_dac_d    <= delay_buffer(C_DELAY_SH)(8);
+			dac_mux_d   <= delay_buffer(C_DELAY_MUX)(10 downto 9);
+			ramp_d      <= delay_buffer(C_DELAY_RAMP)(15);
+			via_ca2_o_d <= delay_buffer(C_DELAY_ZERO)(16);
+			blank_d     <= delay_buffer(C_DELAY_BLANK)(17);
 		end if;
 	end if;
 end process;
@@ -441,11 +445,12 @@ dbg_z       <= dac_z;
 dbg_ce      <= clken_12;
 dbg_zero_n  <= zero_integrator_n;
 
-sh_dac            <= via_pb_o_d(0);
-dac_mux           <= via_pb_o_d(2 downto 1);
+sh_dac            <= sh_dac_d;
+dac_mux           <= dac_mux_d;
 zero_integrator_n <= via_ca2_o_d;
-ramp_integrator_n <= via_pb_o_d(7);
-beam_blank_n      <= via_cb2_o;      -- blank is not delayed
+ramp_integrator_n <= ramp_d;
+-- A blank tap of 0 means the live CB2, exactly the original arrangement.
+beam_blank_n      <= via_cb2_o when C_DELAY_BLANK = 0 else blank_d;
 
 dac <= signed(via_pa_o_d(7)&via_pa_o_d); -- must ensure sign extension for 0x80 value to be used in integrator equation
 

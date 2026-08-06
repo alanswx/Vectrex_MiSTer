@@ -78,6 +78,7 @@ ghdl -a $FLAGS \
 	"$ROOT/rtl/cpu09l_128a.vhd" \
 	"$ROOT/sim/mc6809_sim.vhd" \
 	"$ROOT/sim/ym2149_sim.vhd" \
+	"$ROOT/rtl/vectrex_analog_pkg.vhd" \
 	"$ROOT/rtl/vectrex.vhd" \
 	"$ROOT/sim/tb_vectrex.vhd" 2>&1 | grep -v "shared variable" || true
 

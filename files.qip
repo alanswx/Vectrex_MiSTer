@@ -10,6 +10,7 @@ set_global_assignment -name VHDL_FILE rtl/m6522a.vhd
 set_global_assignment -name VHDL_FILE rtl/cpu09l_128a.vhd
 set_global_assignment -name VERILOG_FILE rtl/mc6809is.v
 set_global_assignment -name VERILOG_FILE rtl/mc6809.v
+set_global_assignment -name VHDL_FILE rtl/vectrex_analog_pkg.vhd
 set_global_assignment -name VHDL_FILE rtl/vectrex.vhd
 set_global_assignment -name VERILOG_FILE rtl/pll_vfb/pll_vfb_core.v
 set_global_assignment -name VERILOG_FILE rtl/pll_vfb/pll_vfb.v
