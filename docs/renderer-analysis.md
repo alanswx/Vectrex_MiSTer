@@ -212,6 +212,21 @@ cutoff is not simply absent, it is set far too low.
 This is what `vfb_tone_mapper.sv` addresses in Videodr0me's cores, and it is a
 better argument for the renderer work than anything about dropped vectors.
 
+## HDMI is broken on this branch, and not by the video path
+
+Every build from this branch shows "input not supported" on HDMI, while
+unmodified master works. The video path has been ruled out: restoring the
+original arrangement wholesale, the core's own framebuffer, video_freak,
+CLK_VIDEO off clk_sys at 24 MHz and syncs straight from vectrex.vhd, renders a
+correct picture matching master's output levels and still fails HDMI.
+
+Major Havoc, built from refs/ on the same Quartus and device, works. So it is
+neither the machine nor videodr0me_fb.
+
+What remains untested is the non-video changes: the qsf fitter settings, the
+SDC clock groups, pll_vfb existing, the FB_* tie-offs, and vectrex.vhd's
+register initialisers. See docs/HANDOFF.md.
+
 ## Port status
 
 videodr0me_fb is instantiated and renders on hardware. The Test Cartridge's
