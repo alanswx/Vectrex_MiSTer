@@ -1,69 +1,42 @@
 # Handoff: vector renderer rebuild
 
-Branch `vector-renderer-rebuild`, 53 commits, pushed to origin. Everything
-below is committed; the working tree is clean apart from Quartus rewriting
-`Vectrex.qsf` on every build, which should be reverted rather than committed.
+Branch `vector-renderer-rebuild`, pushed to origin. The working tree is clean
+apart from Quartus rewriting `Vectrex.qsf` on every build, which should be
+reverted rather than committed (`git checkout -- Vectrex.qsf`).
 
-**The one blocking problem: HDMI shows "input not supported" on every build
-from this branch. It works on unmodified `master`.** Everything else works.
+**HDMI is fixed (2026-08-06).** The new renderer drives HDMI at
+540x720 44.86KHz into the 720p scaler, verified on hardware by capture card:
+BIOS boot screen and Minestorm gameplay. `LEGACY_VIDEO = 0` and
+`DIAG_SIMPLE = 0` are the shipping configuration. Timing met at +0.104 ns.
 
 ---
 
-## Start here: the HDMI bisect
+## How HDMI was fixed
 
-This is the only thing standing between the branch and something usable, and
-it has been narrowed a long way. Do not start over.
+It was two independent faults stacked, which is why the bisect kept pointing
+away from the video path:
 
-### What is known
+1. **The `Vectrex.qsf` fitter settings** (suspect #1 in the old bisect list).
+   `SEED 2`, `PHYSICAL_SYNTHESIS_EFFORT EXTRA` and
+   `REMOVE_REDUNDANT_LOGIC_CELLS ON` broke HDMI sync even with
+   `LEGACY_VIDEO = 1` restoring the original video path wholesale. Reverting
+   `Vectrex.qsf` to `master`'s settings restored sync, proven by capture.
+   The `d[n] -> hdmi_out_d[n]` path in `sys_top` is placement-sensitive.
+   Beware: this also means an unlucky future seed could regress HDMI; if it
+   ever fails again after an innocent change, suspect placement first.
 
-| build | HDMI | VGA |
-|---|---|---|
-| `master`, the released core | works | out of sync |
-| Major Havoc, built from `refs/`, same Quartus and device | works | not checked |
-| this branch, new renderer | fails | works |
-| this branch, `DIAG_SIMPLE`, colour bars, no framebuffer at all | fails | shows bars |
-| this branch, `LEGACY_VIDEO`, original video path restored wholesale | fails | not checked |
+2. **The `gen_new_video` generate branch had no video wiring.** When the
+   legacy path was restored behind `LEGACY_VIDEO`, the else-branch kept only
+   the aspect-ratio assigns; `CLK_VIDEO`, `CE_PIXEL`, `VGA_R/G/B`, `VGA_HS/VS`
+   were all left unconnected on the `vectrex_video` instance. The framework's
+   info overlay showed the tell exactly: core video `0x0 0.00KHz 0.0Hz`
+   against a live `1280x720 74.25MHz 60.0Hz` output — HDMI synced, OSD
+   worked, screen black. Fixed by routing the outputs through `vfb_*` wires
+   as they were before the restructure (commit c6e943e).
 
-The last row is the important one. With `LEGACY_VIDEO = 1` in `Vectrex.sv`,
-the core's own framebuffer is back, `video_freak` is back, `CLK_VIDEO` comes
-off `clk_sys` at 24 MHz, and the syncs come straight from `vectrex.vhd` — the
-exact arrangement `master` uses. The picture renders correctly and matches
-`master`'s output levels. **HDMI still fails.**
-
-So the video path is not the cause. Something else on this branch is.
-
-### What is left to test
-
-Non-video changes, in the order worth trying. Each is one build with
-`LEGACY_VIDEO = 1` still set, reverting one thing:
-
-1. **`Vectrex.qsf` fitter settings.** `SEED` went 1 to 2, and
-   `PHYSICAL_SYNTHESIS_EFFORT EXTRA` and `REMOVE_REDUNDANT_LOGIC_CELLS ON`
-   were added to match Major Havoc. These change placement globally. The
-   HDMI output path (`d[n] -> hdmi_out_d[n]` inside `sys_top`) was failing
-   timing by 8.5ns at one point purely from congestion, so placement
-   demonstrably matters here. Revert to `master`'s settings first.
-
-2. **`Vectrex.sdc` clock groups.** A `set_clock_groups -asynchronous`
-   covering core, framebuffer, HPS, audio, HDMI and board clocks was added.
-   Declaring the HDMI PLL asynchronous to everything tells the fitter it need
-   not time those crossings, which could let it place HDMI logic badly.
-   Revert to `master`'s SDC and see.
-
-3. **`pll_vfb` existing at all.** A second PLL is instantiated even when
-   unused. Under `DIAG_SIMPLE` it gets pruned, and HDMI still failed, so this
-   is unlikely — but it has not been tested with `LEGACY_VIDEO`.
-
-4. **`FB_*` tie-offs.** `master` leaves `FB_EN` and friends floating; this
-   branch drives them to zero. Should be harmless or better, but untested.
-
-5. **`rtl/vectrex.vhd` register initialisers and the `INTERNAL_FB` generic.**
-   Synthesis-neutral in principle, and the initialisers are needed for
-   simulation.
-
-If reverting all five with `LEGACY_VIDEO = 1` still fails, the fault is
-something not yet on this list, and the next move is a mechanical bisect:
-`git checkout master`, confirm HDMI, then re-apply commits in order.
+Suspects 2-5 from the old list (`Vectrex.sdc` clock groups, `pll_vfb`
+existing, `FB_*` tie-offs, `vectrex.vhd` initialisers) were never individually
+tested and are all still in place — they are innocent.
 
 ### Traps that cost real time
 
@@ -89,6 +62,46 @@ something not yet on this list, and the next move is a mechanical bisect:
 
 The MiSTer at `192.168.1.75` takes ssh with the existing key, and mrext's
 Remote service is on port 8182.
+
+### HDMI capture card (closes the loop that screenshots cannot)
+
+The MiSTer's HDMI passes through a MiraBox capture box (MS2109,
+`534d:2109`) on its way to the monitor, and the box's USB goes to this
+machine: video at the `/dev/video*` node whose udev `ID_MODEL` is
+`MiraBox_Capture` (currently `/dev/video4`; `/dev/video0/2` are a webcam),
+audio at the ALSA card named `MS2109`. This sees the real HDMI output —
+scaler, OSD, info overlay and all — so it can distinguish "syncs" from
+"input not supported" without a human at the monitor.
+
+```bash
+# one frame (~1s); a no-signal chip yields a pure black frame, mean -91 dB audio
+ffmpeg -f v4l2 -input_format mjpeg -video_size 1280x720 -i /dev/video4 \
+  -frames:v 2 -update 1 -y shot.png
+
+# capture N seconds after a core load: frames:v 30 per second
+# per-frame brightness, to tell a black screen from a dead one
+ffmpeg -f v4l2 -input_format mjpeg -video_size 1280x720 -i /dev/video4 \
+  -frames:v 90 -vf "signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=-" \
+  -f null - 2>/dev/null | grep YAVG
+```
+
+Traps, each of which cost time on 2026-08-06:
+
+- **Zoom (or any app) holding the device wedges it silently**: opens
+  succeed, frames arrive, but they are the no-signal black frame even with
+  a live input. Quit the app, then `USBDEVFS_RESET` ioctl on
+  `/dev/bus/usb/<bus>/<dev>` (python, no sudo needed) and recapture.
+- The chip latches no-signal at power-up; after changing the input, reset it.
+- The Altera USB Blaster's cable is easy to mistake for the capture box's;
+  a replug that does not change the MiraBox's `lsusb` device number
+  replugged something else.
+- `load_core` via ssh: `echo load_core /path/to.rbf > /dev/MiSTer_cmd`.
+  The framework's info overlay in the top-left of a capture reads
+  `<core video>` over `<output>` — core-side `0x0 0.00KHz 0.0Hz` with a
+  live output line means the core's video outputs are not driving the
+  framework.
+
+### Build and deploy
 
 ```bash
 # build
@@ -125,8 +138,9 @@ running core immediately.
 ### Renderer
 
 `videodr0me_fb` is vendored from Major Havoc and renders correctly on
-hardware. Set `LEGACY_VIDEO = 0` in `Vectrex.sv` and `DIAG_SIMPLE = 0` in
-`rtl/vectrex_video.sv` to get it back.
+hardware, now over HDMI as well. `LEGACY_VIDEO = 0` in `Vectrex.sv` and
+`DIAG_SIMPLE = 0` in `rtl/vectrex_video.sv` is the shipping configuration;
+setting them to 1 restores the original video path for diagnosis.
 
 - geometry matches the old core **99.9% / 100.0%**
 - block memory drops **3.87 Mbit to 2.26**, RAM blocks **491 to 304**, which
@@ -184,22 +198,21 @@ the premises this work started from were mostly wrong:
 
 ## Known broken or unfinished
 
-1. **HDMI.** Above.
-2. **Frame marker.** `vectrex_video`'s long-blank heuristic does not find real
+1. **Frame marker.** `vectrex_video`'s long-blank heuristic does not find real
    frame boundaries. Proven: `BUFFER_MODE = 0` honours `FRAME_DONE` and gives
    a mostly black screen; mode 1 ignores it and renders. Currently on mode 1,
    which is why the picture tears. The fix is to derive the marker from the
    BIOS's `Wait_Recal`, which pulls CA2 low to zero the integrators once per
    display pass. `zero_integrator_n` needs adding to the `dbg_*` taps.
-3. **Orientation option does nothing** under the new renderer. It reaches
+2. **Orientation option does nothing** under the new renderer. It reaches
    `vectrex.vhd`, which swaps `lim_x`/`lim_y`, but the taps read the
    integrators upstream of that swap. Rotation has to move into
    `vectrex_video`.
-4. **Scale option** was lost with `video_freak` and is restored only under
+3. **Scale option** was lost with `video_freak` and is restored only under
    `LEGACY_VIDEO`.
-5. **OSD controls** for halo, bloom and phosphor are hardcoded to
+4. **OSD controls** for halo, bloom and phosphor are hardcoded to
    `PROFILE_TYPICAL`. They should be menu entries.
-6. **Second Intensity line** still renders at peak 40 when it should be
+5. **Second Intensity line** still renders at peak 40 when it should be
    extinguished. A different `tone_mapping` value may fix it.
 
 ---
