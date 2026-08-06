@@ -1492,28 +1492,38 @@ module vfb_overlay #(
 	logic [14:0] artwork_r_sum_s6 = 15'd0;
 	logic [14:0] artwork_g_sum_s6 = 15'd0;
 	logic [14:0] artwork_b_sum_s6 = 15'd0;
-	logic [15:0] screen_r_product_s7 = 16'd0;
-	logic [15:0] screen_g_product_s7 = 16'd0;
-	logic [15:0] screen_b_product_s7 = 16'd0;
+	// Local change (see PROVENANCE.md): transmissive compositing state.
+	logic [7:0]  alpha_s4 = 8'd0;
+	logic [7:0]  alpha_s5 = 8'd0;
+	logic [7:0]  trans_r_s6 = 8'd255;
+	logic [7:0]  trans_g_s6 = 8'd255;
+	logic [7:0]  trans_b_s6 = 8'd255;
+	logic [7:0]  ambient_r_s7 = 8'd0;
+	logic [7:0]  ambient_g_s7 = 8'd0;
+	logic [7:0]  ambient_b_s7 = 8'd0;
+	logic [15:0] trans_r_prod_s7 = 16'd0;
+	logic [15:0] trans_g_prod_s7 = 16'd0;
+	logic [15:0] trans_b_prod_s7 = 16'd0;
 	logic [11:0] display_x = 12'd0;
 	wire [14:0] alpha_weight_rounded = alpha_weight_s4 + 15'd128;
 	wire [14:0] alpha_weight_scaled = alpha_weight_rounded +
 	                                          (alpha_weight_rounded >> 8);
-	wire [16:0] screen_r_rounded_s7 = 17'(screen_r_product_s7) + 17'd128;
-	wire [16:0] screen_g_rounded_s7 = 17'(screen_g_product_s7) + 17'd128;
-	wire [16:0] screen_b_rounded_s7 = 17'(screen_b_product_s7) + 17'd128;
-	wire [16:0] screen_r_scaled_s7 = screen_r_rounded_s7 +
-	                                       (screen_r_rounded_s7 >> 8);
-	wire [16:0] screen_g_scaled_s7 = screen_g_rounded_s7 +
-	                                       (screen_g_rounded_s7 >> 8);
-	wire [16:0] screen_b_scaled_s7 = screen_b_rounded_s7 +
-	                                       (screen_b_rounded_s7 >> 8);
-	wire [7:0] screen_r_foreground_inv_s6 = pixel_s6.r ^ 8'hff;
-	wire [7:0] screen_g_foreground_inv_s6 = pixel_s6.g ^ 8'hff;
-	wire [7:0] screen_b_foreground_inv_s6 = pixel_s6.b ^ 8'hff;
-	wire [7:0] screen_r_artwork_inv_s6 = artwork_r_sum_s6[13:6] ^ 8'hff;
-	wire [7:0] screen_g_artwork_inv_s6 = artwork_g_sum_s6[13:6] ^ 8'hff;
-	wire [7:0] screen_b_artwork_inv_s6 = artwork_b_sum_s6[13:6] ^ 8'hff;
+	// Transmission color: white where the overlay is clear, the artwork's
+	// color where it is opaque, linearly by alpha. (255-art)*alpha/256.
+	wire [15:0] trans_r_gap_s5 = 16'(8'd255 - background_r_s5) * 16'(alpha_s5);
+	wire [15:0] trans_g_gap_s5 = 16'(8'd255 - background_g_s5) * 16'(alpha_s5);
+	wire [15:0] trans_b_gap_s5 = 16'(8'd255 - background_b_s5) * 16'(alpha_s5);
+	// vector * transmission, scaled /255 with rounding
+	wire [16:0] trans_r_scaled_s7 = 17'(trans_r_prod_s7) +
+	                                17'(trans_r_prod_s7 >> 8) + 17'd128;
+	wire [16:0] trans_g_scaled_s7 = 17'(trans_g_prod_s7) +
+	                                17'(trans_g_prod_s7 >> 8) + 17'd128;
+	wire [16:0] trans_b_scaled_s7 = 17'(trans_b_prod_s7) +
+	                                17'(trans_b_prod_s7 >> 8) + 17'd128;
+	// reflected ambient + transmitted beam, saturating
+	wire [8:0] out_r_sum_s7 = 9'(ambient_r_s7) + 9'(trans_r_scaled_s7[15:8]);
+	wire [8:0] out_g_sum_s7 = 9'(ambient_g_s7) + 9'(trans_g_scaled_s7[15:8]);
+	wire [8:0] out_b_sum_s7 = 9'(ambient_b_s7) + 9'(trans_b_scaled_s7[15:8]);
 
 	wire [11:0] input_line_number = active_line_start ? line_at_start : display_line;
 	wire input_row_bank = active_line_start ? bank_at_start : display_bank;
@@ -1585,12 +1595,14 @@ module vfb_overlay #(
 			alpha_weight_s4 <= pixel_s3.art_valid ?
 			                   (background_a_s3 * blend_weight(artwork_blend_q)) :
 			                   15'd0;
+			alpha_s4 <= pixel_s3.art_valid ? background_a_s3 : 8'd0;
 
 			pixel_s5 <= pixel_s4;
 			background_r_s5 <= background_r_s4;
 			background_g_s5 <= background_g_s4;
 			background_b_s5 <= background_b_s4;
 			effective_weight_s5 <= alpha_weight_scaled[14:8];
+			alpha_s5 <= alpha_s4;
 
 			pixel_s6 <= pixel_s5;
 			artwork_r_sum_s6 <=
@@ -1599,21 +1611,31 @@ module vfb_overlay #(
 				(background_g_s5 * effective_weight_s5) + 15'd32;
 			artwork_b_sum_s6 <=
 				(background_b_s5 * effective_weight_s5) + 15'd32;
+			trans_r_s6 <= 8'd255 - trans_r_gap_s5[15:8];
+			trans_g_s6 <= 8'd255 - trans_g_gap_s5[15:8];
+			trans_b_s6 <= 8'd255 - trans_b_gap_s5[15:8];
 
+			// Local change (see PROVENANCE.md): the upstream screen blend
+			// models Asteroids Deluxe, whose artwork is a backlit backdrop
+			// behind the CRT, so light only ever adds and a white vector
+			// stays white. A Vectrex overlay is a colored filter in front
+			// of the tube: the beam's light is multiplied by the filter's
+			// transmission color, and the artwork is also faintly visible
+			// from ambient reflection (the blend selector sets how much).
 			pixel_s7 <= pixel_s6;
-			screen_r_product_s7 <=
-				16'(screen_r_foreground_inv_s6) * 16'(screen_r_artwork_inv_s6);
-			screen_g_product_s7 <=
-				16'(screen_g_foreground_inv_s6) * 16'(screen_g_artwork_inv_s6);
-			screen_b_product_s7 <=
-				16'(screen_b_foreground_inv_s6) * 16'(screen_b_artwork_inv_s6);
+			trans_r_prod_s7 <= 16'(pixel_s6.r) * 16'(trans_r_s6);
+			trans_g_prod_s7 <= 16'(pixel_s6.g) * 16'(trans_g_s6);
+			trans_b_prod_s7 <= 16'(pixel_s6.b) * 16'(trans_b_s6);
+			ambient_r_s7 <= artwork_r_sum_s6[13:6];
+			ambient_g_s7 <= artwork_g_sum_s6[13:6];
+			ambient_b_s7 <= artwork_b_sum_s6[13:6];
 
 			video_r_out <= pixel_s7.hblank || pixel_s7.vblank ?
-			               8'd0 : 8'd255 - screen_r_scaled_s7[15:8];
+			               8'd0 : (out_r_sum_s7[8] ? 8'd255 : out_r_sum_s7[7:0]);
 			video_g_out <= pixel_s7.hblank || pixel_s7.vblank ?
-			               8'd0 : 8'd255 - screen_g_scaled_s7[15:8];
+			               8'd0 : (out_g_sum_s7[8] ? 8'd255 : out_g_sum_s7[7:0]);
 			video_b_out <= pixel_s7.hblank || pixel_s7.vblank ?
-			               8'd0 : 8'd255 - screen_b_scaled_s7[15:8];
+			               8'd0 : (out_b_sum_s7[8] ? 8'd255 : out_b_sum_s7[7:0]);
 			video_hs_out <= pixel_s7.hs;
 			video_vs_out <= pixel_s7.vs;
 			video_hblank_out <= pixel_s7.hblank;

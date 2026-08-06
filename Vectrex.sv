@@ -153,13 +153,16 @@ assign AUDIO_R = {audio, 6'd0};
 assign AUDIO_S = 1;
 assign AUDIO_MIX = 0;
 
-wire reset = (RESET | status[0] | status[7] | buttons[1] | ioctl_download | second_reset);
+// Reset on cartridge loads only: the overlay (ioctl index 2) uploads into
+// vfb_overlay's DDRAM store, and holding the core in reset through that
+// upload wipes it as it arrives.
+wire reset = (RESET | status[0] | status[7] | buttons[1] | rom_download | second_reset);
 
 reg second_reset = 0;
 always @(posedge clk_sys) begin
 	integer timeout = 0;
 
-	if(ioctl_download && status[11]) timeout <= 5000000;
+	if(rom_download && status[11]) timeout <= 5000000;
 	else begin
 		if(!timeout) second_reset <= 0;
 		else begin

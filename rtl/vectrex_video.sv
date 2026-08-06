@@ -605,8 +605,13 @@ vfb_top framebuffer
 	// frame here, that machinery is the fix.
 	.full_bypass_active(p_full_bypass),
 	.processed_path_prepare(!p_full_bypass),
-	.artwork_enable(p_artwork_enable && !overlay_off),
-	.artwork_blend(p_artwork_blend),
+	// The resolver's per-profile artwork defaults are Asteroids cabinet
+	// truth: only Deluxe had a backdrop, so with game_is_deluxe tied low
+	// every profile says ARTWORK_OFF. Every Vectrex game shipped with an
+	// overlay, so here the OSD switch is the authority, and the blend is
+	// the one the Deluxe profiles pair with artwork (BLEND_0).
+	.artwork_enable(!overlay_off),
+	.artwork_blend(3'd0),
 	.ioctl_download(ioctl_download),
 	.ioctl_wr(ioctl_wr),
 	.ioctl_index(ioctl_index),

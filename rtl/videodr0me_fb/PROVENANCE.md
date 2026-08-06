@@ -38,3 +38,12 @@ If a change to these files turns out to be unavoidable, note it here.
   this core's F2 slot streams whatever file the user picked, and an
   oversized file must fail validation rather than write past the window
   over the rest of the DDR map.
+- `vfb_overlay.sv`: the compositing stage is rewritten from a screen blend
+  to a transmissive filter model. The screen blend is correct for Asteroids
+  Deluxe, whose artwork is a backlit backdrop behind the CRT (light only
+  adds; a white vector stays white over any art). A Vectrex overlay is
+  colored plastic in front of the tube: the beam is multiplied by the
+  filter's transmission color (white where alpha is zero, the art color
+  where opaque), plus a faint ambient-reflection term, which is the
+  original core's alphablend behavior. The blend selector now sets the
+  ambient strength (2026-08-06).
