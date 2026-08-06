@@ -32,6 +32,7 @@ module vectrex_video
 	input   [7:0] beam_z,
 	input         beam_on,
 	input         beam_tick,      // clken_12
+	input         beam_zero_n,   // CA2: integrators held at zero
 
 	input  [11:0] hdmi_height,
 
@@ -254,6 +255,7 @@ logic        [51:0] mul_x, mul_y;
 logic        [11:0] pix_x, pix_y;
 wire          [7:0] z_q;
 logic               on_q;
+logic               zero_q;
 logic         [2:0] tick_pipe;
 
 always_ff @(posedge clk_sys) begin
@@ -270,6 +272,7 @@ always_ff @(posedge clk_sys) begin
 	pix_y <= (mul_y[51:SHIFT] >= fb_height) ? (fb_height - 12'd1) : mul_y[SHIFT+11:SHIFT];
 
 	on_q      <= beam_on;
+	zero_q    <= ~beam_zero_n;
 	tick_pipe <= {tick_pipe[1:0], beam_tick};
 end
 
@@ -290,24 +293,46 @@ vfb_tone_mapper tone_mapper
 );
 
 // --------------------------------------------------------- frame marker ---
-// The Vectrex has no frame signal. Its BIOS recalibrates once per display
-// pass, which shows up as an unusually long stretch with the beam blanked, so
-// that is what this looks for. A plain timer would tear against whatever the
-// program is drawing.
-localparam integer BLANK_GAP = 2000;      // beam_tick counts, about 167us
+// The Vectrex has no frame signal, but its BIOS's Wait_Recal pulls CA2 low
+// once per display pass to zero the integrators, and holds it there for the
+// whole recalibration. Games also pulse CA2 low mid-frame (Reset0Ref style
+// recentring), but those pulses are short; only Wait_Recal holds it. So the
+// marker is a low hold longer than any recentring pulse. The threshold was
+// measured in simulation (see docs/renderer-analysis.md): recentring pulses
+// cluster far below it and Wait_Recal far above.
+// Measured over 250ms of Armor Attack in simulation: recentring pulses are
+// 25-276us, Wait_Recal holds 6.6ms, one per 20ms frame. 1ms sits in the
+// middle of that gap with a wide margin both ways.
+localparam integer ZERO_HOLD      = 12000;    // beam_tick counts, 1ms at 12MHz
+// Software that never recalibrates would otherwise never swap in mode 0 and
+// freeze the display, which is exactly how the old heuristic failed. Two
+// missed frames means the marker is not coming; swap anyway.
+localparam integer MARKER_TIMEOUT = 480000;   // 40ms
 
-logic [15:0] blank_run = 16'd0;
+logic [15:0] zero_run   = 16'd0;
+logic [19:0] marker_wd  = 20'd0;
 logic        frame_done = 1'b0;
 
 always_ff @(posedge clk_sys) begin
 	frame_done <= 1'b0;
 	if (tick_pipe[0]) begin
-		if (on_q) begin
-			blank_run <= 16'd0;
+		if (!zero_q) begin
+			zero_run <= 16'd0;
 		end
-		else if (blank_run < 16'hFFFF) begin
-			blank_run <= blank_run + 16'd1;
-			if (blank_run == BLANK_GAP) frame_done <= 1'b1;
+		else if (zero_run < 16'hFFFF) begin
+			zero_run <= zero_run + 16'd1;
+		end
+
+		if (zero_q && zero_run == ZERO_HOLD) begin
+			frame_done <= 1'b1;
+			marker_wd  <= 20'd0;
+		end
+		else if (marker_wd == MARKER_TIMEOUT) begin
+			frame_done <= 1'b1;
+			marker_wd  <= 20'd0;
+		end
+		else begin
+			marker_wd <= marker_wd + 20'd1;
 		end
 	end
 end

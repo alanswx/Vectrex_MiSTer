@@ -67,6 +67,7 @@ architecture sim of tb_vectrex is
 	signal beam_blank_n   : std_logic;
 	signal beam_z         : std_logic_vector(7 downto 0);
 	signal beam_ce        : std_logic;
+	signal beam_zero_n    : std_logic;
 
 	signal video_r, video_g, video_b  : std_logic_vector(7 downto 0);
 	signal hblank, vblank, frame_line : std_logic;
@@ -117,8 +118,28 @@ begin
 		dbg_beam_y  => beam_y,
 		dbg_blank_n => beam_blank_n,
 		dbg_z       => beam_z,
-		dbg_ce      => beam_ce
+		dbg_ce      => beam_ce,
+		dbg_zero_n  => beam_zero_n
 	);
+
+	-- Log every low pulse of zero_integrator_n with its duration. The frame
+	-- marker needs to tell Wait_Recal's long recalibration hold from the
+	-- brief Reset0Ref recentring pulses, so what matters is the width
+	-- distribution.
+	zero_log : process (clock)
+		variable t_fall : time := 0 ns;
+		variable prev   : std_logic := '1';
+	begin
+		if rising_edge(clock) then
+			if prev = '1' and beam_zero_n = '0' then
+				t_fall := now;
+			elsif prev = '0' and beam_zero_n = '1' then
+				report "ZEROPULSE us=" & integer'image((now - t_fall) / 1 us) &
+				       " at_ms=" & integer'image(now / 1 ms);
+			end if;
+			prev := beam_zero_n;
+		end if;
+	end process;
 
 	-- ------------------------------------------------------------------
 	-- Cartridge load, optional warm reset, then run.

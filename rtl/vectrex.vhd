@@ -182,7 +182,8 @@ port
 	dbg_beam_y   : out signed(19 downto 0);
 	dbg_blank_n  : out std_logic;
 	dbg_z        : out std_logic_vector(7 downto 0);
-	dbg_ce       : out std_logic
+	dbg_ce       : out std_logic;
+	dbg_zero_n   : out std_logic
 );
 end vectrex;
 
@@ -438,6 +439,7 @@ dbg_beam_y  <= integrator_y;
 dbg_blank_n <= beam_blank_n_delayed;
 dbg_z       <= dac_z;
 dbg_ce      <= clken_12;
+dbg_zero_n  <= zero_integrator_n;
 
 sh_dac            <= via_pb_o_d(0);
 dac_mux           <= via_pb_o_d(2 downto 1);

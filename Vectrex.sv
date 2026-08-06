@@ -70,6 +70,7 @@ localparam CONF_STR = {
 	"O56,Pseudocolor,Off,1,2,3;",
 	"O8,Overburn,No,Yes;",
 	"OD,HDMI test pattern,Off,On;",
+	"OLN,CRT effects,Typical,Off,Touch,Overdriven,Neon,Stranger;",
 	"-;",
 	"OC,Port 2,Joystick,Speech;",
 	"OA,CPU Model,1,2;",
@@ -222,8 +223,6 @@ generate if (LEGACY_VIDEO) begin : gen_legacy_video
 		.SCALE(status[19:18])
 	);
 end else begin : gen_new_video
-	assign VIDEO_ARX = (!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1);
-	assign VIDEO_ARY = (!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0;
 	assign CLK_VIDEO = vfb_clk_video;
 	assign CE_PIXEL  = vfb_ce_pixel;
 	assign VGA_R     = vfb_r;
@@ -231,12 +230,37 @@ end else begin : gen_new_video
 	assign VGA_B     = vfb_b;
 	assign VGA_HS    = vfb_hs;
 	assign VGA_VS    = vfb_vs;
+
+	video_freak video_freak
+	(
+		.CLK_VIDEO(CLK_VIDEO),
+		.CE_PIXEL(CE_PIXEL),
+		.VGA_VS(VGA_VS),
+		.HDMI_WIDTH(HDMI_WIDTH),
+		.HDMI_HEIGHT(HDMI_HEIGHT),
+		.VGA_DE(),
+		.VIDEO_ARX(VIDEO_ARX),
+		.VIDEO_ARY(VIDEO_ARY),
+		.VGA_DE_IN(VGA_DE),
+		.ARX((!ar) ? (status[20] ? 12'd11 : 12'd9 ) : (ar - 1'd1)),
+		.ARY((!ar) ? (status[20] ? 12'd9  : 12'd11) : 12'd0),
+		.CROP_SIZE(0),
+		.CROP_OFF(0),
+		.SCALE(status[19:18])
+	);
 end endgenerate
+
+// The menu lists Typical first so a zeroed status still lands on the intended
+// default; remap the first three entries back to the resolver's encoding.
+wire [2:0] prof_sel = status[23:21];
+wire [2:0] vfb_profile = (prof_sel == 3'd0) ? 3'd2 :
+                         (prof_sel == 3'd1) ? 3'd0 :
+                         (prof_sel == 3'd2) ? 3'd1 : prof_sel;
 
 // Beam taps from the core, feeding the new renderer.
 wire signed [19:0] dbg_beam_x, dbg_beam_y;
 wire  [7:0] dbg_z;
-wire        dbg_blank_n, dbg_ce;
+wire        dbg_blank_n, dbg_ce, dbg_zero_n;
 wire [7:0] r,g,b;
 
 
@@ -299,7 +323,8 @@ vectrex #(.INTERNAL_FB(LEGACY_VIDEO ? 1 : 0)) vectrex
 	.dbg_beam_y(dbg_beam_y),
 	.dbg_blank_n(dbg_blank_n),
 	.dbg_z(dbg_z),
-	.dbg_ce(dbg_ce)
+	.dbg_ce(dbg_ce),
+	.dbg_zero_n(dbg_zero_n)
 );
 
 
@@ -323,19 +348,16 @@ vectrex_video vectrex_video
 	.beam_z(dbg_z),
 	.beam_on(dbg_blank_n),
 	.beam_tick(dbg_ce),
+	.beam_zero_n(dbg_zero_n),
 
 	.hdmi_height(HDMI_HEIGHT),
 
 	.test_pattern(status[13]),
-	.profile(3'd2),          // PROFILE_TYPICAL
-	// EOF + VBL (mode 0) is correct in principle, but it only swaps buffers
-	// when FRAME_DONE fires, and doing that produced a mostly black screen
-	// with fragments of the pattern. So the long-blank frame marker in
-	// vectrex_video is not finding real frame boundaries. Mode 1 ignores it
-	// and swaps on video vblank, which renders correctly but leaves the
-	// picture tearing against the beam. Staying on 1 until the marker is
-	// derived properly.
-	.buffer_mode(2'd1),      // VBL only
+	.profile(vfb_profile),
+	// Mode 0 swaps on FRAME_DONE + VBL. The marker is now derived from
+	// Wait_Recal's CA2 hold rather than the long-blank heuristic that made
+	// mode 0 unusable; see vectrex_video's frame marker block.
+	.buffer_mode(2'd0),      // EOF + VBL
 	.osd_slot_mask_rows(1'b0),
 
 	.clk_video(vfb_clk_video),
