@@ -35,6 +35,8 @@ set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_final_prese
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_halo_pipeline.sv
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_tone_mapper.sv
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_top.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_overlay.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/videodr0me_fb/vfb_async_fifo.sv
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/vectrex_video.sv
 set_global_assignment -name SDC_FILE Vectrex.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE Vectrex.sv

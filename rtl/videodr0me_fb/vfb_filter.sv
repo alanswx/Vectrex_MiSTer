@@ -33,12 +33,21 @@ module vfb_filter (
 	output logic        VGA_HBLANK_OUT,
 	output logic        VGA_VBLANK_OUT
 );
-
 	logic [2:0] osd_bloom_width_q = 3'd0;
-	logic [9:0] bloom_curve_gain_q = 10'd64;
+	logic [2:0] bloom_curve_mode_q = 3'd0;
+
 	always_ff @(posedge clk_sys) begin
 		osd_bloom_width_q <= osd_bloom_width;
-		bloom_curve_gain_q <= bloom_curve_gain;
+		case (bloom_curve_gain)
+			10'd64:  bloom_curve_mode_q <= 3'd0;
+			10'd96:  bloom_curve_mode_q <= 3'd1;
+			10'd128: bloom_curve_mode_q <= 3'd2;
+			10'd192: bloom_curve_mode_q <= 3'd3;
+			10'd256: bloom_curve_mode_q <= 3'd4;
+			10'd320: bloom_curve_mode_q <= 3'd5;
+			10'd384: bloom_curve_mode_q <= 3'd6;
+			default:  bloom_curve_mode_q <= 3'd7;
+		endcase
 	end
 
 	logic [7:0] vga_r_in_r;
@@ -84,8 +93,7 @@ module vfb_filter (
 	end
 
 	// Bloom source curve: round(255 * (channel / 255)^2.5).
-	//
-	// Three 256x8 ROMs provide one independent lookup per RGB channel.
+	// One dual-port ROM serves red and green; a second serves blue.
 	function automatic [7:0] bloom_curve25_value(input logic [7:0] value);
 		begin
 			case (value)
@@ -350,24 +358,6 @@ module vfb_filter (
 		end
 	endfunction
 
-	(* ramstyle = "MLAB" *) logic [7:0] bloom_curve25_rom_r [0:255];
-	(* ramstyle = "MLAB" *) logic [7:0] bloom_curve25_rom_g [0:255];
-	(* ramstyle = "MLAB" *) logic [7:0] bloom_curve25_rom_b [0:255];
-
-	integer bloom_curve25_init_i;
-	initial begin
-		for (bloom_curve25_init_i = 0;
-		     bloom_curve25_init_i < 256;
-		     bloom_curve25_init_i = bloom_curve25_init_i + 1) begin
-			bloom_curve25_rom_r[bloom_curve25_init_i] =
-				bloom_curve25_value(bloom_curve25_init_i[7:0]);
-			bloom_curve25_rom_g[bloom_curve25_init_i] =
-				bloom_curve25_value(bloom_curve25_init_i[7:0]);
-			bloom_curve25_rom_b[bloom_curve25_init_i] =
-				bloom_curve25_value(bloom_curve25_init_i[7:0]);
-		end
-	end
-
 	function automatic [7:0] apply_curve_gain(
 		input logic [7:0] curved,
 		input logic [9:0] gain
@@ -422,6 +412,49 @@ module vfb_filter (
 		end
 	endfunction
 
+	function automatic [9:0] bloom_gain_for_mode(
+		input logic [2:0] mode
+	);
+		begin
+			case (mode)
+				3'd0: bloom_gain_for_mode = 10'd64;
+				3'd1: bloom_gain_for_mode = 10'd96;
+				3'd2: bloom_gain_for_mode = 10'd128;
+				3'd3: bloom_gain_for_mode = 10'd192;
+				3'd4: bloom_gain_for_mode = 10'd256;
+				3'd5: bloom_gain_for_mode = 10'd320;
+				3'd6: bloom_gain_for_mode = 10'd384;
+				default: bloom_gain_for_mode = 10'd512;
+			endcase
+		end
+	endfunction
+
+	(* ramstyle = "M10K" *) logic [7:0] bloom_source_rom_rg [0:2047];
+	(* ramstyle = "M10K" *) logic [7:0] bloom_source_rom_b [0:2047];
+
+	integer bloom_source_mode_i;
+	integer bloom_source_value_i;
+	integer bloom_source_addr_i;
+	initial begin
+		// Each entry is apply_gain(round(255 * (value / 255)^2.5), gain).
+		for (bloom_source_mode_i = 0; bloom_source_mode_i < 8;
+		     bloom_source_mode_i = bloom_source_mode_i + 1) begin
+			for (bloom_source_value_i = 0; bloom_source_value_i < 256;
+			     bloom_source_value_i = bloom_source_value_i + 1) begin
+				bloom_source_addr_i =
+					(bloom_source_mode_i << 8) | bloom_source_value_i;
+				bloom_source_rom_rg[bloom_source_addr_i] =
+					apply_curve_gain(
+						bloom_curve25_value(bloom_source_value_i[7:0]),
+						bloom_gain_for_mode(bloom_source_mode_i[2:0]));
+				bloom_source_rom_b[bloom_source_addr_i] =
+					apply_curve_gain(
+						bloom_curve25_value(bloom_source_value_i[7:0]),
+						bloom_gain_for_mode(bloom_source_mode_i[2:0]));
+			end
+		end
+	end
+
 	logic en_p1, en_p2, en_p3;
 	always_comb begin
 		en_p1 = (osd_bloom_width_q >= 3'd1);
@@ -429,7 +462,7 @@ module vfb_filter (
 		en_p3 = (osd_bloom_width_q >= 3'd5);
 	end
 
-	// Delay sync and blanking to match RGB.
+	// Sync pipeline matched to the RGB path.
 	(* ramstyle = "M10K, no_rw_check" *) logic [3:0] sync_lb_0 [0:2047];
 	(* ramstyle = "M10K, no_rw_check" *) logic [3:0] sync_lb_1 [0:2047];
 	(* ramstyle = "M10K, no_rw_check" *) logic [3:0] sync_lb_2 [0:2047];
@@ -530,6 +563,7 @@ module vfb_filter (
 		end
 	end
 
+	// Register primary RGB before curve lookup.
 	logic [7:0] source_r, source_g, source_b;
 
 	always_ff @(posedge clk_sys) begin
@@ -540,17 +574,22 @@ module vfb_filter (
 		end
 	end
 
-	// Register primary RGB and look up the bloom source.
+	// Look up the bloom source and retain the aligned primary sample.
 	logic [23:0] base_24;
-	logic [7:0] bloom_curve_r, bloom_curve_g, bloom_curve_b;
+	logic [7:0] bloom_source_lut_r;
+	logic [7:0] bloom_source_lut_g;
+	logic [7:0] bloom_source_lut_b;
 
 	always_ff @(posedge clk_sys) begin
 		if (ce_pix) begin
 			base_24 <= {source_r, source_g, source_b};
 
-			bloom_curve_r <= bloom_curve25_rom_r[source_r];
-			bloom_curve_g <= bloom_curve25_rom_g[source_g];
-			bloom_curve_b <= bloom_curve25_rom_b[source_b];
+			bloom_source_lut_r <= bloom_source_rom_rg[
+				{bloom_curve_mode_q, source_r}];
+			bloom_source_lut_g <= bloom_source_rom_rg[
+				{bloom_curve_mode_q, source_g}];
+			bloom_source_lut_b <= bloom_source_rom_b[
+				{bloom_curve_mode_q, source_b}];
 		end
 	end
 
@@ -602,16 +641,15 @@ module vfb_filter (
 		end
 	end
 
-	// Apply bloom source gain.
+	// Register the curved bloom source.
 	logic [23:0] bloom_src;
 	always_ff @(posedge clk_sys) begin
 		if (ce_pix) begin
-			bloom_src[23:16] <=
-				apply_curve_gain(bloom_curve_r, bloom_curve_gain_q);
-			bloom_src[15:8] <=
-				apply_curve_gain(bloom_curve_g, bloom_curve_gain_q);
-			bloom_src[7:0] <=
-				apply_curve_gain(bloom_curve_b, bloom_curve_gain_q);
+			bloom_src <= {
+				bloom_source_lut_r,
+				bloom_source_lut_g,
+				bloom_source_lut_b
+			};
 		end
 	end
 

@@ -40,7 +40,6 @@ module vfb_blur (
 	end
 
 	// Four 1472-pixel RGB line buffers.
-	// The design does not depend on read-during-write behavior.
 	(* ramstyle = "M10K, no_rw_check" *) logic [23:0] lb_0 [0:1471];
 	(* ramstyle = "M10K, no_rw_check" *) logic [23:0] lb_1 [0:1471];
 	(* ramstyle = "M10K, no_rw_check" *) logic [23:0] lb_2 [0:1471];

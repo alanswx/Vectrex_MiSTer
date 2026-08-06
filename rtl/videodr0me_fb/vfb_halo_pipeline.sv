@@ -21,7 +21,7 @@ module vfb_halo_pipeline #(
 
 	input  logic [2:0]  osd_bloom_width,
 	input  logic [9:0]  bloom_curve_gain,
-	input  logic [9:0]  halo_curve_gain,
+	input  logic [2:0]  halo_curve_mode,
 	input  logic [7:0]  halo_filter,
 	input  logic [1:0]  halo_spread_mode,
 	input  logic [1:0]  halo_knee_mode,
@@ -57,16 +57,11 @@ module vfb_halo_pipeline #(
 	output logic        sdram_we,
 	output logic [1:0]  sdram_dqm,
 	output logic [12:0] sdram_addr,
-	output logic [1:0]  sdram_ba,
-
-	output logic        sdram_overflow,
-	output logic        sdram_underflow,
-	output logic        sdram_init_done
+	output logic [1:0]  sdram_ba
 );
-
 	logic [2:0] osd_bloom_width_q = 3'd0;
 	logic [9:0] bloom_curve_gain_q = 10'd64;
-	logic [9:0] halo_curve_gain_q = 10'd64;
+	logic [2:0] halo_curve_mode_q = 3'd0;
 	logic [7:0] halo_filter_q = 8'd0;
 	logic [1:0] halo_spread_mode_q = 2'd0;
 	logic [1:0] halo_knee_mode_q = 2'd0;
@@ -78,7 +73,7 @@ module vfb_halo_pipeline #(
 	always_ff @(posedge clk_sys) begin
 		osd_bloom_width_q <= osd_bloom_width;
 		bloom_curve_gain_q <= bloom_curve_gain;
-		halo_curve_gain_q <= halo_curve_gain;
+		halo_curve_mode_q <= halo_curve_mode;
 		halo_filter_q <= halo_filter;
 		halo_spread_mode_q <= halo_spread_mode;
 		halo_knee_mode_q <= halo_knee_mode;
@@ -102,7 +97,7 @@ module vfb_halo_pipeline #(
 		primary_line_delay_reset_q <= reset;
 
 	vfb_sdram_delay #(
-		.SDRAM_MHZ(125),
+		.SDRAM_MHZ(128),
 		.DELAY_LINES(SDR_DELAY_LINES),
 		.FIFO_DEPTH(SDR_FIFO_DEPTH)
 	) primary_line_delay (
@@ -134,9 +129,9 @@ module vfb_halo_pipeline #(
 		.sdram_dqm(sdram_dqm),
 		.sdram_addr(sdram_addr),
 		.sdram_ba(sdram_ba),
-		.overflow(sdram_overflow),
-		.underflow(sdram_underflow),
-		.init_done(sdram_init_done)
+		.overflow(),
+		.underflow(),
+		.init_done()
 	);
 
 	(* ramstyle = "MLAB" *) logic [27:0] horizontal_delay
@@ -203,7 +198,7 @@ module vfb_halo_pipeline #(
 		.clk_sys(clk_sys),
 		.reset(reset),
 		.ce_pix(ce_pix),
-		.halo_curve_gain(halo_curve_gain_q),
+		.halo_curve_mode(halo_curve_mode_q),
 		.halo_spread_mode(halo_spread_mode_q),
 		.halo_knee_mode(halo_knee_mode_q),
 		.active_height(active_height),
@@ -290,9 +285,10 @@ module vfb_halo_pipeline #(
 	logic mix_vs;
 	logic mix_hblank;
 	logic mix_vblank;
-	logic [7:0] present_r;
-	logic [7:0] present_g;
-	logic [7:0] present_b;
+	logic [8:0] present_r;
+	logic [8:0] present_g;
+	logic [8:0] present_b;
+	logic present_source_is_255;
 	logic present_hs;
 	logic present_vs;
 	logic present_hblank;
@@ -309,6 +305,7 @@ module vfb_halo_pipeline #(
 		.VGA_R_IN(present_r),
 		.VGA_G_IN(present_g),
 		.VGA_B_IN(present_b),
+		.source_is_255(present_source_is_255),
 		.VGA_HS_IN(present_hs),
 		.VGA_VS_IN(present_vs),
 		.VGA_HBLANK_IN(present_hblank),
@@ -334,9 +331,10 @@ module vfb_halo_pipeline #(
 			mix_vs <= 1'b1;
 			mix_hblank <= 1'b1;
 			mix_vblank <= 1'b1;
-			present_r <= 8'd0;
-			present_g <= 8'd0;
-			present_b <= 8'd0;
+			present_r <= 9'd0;
+			present_g <= 9'd0;
+			present_b <= 9'd0;
+			present_source_is_255 <= 1'b0;
 			present_hs <= 1'b1;
 			present_vs <= 1'b1;
 			present_hblank <= 1'b1;
@@ -351,13 +349,18 @@ module vfb_halo_pipeline #(
 			mixed_b = {1'b0, mix_composite_b} + {1'b0, mix_halo_b};
 
 			if (mix_hblank || mix_vblank) begin
-				present_r <= 8'd0;
-				present_g <= 8'd0;
-				present_b <= 8'd0;
+				present_r <= 9'd0;
+				present_g <= 9'd0;
+				present_b <= 9'd0;
+				present_source_is_255 <= 1'b0;
 			end else begin
-				present_r <= mixed_r[8] ? 8'hff : mixed_r[7:0];
-				present_g <= mixed_g[8] ? 8'hff : mixed_g[7:0];
-				present_b <= mixed_b[8] ? 8'hff : mixed_b[7:0];
+				present_r <= mixed_r;
+				present_g <= mixed_g;
+				present_b <= mixed_b;
+				present_source_is_255 <=
+					(mix_composite_r == 8'hff) ||
+					(mix_composite_g == 8'hff) ||
+					(mix_composite_b == 8'hff);
 			end
 			present_hs <= mix_hs;
 			present_vs <= mix_vs;

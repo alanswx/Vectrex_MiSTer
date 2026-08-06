@@ -7,8 +7,8 @@
 // common MiSTer 32 MB SDRAM layout.
 //
 // Consecutive 32-bit accesses to an open row are accepted every two clocks,
-// using every 16-bit data-bus cycle. All four SDRAM banks retain their active
-// rows until a row miss or refresh requires precharge.
+// using every 16-bit data-bus cycle. All four banks keep their active rows
+// until a row miss or refresh requires precharge.
 // ============================================================================
 
 module vfb_sdram_core #(
@@ -323,8 +323,8 @@ module vfb_sdram_core #(
 				default: ;
 			endcase
 
-			// Prepare write data, DQM, and output enable one clock before the
-			// pin registers use them.
+			// Prepare SDRAM write data, byte masks, and output enable one clock
+			// before the output registers.
 			if (state == ST_WRITE0) begin
 				write_beat_data <= req_wdata[31:16];
 				write_beat_dqm  <= ~req_be[3:2];
@@ -354,8 +354,8 @@ module vfb_sdram_core #(
 	(* preserve, dont_merge *) logic [15:0] read_sample_1;
 	logic [15:0] read_sample_2;
 	logic [15:0] read_low;
-	// The SDRAM returns two BL2 halfwords after CAS latency. The input register
-	// adds one clock to the assembled response.
+	// SDRAM returns two BL2 halfwords after CAS latency. The input register adds
+	// one clock to the assembled response.
 	logic [SDRAM_READ_LATENCY+3:0] read_pipe;
 
 	always_ff @(posedge clk_sys) begin

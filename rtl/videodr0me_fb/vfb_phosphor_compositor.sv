@@ -5,7 +5,7 @@
 // written 2026 by Videodr0me
 //
 // A completed raw frame is blended in place with the newest accumulator.
-// The target buffer cannot be shown until every required tile is finished.
+// The target cannot be shown until every required tile is finished.
 // ============================================================================
 
 module vfb_phosphor_compositor #(
@@ -28,15 +28,14 @@ module vfb_phosphor_compositor #(
 	input  logic                 compose_source_is_composed,
 	output logic                 compose_done,
 
-	input  logic [2:0]  raw_reference_draw_idx,
-	input  logic [31:0] raw_age_map,
+	input  logic [3:0]  raw_reference_draw_idx,
+	input  logic [63:0] raw_age_map,
 	input  logic [3:0]  raw_frame_age,
 	input  logic        raw_metadata_ready,
 
 	output logic [TILEMAP_ADDR_W-1:0] tilemap_addr,
-	output logic                      tilemap_we,
-	output logic [BUF_IDX_W-1:0]      tilemap_buf,
-	output logic                      tilemap_din,
+	output logic [BUFFER_COUNT-1:0]   tilemap_write_hot,
+	output logic                      tilemap_write_din,
 	input  logic [BUFFER_COUNT-1:0]   tilemap_dout,
 
 	output logic        read_ready,
@@ -58,13 +57,16 @@ module vfb_phosphor_compositor #(
 
 	import vfb_layout_pkg::*;
 
-	logic [1:0] intra_frame_mode_q = 2'd0;
-	logic [1:0] inter_frame_mode_q = 2'd0;
+	logic [1:0] intra_frame_mode_control_q = 2'd0;
+	logic [1:0] inter_frame_mode_control_q = 2'd0;
+	logic [BUFFER_COUNT-1:0] target_buf_hot_q = '0;
+
 	always_ff @(posedge clk_sys) begin
-		intra_frame_mode_q <= intra_frame_mode;
-		inter_frame_mode_q <= inter_frame_mode;
+		intra_frame_mode_control_q <= intra_frame_mode;
+		inter_frame_mode_control_q <= inter_frame_mode;
 	end
 
+	// Each entry returns {fresh-frame factor, accumulated-tail factor}.
 	function automatic [15:0] inter_decay_factors(
 		input logic [1:0] mode,
 		input logic [3:0] age
@@ -72,53 +74,53 @@ module vfb_phosphor_compositor #(
 		begin
 			case ({mode, age})
 				{2'd1, 4'd0}:  inter_decay_factors = {8'd255, 8'd255};
-				{2'd1, 4'd1}:  inter_decay_factors = {8'd227, 8'd242};
-				{2'd1, 4'd2}:  inter_decay_factors = {8'd205, 8'd230};
-				{2'd1, 4'd3}:  inter_decay_factors = {8'd187, 8'd218};
-				{2'd1, 4'd4}:  inter_decay_factors = {8'd172, 8'd206};
-				{2'd1, 4'd5}:  inter_decay_factors = {8'd158, 8'd196};
-				{2'd1, 4'd6}:  inter_decay_factors = {8'd148, 8'd186};
-				{2'd1, 4'd7}:  inter_decay_factors = {8'd138, 8'd175};
-				{2'd1, 4'd8}:  inter_decay_factors = {8'd128, 8'd165};
-				{2'd1, 4'd9}:  inter_decay_factors = {8'd121, 8'd157};
-				{2'd1, 4'd10}: inter_decay_factors = {8'd114, 8'd148};
-				{2'd1, 4'd11}: inter_decay_factors = {8'd107, 8'd140};
-				{2'd1, 4'd12}: inter_decay_factors = {8'd100, 8'd132};
-				{2'd1, 4'd13}: inter_decay_factors = {8'd94, 8'd125};
-				{2'd1, 4'd14}: inter_decay_factors = {8'd88, 8'd117};
-				{2'd1, 4'd15}: inter_decay_factors = {8'd82, 8'd111};
+				{2'd1, 4'd1}:  inter_decay_factors = {8'd234, 8'd245};
+				{2'd1, 4'd2}:  inter_decay_factors = {8'd217, 8'd236};
+				{2'd1, 4'd3}:  inter_decay_factors = {8'd203, 8'd227};
+				{2'd1, 4'd4}:  inter_decay_factors = {8'd191, 8'd218};
+				{2'd1, 4'd5}:  inter_decay_factors = {8'd180, 8'd210};
+				{2'd1, 4'd6}:  inter_decay_factors = {8'd172, 8'd202};
+				{2'd1, 4'd7}:  inter_decay_factors = {8'd164, 8'd194};
+				{2'd1, 4'd8}:  inter_decay_factors = {8'd156, 8'd186};
+				{2'd1, 4'd9}:  inter_decay_factors = {8'd150, 8'd179};
+				{2'd1, 4'd10}: inter_decay_factors = {8'd144, 8'd172};
+				{2'd1, 4'd11}: inter_decay_factors = {8'd138, 8'd166};
+				{2'd1, 4'd12}: inter_decay_factors = {8'd132, 8'd159};
+				{2'd1, 4'd13}: inter_decay_factors = {8'd127, 8'd153};
+				{2'd1, 4'd14}: inter_decay_factors = {8'd122, 8'd147};
+				{2'd1, 4'd15}: inter_decay_factors = {8'd117, 8'd142};
 				{2'd2, 4'd0}:  inter_decay_factors = {8'd255, 8'd255};
-				{2'd2, 4'd1}:  inter_decay_factors = {8'd234, 8'd245};
-				{2'd2, 4'd2}:  inter_decay_factors = {8'd217, 8'd236};
-				{2'd2, 4'd3}:  inter_decay_factors = {8'd203, 8'd227};
-				{2'd2, 4'd4}:  inter_decay_factors = {8'd191, 8'd218};
-				{2'd2, 4'd5}:  inter_decay_factors = {8'd180, 8'd210};
-				{2'd2, 4'd6}:  inter_decay_factors = {8'd172, 8'd202};
-				{2'd2, 4'd7}:  inter_decay_factors = {8'd164, 8'd194};
-				{2'd2, 4'd8}:  inter_decay_factors = {8'd156, 8'd186};
-				{2'd2, 4'd9}:  inter_decay_factors = {8'd150, 8'd179};
-				{2'd2, 4'd10}: inter_decay_factors = {8'd144, 8'd172};
-				{2'd2, 4'd11}: inter_decay_factors = {8'd138, 8'd166};
-				{2'd2, 4'd12}: inter_decay_factors = {8'd132, 8'd159};
-				{2'd2, 4'd13}: inter_decay_factors = {8'd127, 8'd153};
-				{2'd2, 4'd14}: inter_decay_factors = {8'd122, 8'd147};
-				{2'd2, 4'd15}: inter_decay_factors = {8'd117, 8'd142};
+				{2'd2, 4'd1}:  inter_decay_factors = {8'd241, 8'd248};
+				{2'd2, 4'd2}:  inter_decay_factors = {8'd229, 8'd242};
+				{2'd2, 4'd3}:  inter_decay_factors = {8'd219, 8'd236};
+				{2'd2, 4'd4}:  inter_decay_factors = {8'd210, 8'd230};
+				{2'd2, 4'd5}:  inter_decay_factors = {8'd202, 8'd224};
+				{2'd2, 4'd6}:  inter_decay_factors = {8'd196, 8'd218};
+				{2'd2, 4'd7}:  inter_decay_factors = {8'd190, 8'd213};
+				{2'd2, 4'd8}:  inter_decay_factors = {8'd184, 8'd207};
+				{2'd2, 4'd9}:  inter_decay_factors = {8'd179, 8'd201};
+				{2'd2, 4'd10}: inter_decay_factors = {8'd174, 8'd196};
+				{2'd2, 4'd11}: inter_decay_factors = {8'd169, 8'd192};
+				{2'd2, 4'd12}: inter_decay_factors = {8'd164, 8'd186};
+				{2'd2, 4'd13}: inter_decay_factors = {8'd160, 8'd181};
+				{2'd2, 4'd14}: inter_decay_factors = {8'd156, 8'd177};
+				{2'd2, 4'd15}: inter_decay_factors = {8'd152, 8'd173};
 				{2'd3, 4'd0}:  inter_decay_factors = {8'd255, 8'd255};
-				{2'd3, 4'd1}:  inter_decay_factors = {8'd241, 8'd248};
-				{2'd3, 4'd2}:  inter_decay_factors = {8'd229, 8'd242};
-				{2'd3, 4'd3}:  inter_decay_factors = {8'd219, 8'd236};
-				{2'd3, 4'd4}:  inter_decay_factors = {8'd210, 8'd230};
-				{2'd3, 4'd5}:  inter_decay_factors = {8'd202, 8'd224};
-				{2'd3, 4'd6}:  inter_decay_factors = {8'd196, 8'd218};
-				{2'd3, 4'd7}:  inter_decay_factors = {8'd190, 8'd213};
-				{2'd3, 4'd8}:  inter_decay_factors = {8'd184, 8'd207};
-				{2'd3, 4'd9}:  inter_decay_factors = {8'd179, 8'd201};
-				{2'd3, 4'd10}: inter_decay_factors = {8'd174, 8'd196};
-				{2'd3, 4'd11}: inter_decay_factors = {8'd169, 8'd192};
-				{2'd3, 4'd12}: inter_decay_factors = {8'd164, 8'd186};
-				{2'd3, 4'd13}: inter_decay_factors = {8'd160, 8'd181};
-				{2'd3, 4'd14}: inter_decay_factors = {8'd156, 8'd177};
-				{2'd3, 4'd15}: inter_decay_factors = {8'd152, 8'd173};
+				{2'd3, 4'd1}:  inter_decay_factors = {8'd244, 8'd250};
+				{2'd3, 4'd2}:  inter_decay_factors = {8'd235, 8'd245};
+				{2'd3, 4'd3}:  inter_decay_factors = {8'd228, 8'd241};
+				{2'd3, 4'd4}:  inter_decay_factors = {8'd221, 8'd236};
+				{2'd3, 4'd5}:  inter_decay_factors = {8'd214, 8'd231};
+				{2'd3, 4'd6}:  inter_decay_factors = {8'd209, 8'd227};
+				{2'd3, 4'd7}:  inter_decay_factors = {8'd204, 8'd222};
+				{2'd3, 4'd8}:  inter_decay_factors = {8'd199, 8'd218};
+				{2'd3, 4'd9}:  inter_decay_factors = {8'd196, 8'd214};
+				{2'd3, 4'd10}: inter_decay_factors = {8'd192, 8'd209};
+				{2'd3, 4'd11}: inter_decay_factors = {8'd188, 8'd206};
+				{2'd3, 4'd12}: inter_decay_factors = {8'd183, 8'd201};
+				{2'd3, 4'd13}: inter_decay_factors = {8'd180, 8'd198};
+				{2'd3, 4'd14}: inter_decay_factors = {8'd176, 8'd194};
+				{2'd3, 4'd15}: inter_decay_factors = {8'd173, 8'd190};
 				default: inter_decay_factors = {8'd255, 8'd255};
 			endcase
 		end
@@ -131,21 +133,21 @@ module vfb_phosphor_compositor #(
 		begin
 			case ({mode, age})
 				{2'd1, 4'd0}:  decay_factor = 8'd255;
-				{2'd1, 4'd1}:  decay_factor = 8'd252;
-				{2'd1, 4'd2}:  decay_factor = 8'd250;
-				{2'd1, 4'd3}:  decay_factor = 8'd247;
-				{2'd1, 4'd4}:  decay_factor = 8'd245;
-				{2'd1, 4'd5}:  decay_factor = 8'd243;
-				{2'd1, 4'd6}:  decay_factor = 8'd240;
-				{2'd1, 4'd7}:  decay_factor = 8'd238;
-				{2'd1, 4'd8}:  decay_factor = 8'd235;
-				{2'd1, 4'd9}:  decay_factor = 8'd233;
-				{2'd1, 4'd10}: decay_factor = 8'd231;
-				{2'd1, 4'd11}: decay_factor = 8'd228;
-				{2'd1, 4'd12}: decay_factor = 8'd226;
-				{2'd1, 4'd13}: decay_factor = 8'd224;
-				{2'd1, 4'd14}: decay_factor = 8'd222;
-				{2'd1, 4'd15}: decay_factor = 8'd219;
+				{2'd1, 4'd1}:  decay_factor = 8'd240;
+				{2'd1, 4'd2}:  decay_factor = 8'd225;
+				{2'd1, 4'd3}:  decay_factor = 8'd212;
+				{2'd1, 4'd4}:  decay_factor = 8'd199;
+				{2'd1, 4'd5}:  decay_factor = 8'd187;
+				{2'd1, 4'd6}:  decay_factor = 8'd176;
+				{2'd1, 4'd7}:  decay_factor = 8'd165;
+				{2'd1, 4'd8}:  decay_factor = 8'd155;
+				{2'd1, 4'd9}:  decay_factor = 8'd146;
+				{2'd1, 4'd10}: decay_factor = 8'd137;
+				{2'd1, 4'd11}: decay_factor = 8'd129;
+				{2'd1, 4'd12}: decay_factor = 8'd121;
+				{2'd1, 4'd13}: decay_factor = 8'd114;
+				{2'd1, 4'd14}: decay_factor = 8'd107;
+				{2'd1, 4'd15}: decay_factor = 8'd101;
 				{2'd2, 4'd0}:  decay_factor = 8'd255;
 				{2'd2, 4'd1}:  decay_factor = 8'd245;
 				{2'd2, 4'd2}:  decay_factor = 8'd235;
@@ -214,8 +216,8 @@ module vfb_phosphor_compositor #(
 	logic                 source_is_composed_q;
 	logic [1:0]           intra_mode_q;
 	logic [1:0]           inter_mode_q;
-	logic [2:0]           reference_draw_idx_q;
-	logic [31:0]          age_map_q;
+	logic [3:0]           reference_draw_idx_q;
+	logic [63:0]          age_map_q;
 	logic [7:0]           fresh_decay_factor_q;
 	logic [7:0]           tail_decay_factor_q;
 
@@ -232,15 +234,16 @@ module vfb_phosphor_compositor #(
 	logic [63:0] composed_tile [0:15];
 	logic [3:0] read_beat;
 	logic [3:0] write_beat;
+	logic [63:0] write_data_q;
 	logic [5:0] pixel_index;
 	logic [5:0] lookahead_pixel_index;
 
-	logic [3:0] raw_color_q;
+	logic [2:0] raw_rgb_q;
 	logic [8:0] raw_intensity_q;
 	logic [7:0] raw_factor_q;
 	logic       raw_bypass_q;
 	logic [16:0] raw_product_q;
-	logic [3:0] old_color_q;
+	logic [2:0] old_rgb_q;
 	logic [8:0] old_intensity_q;
 	logic [7:0] old_factor_q;
 	logic [16:0] old_product_q;
@@ -248,8 +251,8 @@ module vfb_phosphor_compositor #(
 	logic [15:0] next_old_pixel_q;
 	logic [7:0] next_raw_factor_q;
 	logic [7:0] next_old_factor_q;
-	logic [9:0] blend_energy_q;
-	logic [3:0] blend_color_q;
+	logic [8:0] blend_energy_q;
+	logic [2:0] blend_color_q;
 	logic       blend_fresh_q;
 	logic [15:0] pending_pixel_q;
 	logic [3:0]  pending_word_q;
@@ -278,9 +281,9 @@ module vfb_phosphor_compositor #(
 		next_raw_word[next_pixel_bit_offset +: 16];
 	wire [15:0] next_old_pixel =
 		next_old_word[next_pixel_bit_offset +: 16];
-	wire [2:0] staged_raw_age_delta =
-		reference_draw_idx_q - next_raw_pixel_q[11:9];
-	wire [4:0] staged_raw_age_offset = {staged_raw_age_delta, 2'b00};
+	wire [3:0] staged_raw_age_delta =
+		reference_draw_idx_q - next_raw_pixel_q[12:9];
+	wire [5:0] staged_raw_age_offset = {staged_raw_age_delta, 2'b00};
 	wire [3:0] staged_raw_pixel_age = raw_tile_dirty
 		? age_map_q[staged_raw_age_offset +: 4] : 4'd0;
 	wire [7:0] staged_raw_factor =
@@ -290,31 +293,20 @@ module vfb_phosphor_compositor #(
 	wire [8:0] old_energy = old_product_q[16:8];
 	wire       raw_present = (raw_energy != 9'd0);
 	wire       old_present = (old_energy != 9'd0);
-	wire [8:0] blend_hi = (raw_energy >= old_energy) ? raw_energy : old_energy;
-	wire [8:0] blend_lo = (raw_energy >= old_energy) ? old_energy : raw_energy;
-	wire [9:0] blend_overlap = {1'b0, blend_hi} + {5'b00000, blend_lo[8:4]};
-	wire [9:0] selected_blend_energy =
-		(raw_present && old_present) ? blend_overlap :
-		raw_present ? {1'b0, raw_energy} :
-		old_present ? {1'b0, old_energy} :
-		10'd0;
-	wire [3:0] selected_blend_color =
-		raw_present ? raw_color_q :
-		old_present ? old_color_q :
-		4'd0;
-	wire [8:0] stored_energy = blend_energy_q[9]
-		? 9'd511 : blend_energy_q[8:0];
+	wire       raw_wins = raw_present &&
+		(!old_present || (raw_energy >= old_energy));
+	wire [8:0] selected_blend_energy = raw_wins ? raw_energy : old_energy;
+	wire [2:0] selected_blend_color = raw_wins ? raw_rgb_q :
+		old_present ? old_rgb_q : 3'd0;
+	wire [8:0] stored_energy = blend_energy_q;
 	wire [15:0] stored_pixel =
-		{blend_color_q, blend_fresh_q, 2'd0, stored_energy};
+		{blend_color_q, blend_fresh_q, 3'd0, stored_energy};
 	wire [5:0] pending_bit_offset = {pending_lane_q, 4'b0000};
 
 	assign read_burstcnt = 8'd16;
 	assign write_burstcnt = 8'd16;
-	assign write_data = composed_tile[write_beat];
+	assign write_data = write_data_q;
 	assign write_be = 8'hff;
-	assign tilemap_we = (state == COMP_MAP_COMMIT);
-	assign tilemap_buf = target_buf_q;
-	assign tilemap_din = tile_nonzero;
 
 	always_ff @(posedge clk_sys) begin
 		if (reset) begin
@@ -325,14 +317,17 @@ module vfb_phosphor_compositor #(
 			write_ready <= 1'b0;
 			write_addr <= 29'd0;
 			tilemap_addr <= '0;
+			tilemap_write_hot <= '0;
+			tilemap_write_din <= 1'b0;
 			source_buf_q <= '0;
 			target_buf_q <= '0;
+			target_buf_hot_q <= '0;
 			has_source_q <= 1'b0;
 			source_is_composed_q <= 1'b0;
 			intra_mode_q <= 2'd0;
 			inter_mode_q <= 2'd0;
-			reference_draw_idx_q <= 3'd0;
-			age_map_q <= 32'd0;
+			reference_draw_idx_q <= 4'd0;
+			age_map_q <= 64'd0;
 			fresh_decay_factor_q <= 8'd255;
 			tail_decay_factor_q <= 8'd255;
 			tile_x <= 8'd0;
@@ -344,14 +339,15 @@ module vfb_phosphor_compositor #(
 			tile_nonzero <= 1'b0;
 			read_beat <= 4'd0;
 			write_beat <= 4'd0;
+			write_data_q <= 64'd0;
 			pixel_index <= 6'd0;
 			lookahead_pixel_index <= 6'd0;
-			raw_color_q <= 4'd0;
+			raw_rgb_q <= 3'd0;
 			raw_intensity_q <= 9'd0;
 			raw_factor_q <= 8'd0;
 			raw_bypass_q <= 1'b0;
 			raw_product_q <= 17'd0;
-			old_color_q <= 4'd0;
+			old_rgb_q <= 3'd0;
 			old_intensity_q <= 9'd0;
 			old_factor_q <= 8'd0;
 			old_product_q <= 17'd0;
@@ -359,18 +355,23 @@ module vfb_phosphor_compositor #(
 			next_old_pixel_q <= 16'd0;
 			next_raw_factor_q <= 8'd0;
 			next_old_factor_q <= 8'd0;
-			blend_energy_q <= 10'd0;
-			blend_color_q <= 4'd0;
+			blend_energy_q <= 9'd0;
+			blend_color_q <= 3'd0;
 			blend_fresh_q <= 1'b0;
 			pending_write_q <= 1'b0;
 		end else begin
 			compose_done <= 1'b0;
 			pending_write_q <= 1'b0;
+			tilemap_write_hot <= '0;
 
 			if (pending_write_q) begin
 				composed_tile[pending_word_q][pending_bit_offset +: 16]
 					<= pending_pixel_q;
 				tile_nonzero <= tile_nonzero | pending_nonzero_q;
+			end
+			if (write_advance && write_beat != 4'd15) begin
+				write_beat <= write_beat + 4'd1;
+				write_data_q <= composed_tile[write_beat + 4'd1];
 			end
 
 			case (state)
@@ -378,14 +379,14 @@ module vfb_phosphor_compositor #(
 					if (compose_req) begin
 						source_buf_q <= compose_source_buf;
 						target_buf_q <= compose_target_buf;
+						target_buf_hot_q <=
+							{{(BUFFER_COUNT-1){1'b0}}, 1'b1} << compose_target_buf;
 						has_source_q <= compose_has_source;
 						source_is_composed_q <= compose_source_is_composed;
-						intra_mode_q <= intra_frame_mode_q;
-						inter_mode_q <= inter_frame_mode_q;
-						tile_columns <=
-							8'(vfb_tile_columns(render_width));
-						tile_rows <=
-							8'(vfb_tile_rows(render_height));
+						intra_mode_q <= intra_frame_mode_control_q;
+						inter_mode_q <= inter_frame_mode_control_q;
+						tile_columns <= 8'(vfb_tile_columns(render_width));
+						tile_rows <= 8'(vfb_tile_rows(render_height));
 						tile_x <= 8'd0;
 						tile_y <= 8'd0;
 						tilemap_addr <= '0;
@@ -483,13 +484,13 @@ module vfb_phosphor_compositor #(
 				end
 
 				COMP_PIXEL_LOAD: begin
-					raw_color_q <= next_raw_pixel_q[15:12];
+					raw_rgb_q <= next_raw_pixel_q[15:13];
 					raw_intensity_q <= next_raw_pixel_q[8:0];
 					raw_factor_q <= staged_raw_factor;
 					raw_bypass_q <= (intra_mode_q == 2'd0);
-					old_color_q <= next_old_pixel_q[15:12];
+					old_rgb_q <= next_old_pixel_q[15:13];
 					old_intensity_q <= next_old_pixel_q[8:0];
-					old_factor_q <= (!source_is_composed_q || next_old_pixel_q[11])
+					old_factor_q <= (!source_is_composed_q || next_old_pixel_q[12])
 						? fresh_decay_factor_q : tail_decay_factor_q;
 					state <= COMP_PIXEL_RAW;
 				end
@@ -510,7 +511,7 @@ module vfb_phosphor_compositor #(
 					if (pixel_index != 6'd63) begin
 						next_raw_factor_q <= staged_raw_factor;
 						next_old_factor_q <=
-							(!source_is_composed_q || next_old_pixel_q[11])
+							(!source_is_composed_q || next_old_pixel_q[12])
 							? fresh_decay_factor_q : tail_decay_factor_q;
 					end
 					state <= COMP_PIXEL_BLEND;
@@ -535,11 +536,11 @@ module vfb_phosphor_compositor #(
 						pixel_index <= pixel_index + 6'd1;
 						lookahead_pixel_index <=
 							lookahead_pixel_index + 6'd1;
-						raw_color_q <= next_raw_pixel_q[15:12];
+						raw_rgb_q <= next_raw_pixel_q[15:13];
 						raw_intensity_q <= next_raw_pixel_q[8:0];
 						raw_factor_q <= next_raw_factor_q;
 						raw_bypass_q <= (intra_mode_q == 2'd0);
-						old_color_q <= next_old_pixel_q[15:12];
+						old_rgb_q <= next_old_pixel_q[15:13];
 						old_intensity_q <= next_old_pixel_q[8:0];
 						old_factor_q <= next_old_factor_q;
 						state <= COMP_PIXEL_RAW;
@@ -550,23 +551,23 @@ module vfb_phosphor_compositor #(
 					write_addr <= target_tile_addr;
 					write_ready <= 1'b1;
 					write_beat <= 4'd0;
+					write_data_q <= composed_tile[0];
 					state <= COMP_WRITE_REQUEST;
 				end
 
 				COMP_WRITE_REQUEST: begin
 					if (write_grant) begin
 						write_ready <= 1'b0;
-						if (write_advance && write_beat != 4'd15)
-							write_beat <= write_beat + 4'd1;
 						state <= COMP_WRITE_WAIT;
 					end
 				end
 
 				COMP_WRITE_WAIT: begin
-					if (write_advance && write_beat != 4'd15)
-						write_beat <= write_beat + 4'd1;
-					if (write_done)
+					if (write_done) begin
+						tilemap_write_hot <= target_buf_hot_q;
+						tilemap_write_din <= tile_nonzero;
 						state <= COMP_MAP_COMMIT;
+					end
 				end
 
 				COMP_MAP_COMMIT: begin
@@ -581,8 +582,7 @@ module vfb_phosphor_compositor #(
 					end else if (tile_x + 8'd1 >= tile_columns) begin
 						tile_x <= 8'd0;
 						tile_y <= tile_y + 8'd1;
-						tilemap_addr <=
-							vfb_tile_row_addr(tile_y + 8'd1);
+						tilemap_addr <= vfb_tile_row_addr(tile_y + 8'd1);
 						state <= COMP_MAP_ISSUE;
 					end else begin
 						tile_x <= tile_x + 8'd1;

@@ -2,16 +2,16 @@
 // Final CRT presentation stage.
 // written 2026 by Videodr0me
 //
-// This stage runs after primary, bloom, halo, and phosphor processing.
-// Its settings affect only the final video output.
+// Runs after primary, bloom, halo, and decay processing. It applies the
+// selected vector color, overrange spill, and slot mask only to final video.
 //
 // Pipeline:
-//   C1: optional Amplifone-to-Rec.709 color-space lift, R/G += floor(B/7)
-//   C2: presentation color transform
+//   C1: color-space and presentation-color mapping, spill preparation
+//   C2: natural overrange spill and exact-255 white expansion
 //   C3: orientation-aware slot mask with bright-pixel gap closure
-//   C4: final output register
+//   C4: final VGA-facing packet register
 //
-// RGB, sync, and blanking remain aligned through every stage.
+// RGB and sync/blank always travel as one packet.
 // ============================================================================
 
 module vfb_final_present (
@@ -24,9 +24,10 @@ module vfb_final_present (
 	input  logic        slot_mask_enable,
 	input  logic        slot_mask_rows,
 
-	input  logic [7:0]  VGA_R_IN,
-	input  logic [7:0]  VGA_G_IN,
-	input  logic [7:0]  VGA_B_IN,
+	input  logic [8:0]  VGA_R_IN,
+	input  logic [8:0]  VGA_G_IN,
+	input  logic [8:0]  VGA_B_IN,
+	input  logic        source_is_255,
 	input  logic        VGA_HS_IN,
 	input  logic        VGA_VS_IN,
 	input  logic        VGA_HBLANK_IN,
@@ -40,19 +41,18 @@ module vfb_final_present (
 	output logic        VGA_HBLANK_OUT,
 	output logic        VGA_VBLANK_OUT
 );
-	localparam logic [2:0] CHANNEL_ORIGINAL = 3'd0;
-	localparam logic [2:0] CHANNEL_RBG      = 3'd1;
-	localparam logic [2:0] CHANNEL_GRB      = 3'd2;
-	localparam logic [2:0] CHANNEL_GBR      = 3'd3;
-	localparam logic [2:0] CHANNEL_BRG      = 3'd4;
-	localparam logic [2:0] CHANNEL_BGR      = 3'd5;
-	localparam logic [2:0] CHANNEL_BW       = 3'd6;
-	localparam logic [2:0] CHANNEL_NEGATIVE = 3'd7;
-
+	localparam logic [2:0] COLOR_WHITE       = 3'd0;
+	localparam logic [2:0] COLOR_DELUXE_BLUE = 3'd1;
+	localparam logic [2:0] COLOR_LUNAR       = 3'd2;
+	localparam logic [2:0] COLOR_RED         = 3'd3;
+	localparam logic [2:0] COLOR_PURPLE      = 3'd4;
+	localparam logic [2:0] COLOR_CYAN        = 3'd5;
+	localparam logic [2:0] COLOR_YELLOW      = 3'd6;
 	logic       color_space_amp709_q = 1'b0;
-	logic [2:0] presentation_color_q = CHANNEL_ORIGINAL;
+	logic [2:0] presentation_color_q = COLOR_WHITE;
 	logic       slot_mask_enable_q = 1'b0;
 	logic       slot_mask_rows_q = 1'b0;
+
 	always_ff @(posedge clk_sys) begin
 		color_space_amp709_q <= color_space_amp709;
 		presentation_color_q <= presentation_color;
@@ -98,6 +98,44 @@ module vfb_final_present (
 		end
 	endfunction
 
+	function automatic [7:0] scale_deluxe_blue_red(input logic [7:0] channel);
+		logic [8:0] scaled;
+		begin
+			scaled = {1'b0, channel} + 9'd1;
+			scale_deluxe_blue_red = scaled[8:1];
+		end
+	endfunction
+
+	function automatic [7:0] scale_deluxe_blue_green(input logic [7:0] channel);
+		logic [13:0] scaled;
+		begin
+			// round(channel * 45 / 64), where 45 = 32 + 8 + 4 + 1.
+			scaled =
+				({6'd0, channel} << 5) +
+				({6'd0, channel} << 3) +
+				({6'd0, channel} << 2) +
+				{6'd0, channel} + 14'd32;
+			scale_deluxe_blue_green = scaled[13:6];
+		end
+	endfunction
+
+	function automatic [7:0] scale_lunar_blue(input logic [7:0] channel);
+		logic [8:0] numerator;
+		logic [16:0] product_171;
+		begin
+			// Lunar green uses the selected 519 nm reference, RGB(0, 255, 170).
+			// 171/512 gives floor((2*n+1)/3) exactly for every 8-bit input.
+			numerator = {channel, 1'b0} + 9'd1;
+			product_171 =
+				(({8'd0, numerator} << 7) +
+				 ({8'd0, numerator} << 5)) +
+				(({8'd0, numerator} << 3) +
+				 ({8'd0, numerator} << 1)) +
+				 {8'd0, numerator};
+			scale_lunar_blue = product_171[16:9];
+		end
+	endfunction
+
 	function automatic [7:0] max3_u8(
 		input logic [7:0] a,
 		input logic [7:0] b,
@@ -110,13 +148,44 @@ module vfb_final_present (
 		end
 	endfunction
 
-	logic [7:0] cs_r;
-	logic [7:0] cs_g;
-	logic [7:0] cs_b;
-	logic cs_hs;
-	logic cs_vs;
-	logic cs_hblank;
-	logic cs_vblank;
+	function automatic [8:0] max3_u9(
+		input logic [8:0] a,
+		input logic [8:0] b,
+		input logic [8:0] c
+	);
+		logic [8:0] ab;
+		begin
+			ab = (a > b) ? a : b;
+			max3_u9 = (ab > c) ? ab : c;
+		end
+	endfunction
+
+	function automatic [7:0] clamp_u9(input logic [8:0] value);
+		begin
+			clamp_u9 = value[8] ? 8'hff : value[7:0];
+		end
+	endfunction
+
+	function automatic [7:0] add_spill(
+		input logic [7:0] base,
+		input logic [7:0] spill
+	);
+		logic [8:0] sum;
+		begin
+			sum = {1'b0, base} + {1'b0, spill};
+			add_spill = sum[8] ? 8'hff : sum[7:0];
+		end
+	endfunction
+
+	logic [7:0] base_r_q;
+	logic [7:0] base_g_q;
+	logic [7:0] base_b_q;
+	logic [7:0] spill_q;
+	logic source_is_255_q;
+	logic base_hs_q;
+	logic base_vs_q;
+	logic base_hblank_q;
+	logic base_vblank_q;
 
 	logic [7:0] ch_r;
 	logic [7:0] ch_g;
@@ -140,33 +209,99 @@ module vfb_final_present (
 
 	always_ff @(posedge clk_sys) begin
 		if (reset) begin
-			cs_r <= 8'd0;
-			cs_g <= 8'd0;
-			cs_b <= 8'd0;
-			cs_hs <= 1'b1;
-			cs_vs <= 1'b1;
-			cs_hblank <= 1'b1;
-			cs_vblank <= 1'b1;
+			base_r_q <= 8'd0;
+			base_g_q <= 8'd0;
+			base_b_q <= 8'd0;
+			spill_q <= 8'd0;
+			source_is_255_q <= 1'b0;
+			base_hs_q <= 1'b1;
+			base_vs_q <= 1'b1;
+			base_hblank_q <= 1'b1;
+			base_vblank_q <= 1'b1;
 		end else if (ce_pix) begin
 			logic [5:0] blue_lift;
+			logic [7:0] color_r;
+			logic [7:0] color_g;
+			logic [7:0] color_b;
+			logic [7:0] mapped_r;
+			logic [7:0] mapped_g;
+			logic [7:0] mapped_b;
+			logic [8:0] peak_energy;
+			logic [8:0] spill_energy;
 
-			cs_hs <= VGA_HS_IN;
-			cs_vs <= VGA_VS_IN;
-			cs_hblank <= VGA_HBLANK_IN;
-			cs_vblank <= VGA_VBLANK_IN;
+			base_hs_q <= VGA_HS_IN;
+			base_vs_q <= VGA_VS_IN;
+			base_hblank_q <= VGA_HBLANK_IN;
+			base_vblank_q <= VGA_VBLANK_IN;
 			if (VGA_HBLANK_IN || VGA_VBLANK_IN) begin
-				cs_r <= 8'd0;
-				cs_g <= 8'd0;
-				cs_b <= 8'd0;
-			end else if (color_space_amp709_q) begin
-				blue_lift = div7_u8(VGA_B_IN);
-				cs_r <= clamp_add_lift(VGA_R_IN, blue_lift);
-				cs_g <= clamp_add_lift(VGA_G_IN, blue_lift);
-				cs_b <= VGA_B_IN;
+				base_r_q <= 8'd0;
+				base_g_q <= 8'd0;
+				base_b_q <= 8'd0;
+				spill_q <= 8'd0;
+				source_is_255_q <= 1'b0;
 			end else begin
-				cs_r <= VGA_R_IN;
-				cs_g <= VGA_G_IN;
-				cs_b <= VGA_B_IN;
+				peak_energy = max3_u9(VGA_R_IN, VGA_G_IN, VGA_B_IN);
+				if (color_space_amp709_q) begin
+					blue_lift = div7_u8(clamp_u9(VGA_B_IN));
+					color_r = clamp_add_lift(clamp_u9(VGA_R_IN), blue_lift);
+					color_g = clamp_add_lift(clamp_u9(VGA_G_IN), blue_lift);
+					color_b = clamp_u9(VGA_B_IN);
+				end else begin
+					color_r = clamp_u9(VGA_R_IN);
+					color_g = clamp_u9(VGA_G_IN);
+					color_b = clamp_u9(VGA_B_IN);
+				end
+
+				case (presentation_color_q)
+					COLOR_WHITE: begin
+						mapped_r = color_r;
+						mapped_g = color_g;
+						mapped_b = color_b;
+					end
+					COLOR_DELUXE_BLUE: begin
+						mapped_r = scale_deluxe_blue_red(color_r);
+						mapped_g = scale_deluxe_blue_green(color_g);
+						mapped_b = color_b;
+					end
+					COLOR_LUNAR: begin
+						mapped_r = 8'd0;
+						mapped_g = color_g;
+						mapped_b = scale_lunar_blue(color_b);
+					end
+					COLOR_RED: begin
+						mapped_r = color_r;
+						mapped_g = 8'd0;
+						mapped_b = 8'd0;
+					end
+					COLOR_PURPLE: begin
+						mapped_r = color_r;
+						mapped_g = 8'd0;
+						mapped_b = color_b;
+					end
+					COLOR_CYAN: begin
+						mapped_r = 8'd0;
+						mapped_g = color_g;
+						mapped_b = color_b;
+					end
+					COLOR_YELLOW: begin
+						mapped_r = color_r;
+						mapped_g = color_g;
+						mapped_b = 8'd0;
+					end
+					default: begin
+						mapped_r = color_r;
+						mapped_g = color_g;
+						mapped_b = color_b;
+					end
+				endcase
+
+				base_r_q <= mapped_r;
+				base_g_q <= mapped_g;
+				base_b_q <= mapped_b;
+				spill_energy = (peak_energy > 9'd255) ?
+					(peak_energy - 9'd255) : 9'd0;
+				spill_q <= spill_energy[7:0];
+				source_is_255_q <= source_is_255;
 			end
 		end
 	end
@@ -181,30 +316,19 @@ module vfb_final_present (
 			ch_hblank <= 1'b1;
 			ch_vblank <= 1'b1;
 		end else if (ce_pix) begin
-			logic [9:0] grey_sum;
-			logic [7:0] grey;
-
-			ch_hs <= cs_hs;
-			ch_vs <= cs_vs;
-			ch_hblank <= cs_hblank;
-			ch_vblank <= cs_vblank;
-
-			grey_sum = {2'd0, cs_r} +
-			           {1'd0, cs_g, 1'b0} +
-			           {2'd0, cs_b};
-			grey = grey_sum[9:2];
-
-			case (presentation_color_q)
-				CHANNEL_ORIGINAL: begin ch_r <= cs_r; ch_g <= cs_g; ch_b <= cs_b; end
-				CHANNEL_RBG:      begin ch_r <= cs_r; ch_g <= cs_b; ch_b <= cs_g; end
-				CHANNEL_GRB:      begin ch_r <= cs_g; ch_g <= cs_r; ch_b <= cs_b; end
-				CHANNEL_GBR:      begin ch_r <= cs_g; ch_g <= cs_b; ch_b <= cs_r; end
-				CHANNEL_BRG:      begin ch_r <= cs_b; ch_g <= cs_r; ch_b <= cs_g; end
-				CHANNEL_BGR:      begin ch_r <= cs_b; ch_g <= cs_g; ch_b <= cs_r; end
-				CHANNEL_BW:       begin ch_r <= grey; ch_g <= grey; ch_b <= grey; end
-				CHANNEL_NEGATIVE: begin ch_r <= ~cs_r; ch_g <= ~cs_g; ch_b <= ~cs_b; end
-				default:          begin ch_r <= cs_r; ch_g <= cs_g; ch_b <= cs_b; end
-			endcase
+			ch_hs <= base_hs_q;
+			ch_vs <= base_vs_q;
+			ch_hblank <= base_hblank_q;
+			ch_vblank <= base_vblank_q;
+			if (source_is_255_q) begin
+				ch_r <= 8'hff;
+				ch_g <= 8'hff;
+				ch_b <= 8'hff;
+			end else begin
+				ch_r <= add_spill(base_r_q, spill_q);
+				ch_g <= add_spill(base_g_q, spill_q);
+				ch_b <= add_spill(base_b_q, spill_q);
+			end
 		end
 	end
 

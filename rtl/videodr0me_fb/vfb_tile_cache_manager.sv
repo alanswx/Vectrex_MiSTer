@@ -2,10 +2,9 @@
 // Tile cache manager for sparse vector pixel writes.
 // written 2026 by Videodr0me
 //
-// Stores 8x8 tiles with native color, 3-bit draw-time phase, and 9-bit intensity.
-// Associative cache slots are flushed and filled in DDRAM bursts.
-// Clean tilemaps allow background clears without rewriting the framebuffer.
-// A first write to an empty pixel does not require read-modify-write.
+// Stores 8x8 tiles with an RGB mask, four-bit draw phase, and nine-bit intensity.
+// Associative slots are flushed and filled in DDRAM bursts. Clean tilemaps clear
+// the background without rewriting it. A first write to an empty pixel skips RMW.
 // ============================================================================
 
 module vfb_tile_cache_manager #(
@@ -24,7 +23,7 @@ module vfb_tile_cache_manager #(
 	output logic        pixel_ready,
 	input  logic [15:0] pixel_tile_id,
 	input  logic [5:0]  pixel_offset, // 64 pixels per tile
-	input  logic [15:0] pixel_data,   // Native color[15:12], draw_idx[11:9], intensity[8:0]
+	input  logic [15:0] pixel_data,   // RGB[15:13], draw_idx[12:9], intensity[8:0]
 
 	input  logic        eof_token,
 	input  logic [15:0] eof_completed_frame_tick_clks,
@@ -68,9 +67,8 @@ module vfb_tile_cache_manager #(
 	// Compositor tilemap port. All maps are read in parallel; only the
 	// composing destination map may be written through this port.
 	input  logic [14:0] compose_tilemap_addr,
-	input  logic        compose_tilemap_we,
-	input  logic [BUF_IDX_W-1:0] compose_tilemap_buf,
-	input  logic        compose_tilemap_din,
+	input  logic [BUFFER_COUNT-1:0] compose_tilemap_write_hot,
+	input  logic        compose_tilemap_write_din,
 	output logic [BUFFER_COUNT-1:0] compose_tilemap_dout
 );
 
@@ -84,7 +82,16 @@ module vfb_tile_cache_manager #(
 	localparam TILEMAP_ADDR_W = 15;
 	localparam TILEMAP_DEPTH = 1 << TILEMAP_ADDR_W;
 
-	// Two-entry input buffer
+	logic [63:0] pixel_offset_mask;
+	genvar offset_bit;
+	generate
+		for (offset_bit = 0; offset_bit < 64; offset_bit = offset_bit + 1) begin : gen_pixel_offset_mask
+			localparam logic [5:0] OFFSET = offset_bit[5:0];
+			assign pixel_offset_mask[offset_bit] = (pixel_offset == OFFSET);
+		end
+	endgenerate
+
+	// Two-entry input buffer.
 	logic [54:0] s_data;
 	assign s_data = {eof_token, eof_completed_frame_tick_clks,
 	                 pixel_data, pixel_offset, pixel_tile_id};
@@ -123,14 +130,14 @@ module vfb_tile_cache_manager #(
 				r_data_buf <= s_data;
 				r_offset_word_buf <= pixel_offset[5:2];
 				r_offset_byte_buf <= pixel_offset[1:0];
-				r_offset_mask_buf <= 64'd1 << pixel_offset;
+				r_offset_mask_buf <= pixel_offset_mask;
 				r_tilemap_addr_buf <= vfb_linear_tile_addr(pixel_tile_id);
 			end
 			if (load_primary) begin
 				r_data <= s_data;
 				r_offset_word <= pixel_offset[5:2];
 				r_offset_byte <= pixel_offset[1:0];
-				r_offset_mask <= 64'd1 << pixel_offset;
+				r_offset_mask <= pixel_offset_mask;
 				r_tilemap_addr <= vfb_linear_tile_addr(pixel_tile_id);
 			end else if (unload_buffer) begin
 				r_data <= r_data_buf;
@@ -162,7 +169,7 @@ module vfb_tile_cache_manager #(
 	assign s0_offset_mask = r_offset_mask;
 	assign s0_tilemap_addr = r_tilemap_addr;
 
-	// Read-modify-write states
+	// Read-modify-write states.
 	typedef enum logic [3:0] {
 		RMW_IDLE,
 		RMW_READ,
@@ -191,21 +198,21 @@ module vfb_tile_cache_manager #(
 
 	logic flush_active = 0;
 	logic [2:0] flush_active_idx;
-	logic flush_active_is_eof = 0; // The active flush was requested at EOF.
-	logic flush_contaminated = 0; // The active slot changed during its flush.
+	logic flush_active_is_eof = 0; // Tracks if the active flush is an EOF flush
+	logic flush_contaminated = 0; // Active slot changed during its flush.
 
 	// Cache writes are prepared here and applied one clock later.
 	logic        cache_wr_en [0:CACHE_COUNT-1];
-	logic        cache_wr_full [0:CACHE_COUNT-1];     // Full-word fill or 16-bit pixel write
+	logic        cache_wr_full [0:CACHE_COUNT-1];     // 1: full-word fill; 0: 16-bit pixel write
 	logic [3:0]  cache_wr_word [0:CACHE_COUNT-1];
 	logic [1:0]  cache_wr_byte [0:CACHE_COUNT-1];     // 16-bit position within the word
-	logic [15:0] cache_wr_data_16_q;
-	logic [63:0] cache_wr_data_64 [0:CACHE_COUNT-1];
+	logic [15:0] cache_wr_data_16_q;                  // shared partial write data
+	logic [63:0] cache_wr_data_64 [0:CACHE_COUNT-1];  // full write data (fill)
 
-	// Shared cache read address
+	// Shared cache read address.
 	logic [3:0] port_a_addr;
 
-	// All slots read the same word address.
+	// All slots read the same word.
 	logic [63:0] cache_ram_out [0:CACHE_COUNT-1];
 
 	(* ramstyle = "logic" *) logic [63:0] cache_ram [0:CACHE_COUNT-1][0:15];
@@ -235,7 +242,7 @@ module vfb_tile_cache_manager #(
 	logic [15:0] cache_tile_id [0:CACHE_COUNT-1];
 	logic [63:0] cache_bitmap [0:CACHE_COUNT-1];
 
-	// Find the matching cache slot.
+	// Find a matching cache slot.
 	logic [7:0] cache_hit_hot;
 	logic       cache_hit;
 	logic       dirty_hit;
@@ -250,13 +257,13 @@ module vfb_tile_cache_manager #(
 		end
 		cache_hit = |cache_hit_hot;
 
-		// Test the requested pixel against every matching slot bitmap.
+		// Test the requested pixel against each matching bitmap.
 		dirty_hit = |(cache_hit_hot & slot_dirty_hit);
 	end
 
 	assign cache_hit_hot = r_hit_hot;
 
-	// Pseudo-LRU replacement
+	// Pseudo-LRU replacement.
 	logic [6:0] plru_state = 7'b0;
 	wire        sel_right_half = plru_state[0];
 	wire        sel_qtr = sel_right_half ? plru_state[2] : plru_state[1];
@@ -264,6 +271,8 @@ module vfb_tile_cache_manager #(
 	                      (sel_qtr ? plru_state[6] : plru_state[5]) :
 	                      (sel_qtr ? plru_state[4] : plru_state[3]);
 	wire [2:0]  plru_victim_way = (CACHE_COUNT == 8) ? {sel_right_half, sel_qtr, sel_leaf} : {1'b0, sel_right_half, sel_qtr};
+
+	// Select slots for allocation and eviction.
 
 	// Register slot state before replacement selection.
 	logic [CACHE_COUNT-1:0] slot_dirty;
@@ -306,7 +315,7 @@ module vfb_tile_cache_manager #(
 		end
 	end
 
-	// Select a dirty slot for eviction.
+	// Stage 2: Registered priority encoder outputs (Eviction)
 	logic [2:0] lru_dirty_idx;
 	logic       has_lru_dirty;
 
@@ -333,8 +342,9 @@ module vfb_tile_cache_manager #(
 		end
 	end
 
-	// Per-framebuffer tile dirty maps.
-	// The largest mode is 184 x 135 tiles.
+	// Per-framebuffer dirty maps.
+	// The largest mode is 184 x 135 tiles. A 192-tile row stride keeps addressing
+	// to shifts and adds while each map remains within 32K entries.
 	logic [TILEMAP_ADDR_W-1:0] buf_tilemap_addr [0:BUFFER_COUNT-1];
 	logic        buf_tilemap_we [0:BUFFER_COUNT-1];
 	logic        buf_tilemap_din [0:BUFFER_COUNT-1];
@@ -344,25 +354,23 @@ module vfb_tile_cache_manager #(
 	generate
 		for (g = 0; g < BUFFER_COUNT; g++) begin : gen_dirty_ram
 			(* ramstyle = "no_rw_check, M10K" *) logic buf_tilemap [0:TILEMAP_DEPTH-1];
-			wire compose_write = compose_tilemap_we &&
-			                     (compose_tilemap_buf == BUF_IDX_W'(g));
+			wire compose_write = compose_tilemap_write_hot[g];
 			wire tilemap_port_a_we = compose_write || buf_tilemap_we[g];
 			wire [TILEMAP_ADDR_W-1:0] tilemap_port_a_addr =
 				compose_write ? compose_tilemap_addr : buf_tilemap_addr[g];
 			wire tilemap_port_a_din =
-				compose_write ? compose_tilemap_din : buf_tilemap_din[g];
+				compose_write ? compose_tilemap_write_din : buf_tilemap_din[g];
 
 			always_ff @(posedge clk_sys) begin
-				if (tilemap_port_a_we) begin
+				if (tilemap_port_a_we)
 					buf_tilemap[tilemap_port_a_addr] <= tilemap_port_a_din;
-				end
 				buf_tilemap_dout[g] <= buf_tilemap[tilemap_port_a_addr];
 				compose_tilemap_dout[g] <= buf_tilemap[compose_tilemap_addr];
 			end
 		end
 	endgenerate
 
-	// Tilemap clearing
+	// Tilemap clearing.
 	logic [TILEMAP_ADDR_W-1:0] bg_clear_tile;
 	logic [BUF_IDX_W-1:0] active_clear_buf;
 
@@ -384,8 +392,7 @@ module vfb_tile_cache_manager #(
 	// Mode-dependent clear limit. FB_HEIGHT changes only as part of a
 	// framebuffer mode reset.
 	localparam [8:0]  TILE_ROWS_DEFAULT      = 9'd60;     // 480p
-	localparam [15:0] TILEMAP_ENTRIES_DEFAULT =
-		VFB_TILEMAP_ENTRIES_480;
+	localparam [15:0] TILEMAP_ENTRIES_DEFAULT = VFB_TILEMAP_ENTRIES_480;
 	localparam [TILEMAP_ADDR_W-1:0] TILEMAP_MAX_DEFAULT = 15'd11519;
 
 	logic [8:0] tile_rows_r = TILE_ROWS_DEFAULT;
@@ -453,9 +460,9 @@ module vfb_tile_cache_manager #(
 		end
 	end
 
-	// Add crossing energy for each active color channel.
-	wire [3:0] c_old = s2_cached_pixel[15:12];
-	wire [3:0] c_new = s1_pixel_data[15:12];
+	// Add crossing energy for each active channel.
+	wire [2:0] c_old = s2_cached_pixel[15:13];
+	wire [2:0] c_new = s1_pixel_data[15:13];
 	wire [8:0] z_old = s2_cached_pixel[8:0];
 	wire [8:0] z_new = s1_pixel_data[8:0];
 	wire [8:0] z_hi  = (z_old >= z_new) ? z_old : z_new;
@@ -482,52 +489,38 @@ module vfb_tile_cache_manager #(
 		end
 	endfunction
 
-	logic [9:0] strong_red_sum, fine_red_sum, green_sum, blue_sum;
-	assign strong_red_sum = soft_cross_channel(
-		c_old[3], c_new[3], z_old, z_new, z_soft_overlap);
-	assign fine_red_sum = soft_cross_channel(
-		c_old[2], c_new[2], z_old, z_new, z_soft_overlap);
-	assign green_sum = soft_cross_channel(
-		c_old[1], c_new[1], z_old, z_new, z_soft_overlap);
-	assign blue_sum = soft_cross_channel(
-		c_old[0], c_new[0], z_old, z_new, z_soft_overlap);
+	logic [9:0] r_sum, g_sum, b_sum;
+	assign r_sum = soft_cross_channel(c_old[2], c_new[2], z_old, z_new, z_soft_overlap);
+	assign g_sum = soft_cross_channel(c_old[1], c_new[1], z_old, z_new, z_soft_overlap);
+	assign b_sum = soft_cross_channel(c_old[0], c_new[0], z_old, z_new, z_soft_overlap);
 
-	logic [9:0] blend_strong_red_sum_q;
-	logic [9:0] blend_fine_red_sum_q;
+	logic [9:0] blend_r_sum_q;
 	logic [9:0] blend_g_sum_q;
 	logic [9:0] blend_b_sum_q;
-	logic [3:0] blend_color_q;
-	logic [2:0] blend_draw_idx_q;
+	logic [2:0] blend_color_q;
+	logic [3:0] blend_draw_idx_q;
 
-	// Normalize total energy across the active channels.
+	// Normalize total energy across active channels.
 	logic [11:0] total_energy;
-	logic [2:0] active_channel_count;
-	assign total_energy =
-		blend_strong_red_sum_q + blend_fine_red_sum_q +
-		blend_g_sum_q + blend_b_sum_q;
-	assign active_channel_count =
-		{2'd0, blend_color_q[3]} + {2'd0, blend_color_q[2]} +
-		{2'd0, blend_color_q[1]} + {2'd0, blend_color_q[0]};
+	assign total_energy = blend_r_sum_q + blend_g_sum_q + blend_b_sum_q;
 
 	logic [11:0] z_out_full;
 	always_comb begin
-		case (active_channel_count)
-			3'd1: z_out_full = total_energy;
-			3'd2: z_out_full = total_energy >> 1;
-			3'd3: z_out_full =
-				(total_energy + (total_energy >> 2)) >> 2;
-			3'd4: z_out_full = total_energy >> 2;
+		case (blend_color_q)
+			3'b001, 3'b010, 3'b100: z_out_full = total_energy;
+			3'b011, 3'b101, 3'b110: z_out_full = total_energy >> 1;
+			3'b111: z_out_full = (total_energy + (total_energy >> 2)) >> 2; // 5/16 approximation to one-third.
 			default: z_out_full = 12'd0;
 		endcase
 	end
 
 	logic [8:0] final_z;
-	assign final_z = (z_out_full > 12'd511) ? 9'd511 : z_out_full[8:0];
+	assign final_z = (z_out_full > 11'd511) ? 9'd511 : z_out_full[8:0];
 
 	logic [15:0] blended_pixel;
 	assign blended_pixel = {blend_color_q, blend_draw_idx_q, final_z};
 
-	// Full-cache flush
+	// Controller Flush Signals
 	logic flush_all = 0;
 	logic [2:0] eof_flush_idx = 0;
 	logic flush_done_out = 0;
@@ -541,7 +534,8 @@ module vfb_tile_cache_manager #(
 			has_free_q <= 1'b0;
 			free_idx_q <= 3'd0;
 		end else if (normal_flush_releases_slot) begin
-			// Reuse the slot released by the completed flush.
+			// Make the released slot visible without issuing another eviction
+			// while the registered metadata catches up.
 			has_free_q <= 1'b1;
 			free_idx_q <= flush_active_idx;
 		end else begin
@@ -550,18 +544,20 @@ module vfb_tile_cache_manager #(
 		end
 	end
 
-	// The arbiter advances the flush word.
+	// Flush beat counter owned by cache manager, advanced by arbiter.
 	logic [3:0] flush_beat_int = 0;
 
-	// Select the slot being flushed.
+	// Flush Read Index Selection
 	wire [2:0] flush_read_idx = flush_active ? flush_active_idx :
 	                            flush_all ? eof_flush_idx : flush_evict_idx;
 
-	// Read the current and next words so an accepted write can advance directly.
-	logic [63:0] flush_data_cur;
-	logic [63:0] flush_data_nxt;
-	logic [3:0]  flush_beat_pipe;
-	logic        prev_advance = 0;
+	// Flush data path:
+	// Pre-read both current beat and next beat into registers every cycle.
+	// A registered prev_advance flag selects which one to present.
+	logic [63:0] flush_data_cur;    // Current cache word
+	logic [63:0] flush_data_nxt;    // Next cache word
+	logic [3:0]  flush_beat_pipe;   // Registered: flush_beat_int
+	logic        prev_advance = 0;  // Registered: flush_advance from previous cycle
 
 	always_ff @(posedge clk_sys) begin
 		flush_data_cur  <= cache_ram[flush_read_idx][flush_beat_int];
@@ -570,7 +566,7 @@ module vfb_tile_cache_manager #(
 		prev_advance    <= flush_advance;
 	end
 
-	// After an accepted word, use the prepared next word.
+	// If we advanced last cycle, the current register is stale; use pre-read next.
 	wire [63:0] unmasked_flush_data = prev_advance ? flush_data_nxt : flush_data_cur;
 	wire [3:0]  active_flush_beat   = prev_advance ? (flush_beat_pipe + 4'd1) : flush_beat_pipe;
 
@@ -584,33 +580,33 @@ module vfb_tile_cache_manager #(
 		flush_bitmap_reg[{active_flush_beat, 2'd0}] ? unmasked_flush_data[15:0]  : 16'd0
 	};
 
-	// Each tile is sixteen 64-bit words.
+	// Flush Burst Count: always 16 beats per tile
 	assign flush_burstcnt = 8'd16;
 
-	// Write every byte so untouched pixels are initialized to zero.
+	// Write the complete 64-bit word; pixels absent from the bitmap are written as zero.
 	assign flush_be = 8'hFF;
 
-	// Fill word
+	// Fill word counter.
 	logic [3:0] fill_beat_int = 0;
 	assign fill_burstcnt = 8'd16;
 
-	// Select the cache read address.
+	// Select the shared cache read address.
 	always_comb begin
 		if (rmw_state == RMW_IDLE) port_a_addr = s0_offset_word;
 		else port_a_addr = s1_offset_word;
 	end
 
-	// The tilemap read is synchronous; wait one clock before using its result.
+	// Wait one clock for the synchronous tilemap read.
 	logic s1_dirty_valid = 0;
 	logic s1_tile_clean = 0;
 
-	// Delay buf_display to match the tilemap M10K read latency.
+	// Delay buf_display to match the tilemap RAM.
 	logic [BUF_IDX_W-1:0] buf_display_d1;
 	always_ff @(posedge clk_sys) begin
 		buf_display_d1 <= buf_display;
 	end
 
-	// Report clean until tilemap initialization completes.
+	// Report clean until initialization completes.
 	assign display_tile_dirty = (clearer_init_done && display_valid) ? buf_tilemap_dout[buf_display_d1] : 1'b0;
 
 	logic [TILEMAP_ADDR_W-1:0] s1_tilemap_addr;
@@ -629,15 +625,6 @@ module vfb_tile_cache_manager #(
 			draw_tilemap_addr = rmw_tilemap_addr_q;
 			draw_we = 1;
 			draw_din = 1;
-		end else if (rmw_state == RMW_WAIT_DIRTY_BIT && s1_dirty_valid && has_free_q && s1_tile_clean) begin
-			draw_tilemap_addr = s1_tilemap_addr;
-			draw_we = 1;
-			draw_din = 1;
-		end else if (rmw_state == RMW_IDLE && s0_valid) begin
-			// A miss reads the tilemap before marking the tile dirty.
-			draw_tilemap_addr = s0_tilemap_addr;
-		end else if (rmw_state == RMW_WAIT_DIRTY_BIT) begin
-			draw_tilemap_addr = s1_tilemap_addr;
 		end
 	end
 
@@ -714,7 +701,7 @@ module vfb_tile_cache_manager #(
 				CLEAR_IDLE: begin
 					if (clear_req) begin
 						bg_clear_tile <= 0;
-						active_clear_buf <= clear_buf_idx;  // Latch: stable for entire sweep
+						active_clear_buf <= clear_buf_idx;  // Keep fixed for the sweep.
 						clear_state <= CLEAR_PROCESS;
 					end
 				end
@@ -737,21 +724,21 @@ module vfb_tile_cache_manager #(
 		end
 	end
 
-	// Match cache tags when an entry reaches the front of the input buffer.
-	logic [15:0] tag_match_tile_id;
-	logic [7:0]  tag_match_hot;
+	// Match cache tags before selecting the next input entry.
+	logic [7:0] primary_tag_match_hot;
+	logic [7:0] buffered_tag_match_hot;
+	logic [7:0] current_tag_match_hot;
 	always_comb begin
-		if (load_primary)
-			tag_match_tile_id = pixel_tile_id;
-		else if (unload_buffer)
-			tag_match_tile_id = r_data_buf[15:0];
-		else
-			tag_match_tile_id = s0_tile_id;
-
-		tag_match_hot = 8'd0;
+		primary_tag_match_hot = 8'd0;
+		buffered_tag_match_hot = 8'd0;
+		current_tag_match_hot = 8'd0;
 		for (int i=0; i<CACHE_COUNT; i++) begin
-			tag_match_hot[i] =
-				cache_valid[i] && (cache_tile_id[i] == tag_match_tile_id);
+			primary_tag_match_hot[i] =
+				cache_valid[i] && (cache_tile_id[i] == pixel_tile_id);
+			buffered_tag_match_hot[i] =
+				cache_valid[i] && (cache_tile_id[i] == r_data_buf[15:0]);
+			current_tag_match_hot[i] =
+				cache_valid[i] && (cache_tile_id[i] == s0_tile_id);
 		end
 	end
 
@@ -765,7 +752,7 @@ module vfb_tile_cache_manager #(
 		(rmw_state == RMW_FLUSH_ALL) ||
 		fast_tag_allocation || fill_tag_allocation;
 
-	// Accept pixels after initialization while no full flush is requested.
+	// Accept pixels after initialization while no full flush is active.
 	logic manager_ready = 0;
 	always_ff @(posedge clk_sys) begin
 		manager_ready <= has_draw_buf && clearer_init_done;
@@ -780,16 +767,21 @@ module vfb_tile_cache_manager #(
 			r_hit_valid <= 1'b0;
 		end else if (tag_map_unstable) begin
 			r_hit_valid <= 1'b0;
-		end else if (load_primary || unload_buffer ||
-		             (r_valid && !r_hit_valid)) begin
-			r_hit_hot <= tag_match_hot;
+		end else if (load_primary) begin
+			r_hit_hot <= primary_tag_match_hot;
+			r_hit_valid <= 1'b1;
+		end else if (unload_buffer) begin
+			r_hit_hot <= buffered_tag_match_hot;
+			r_hit_valid <= 1'b1;
+		end else if (r_valid && !r_hit_valid) begin
+			r_hit_hot <= current_tag_match_hot;
 			r_hit_valid <= 1'b1;
 		end else if (s0_ready && r_valid) begin
 			r_hit_valid <= 1'b0;
 		end
 	end
 
-	// Cache controller
+	// Cache controller.
 	always_ff @(posedge clk_sys) begin
 		if (rst_sys) begin
 			rmw_state <= RMW_IDLE;
@@ -820,7 +812,7 @@ module vfb_tile_cache_manager #(
 			s1_lru_en <= 0;   // Default-clear pipeline trigger
 			rmw_tilemap_mark_q <= 1'b0;
 
-			// Clear dirty only if the slot did not change during the flush.
+			// Clear dirty only if the slot did not change during its flush.
 			if (flush_done_in) begin
 				flush_active <= 0;
 				flush_contaminated <= 0;
@@ -830,7 +822,7 @@ module vfb_tile_cache_manager #(
 				end
 			end
 
-			// Capture the pixel bitmap when DDRAM accepts the request.
+			// Capture the bitmap when DDRAM accepts the request.
 			if (flush_ready && flush_grant) begin
 				flush_ready <= 0;
 				flush_active <= 1;
@@ -838,7 +830,7 @@ module vfb_tile_cache_manager #(
 				flush_active_is_eof <= flush_all;
 				flush_bitmap_reg <= cache_bitmap[flush_evict_idx];
 
-				// A cache write on this edge may be newer than the prepared flush data.
+				// A cache write on this edge may be newer than the prepared flush word.
 				flush_contaminated <= cache_wr_en[flush_evict_idx];
 
 			end else if (flush_active && cache_wr_en[flush_active_idx]) begin
@@ -889,19 +881,20 @@ module vfb_tile_cache_manager #(
 								end
 							end
 
+							// Choose the next cache operation.
 							if (cache_hit) begin
 								s1_lru_en <= 1;
 								s1_lru_idx <= hit_idx;
 
-								// Keep the selected slot for a possible RMW.
+								// Keep the selected slot for a possible RMW operation.
 								s1_cache_idx <= hit_idx;
 
 								if (dirty_hit) begin
-									// Existing pixel: read and blend it.
+									// Existing pixel: read and blend.
 									rmw_state <= RMW_READ;
 								end
 							end else begin
-								// Cache miss: read the framebuffer tilemap.
+								// Cache miss: read the tilemap.
 								s1_dirty_valid <= 0;
 								rmw_state <= RMW_WAIT_DIRTY_BIT;
 							end
@@ -911,13 +904,13 @@ module vfb_tile_cache_manager #(
 
 				RMW_WAIT_DIRTY_BIT: begin
 					if (!s1_dirty_valid) begin
-						// Wait for the synchronous tilemap result.
+					// Wait for the synchronous tilemap result.
 						s1_dirty_valid <= 1;
 						s1_tile_clean <= !buf_tilemap_dout[buf_draw];
 					end else begin
 						if (has_free_q) begin
 							if (s1_tile_clean) begin
-								// Clean tile: allocate it and write directly.
+								// Clean tile: allocate and write directly.
 								cache_valid[free_idx_q] <= 1;
 								cache_tile_id[free_idx_q] <= s1_tile_id;
 								cache_dirty[free_idx_q] <= 1;
@@ -926,11 +919,14 @@ module vfb_tile_cache_manager #(
 								s1_lru_en <= 1;
 								s1_lru_idx <= free_idx_q;
 
+								// Write the new pixel into the allocated slot.
 								cache_wr_en[free_idx_q] <= 1;
 								cache_wr_full[free_idx_q] <= 0;
 								cache_wr_word[free_idx_q] <= s1_offset_word;
 								cache_wr_byte[free_idx_q] <= s1_offset_byte;
 								cache_wr_data_16_q <= s1_pixel_data;
+								rmw_tilemap_addr_q <= s1_tilemap_addr;
+								rmw_tilemap_mark_q <= 1'b1;
 
 								rmw_state <= RMW_IDLE;
 							end else begin
@@ -964,6 +960,7 @@ module vfb_tile_cache_manager #(
 							flush_addr <= draw_buf_base + ({13'd0, cache_tile_id[eof_flush_idx]} << 4);
 							flush_bitmap_reg <= cache_bitmap[eof_flush_idx];
 						end else if (flush_active && flush_active_idx == eof_flush_idx) begin
+							// Wait for the active flush to finish.
 						end
 					end
 
@@ -1013,19 +1010,20 @@ module vfb_tile_cache_manager #(
 				end
 
 				RMW_READ: begin
+					// The requested cache row is now available.
 					rmw_state <= RMW_READ2;
 				end
 				RMW_READ2: begin
+					// Select the requested slot and pixel.
 					rmw_state <= RMW_BLEND;
 				end
 
 				RMW_BLEND: begin
-					blend_strong_red_sum_q <= strong_red_sum;
-					blend_fine_red_sum_q <= fine_red_sum;
-					blend_g_sum_q <= green_sum;
-					blend_b_sum_q <= blue_sum;
+					blend_r_sum_q <= r_sum;
+					blend_g_sum_q <= g_sum;
+					blend_b_sum_q <= b_sum;
 					blend_color_q <= c_old | c_new;
-					blend_draw_idx_q <= s1_pixel_data[11:9];
+					blend_draw_idx_q <= s1_pixel_data[12:9];
 
 					rmw_tilemap_addr_q <= s1_tilemap_addr;
 					rmw_tilemap_mark_q <= 1'b1;

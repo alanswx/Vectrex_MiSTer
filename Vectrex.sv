@@ -58,6 +58,7 @@ localparam CONF_STR = {
 	"VECTREX;;",
 	"-;",
 	"F1,VECBINROM;",
+	"F2,ART,Load Overlay;",
 	"OB,Skip logo,No,Yes;",
 	"-;",
 	"OK,Orientation,Horz,Vert;",
@@ -70,7 +71,8 @@ localparam CONF_STR = {
 	"O56,Pseudocolor,Off,1,2,3;",
 	"O8,Overburn,No,Yes;",
 	"OD,HDMI test pattern,Off,On;",
-	"OLN,CRT effects,Typical,Off,Touch,Overdriven,Neon,Stranger;",
+	"OLN,CRT effects,Typical,Off,Touch,Overdriven,Red Alert,Ultraviolet;",
+	"OO,Overlay,On,Off;",
 	"-;",
 	"OC,Port 2,Joystick,Speech;",
 	"OA,CPU Model,1,2;",
@@ -137,7 +139,7 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 	.ioctl_addr(ioctl_addr),
 	.ioctl_dout(ioctl_dout),
 	.ioctl_index(ioctl_index),
-	.ioctl_wait(0),
+	.ioctl_wait(vfb_ioctl_wait),
 
 	.joystick_l_analog_0(joya_0),
 	.joystick_l_analog_1(joya_1),
@@ -193,6 +195,7 @@ wire frame_line;
 wire [1:0] ar = status[17:16];
 
 wire        vfb_clk_video, vfb_ce_pixel;
+wire        vfb_ioctl_wait, vfb_artwork_available;
 wire  [7:0] vfb_r, vfb_g, vfb_b;
 wire        vfb_hs, vfb_vs;
 
@@ -354,6 +357,15 @@ vectrex_video vectrex_video
 
 	.v_orient(status[20]),
 	.test_pattern(status[13]),
+
+	.overlay_off(status[24]),
+	.ioctl_download(ioctl_download),
+	.ioctl_wr(ioctl_wr),
+	.ioctl_index(ioctl_index),
+	.ioctl_addr({2'b00, ioctl_addr}),
+	.ioctl_data(ioctl_dout),
+	.ioctl_wait(vfb_ioctl_wait),
+	.artwork_available(vfb_artwork_available),
 	.profile(vfb_profile),
 	// Mode 0 swaps on FRAME_DONE + VBL. The marker is now derived from
 	// Wait_Recal's CA2 hold rather than the long-blank heuristic that made

@@ -4,14 +4,14 @@ Tile-based sparse vector framebuffer and CRT effect pipeline, written 2026 by
 Videodr0me. Licensed GPL v2, matching this repository.
 
 Vendored unmodified from
-[Arcade-MajorHavoc_MiSTer](https://github.com/MiSTer-devel/Arcade-MajorHavoc_MiSTer)
-at commit `6933b85` (2026-07-31, initial release).
-
-Major Havoc rather than Asteroids because it is the newest of his vector cores
-and the framebuffer had moved on considerably in the week between them: 4295
-changed lines across every file, plus `vfb_layout_pkg.sv` which did not exist
-before. Starting from Asteroids would have meant porting against a version
-already stale.
+[Arcade-Asteroids_MiSTer](https://github.com/MiSTer-devel/Arcade-Asteroids_MiSTer)
+at commit `ab07109` (2026-08-05, "add Asteroids Deluxe artwork, expanded
+controls, and refined CRT presentation"). This supersedes the earlier vendoring
+from Major Havoc `6933b85` (2026-07-31): the Asteroids drop added
+`vfb_overlay.sv` (the VART artwork loader and compositor this core's overlay
+feature is built on), `vfb_async_fifo.sv`, and interface changes across
+`vfb_top` (split clocks and resets, artwork and ioctl plumbing, and a
+position-change dedup on the vector input that replaces `source_tick`).
 
 The same pipeline also ships in his Asteroids, Tempest, Star Wars and
 Battlezone cores.

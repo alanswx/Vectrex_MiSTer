@@ -1,8 +1,8 @@
 // ============================================================================
-// Vector pixel rasterizer.
+// Vector pixel FIFO and rasterizer.
 // written 2026 by Videodr0me
-// Transfers source pixels to the framebuffer clock and adds dot or diagonal
-// fill pixels where selected.
+// Transfers source pixels to the framebuffer clock and applies the selected
+// dot scale and diagonal-fill processing.
 // ============================================================================
 
 module vfb_rasterizer #(
@@ -10,7 +10,7 @@ module vfb_rasterizer #(
 	parameter FIFO_ADDR_W = 10
 ) (
 	input  logic clk_sys,
-	input  logic clk_source,
+	input  logic clk_12,
 	input  logic reset,
 
 	// Vector input
@@ -31,7 +31,7 @@ module vfb_rasterizer #(
 	output logic [15:0] pixel_tile_id,
 	output logic [5:0]  pixel_offset,
 	output logic [15:0] pixel_data,
-	input  logic [2:0]  draw_idx,         // Pixel draw-time phase
+	input  logic [3:0]  draw_idx,         // Pixel draw-time phase
 	input  logic [15:0] frame_tick_clks, // Source clocks per draw-index phase
 	input  logic [15:0] completed_frame_tick_clks,
 
@@ -46,9 +46,12 @@ module vfb_rasterizer #(
 	localparam logic [2:0] DOT_2X  = 3'd0;
 	localparam logic [2:0] DOT_25X = 3'd1;
 	localparam logic [2:0] DOT_3X  = 3'd2;
-	localparam logic [2:0] DOT_1X  = 3'd3;
-
+	localparam logic [2:0] DOT_4X  = 3'd3;
+	localparam logic [2:0] DOT_5X  = 3'd4;
+	localparam logic [2:0] DOT_1X  = 3'd5;
+	localparam logic [2:0] DOT_15X = 3'd6;
 	logic [2:0] dot_mode_q = DOT_2X;
+
 	always_ff @(posedge clk_sys)
 		dot_mode_q <= DOT_MODE;
 
@@ -94,7 +97,7 @@ module vfb_rasterizer #(
 	} : {
 		1'b0,              // 35
 		IS_DOT,            // 34
-		COLOR,             // 33:30 = {strong red, fine red, green, blue}
+		COLOR,             // 33:30 = {Rhi, Rlo, G, B}
 		Y_VECTOR,          // 29:19
 		X_VECTOR,          // 18:8
 		Z_VECTOR           // 7:0
@@ -106,15 +109,14 @@ module vfb_rasterizer #(
 		(wr_ptr_g_next ==
 		 {~rd_ptr_g_sync2_12[FIFO_PTR_W-1:FIFO_PTR_W-2],
 		   rd_ptr_g_sync2_12[FIFO_PTR_W-3:0]});
-	logic [1:0] rst_source_sync = 2'b11;
-	always_ff @(posedge clk_source)
-		rst_source_sync <= {rst_source_sync[0], reset};
-	wire rst_source = rst_source_sync[1];
+	logic [1:0] rst_12_sync = 2'b11;
+	always_ff @(posedge clk_12) rst_12_sync <= {rst_12_sync[0], reset};
+	wire rst_12 = rst_12_sync[1];
 
 	// Synchronize the Gray-coded read pointer back to the write domain so a
 	// prolonged DDR/cache stall cannot silently overwrite unread entries.
-	always_ff @(posedge clk_source) begin
-		if (rst_source) begin
+	always_ff @(posedge clk_12) begin
+		if (rst_12) begin
 			rd_ptr_g_sync1_12 <= 0;
 			rd_ptr_g_sync2_12 <= 0;
 		end else begin
@@ -123,13 +125,13 @@ module vfb_rasterizer #(
 		end
 	end
 
-	always_ff @(posedge clk_source) begin
+	always_ff @(posedge clk_12) begin
 		last_x <= X_VECTOR;
 		last_y <= Y_VECTOR;
 		last_beam_on <= BEAM_ON;
 		last_frame_done <= FRAME_DONE;
 
-		if (rst_source) begin
+		if (rst_12) begin
 			wr_ptr <= 0;
 			wr_ptr_g <= 0;
 		end else if (fifo_we) begin
@@ -151,11 +153,11 @@ module vfb_rasterizer #(
 	// FIFO high-water LED, held for about 75 ms.
 	wire [FIFO_PTR_W-1:0] wr_ptr_bin = g2b(wr_ptr_g_sync2);
 	wire [FIFO_PTR_W-1:0] fifo_used = wr_ptr_bin - rd_ptr;
-	wire fifo_full_flag = (fifo_used > FIFO_PTR_W'(128));
+	wire fifo_high_water = (fifo_used > FIFO_PTR_W'(128));
 
 	logic [23:0] led_timer = 0;
 	always_ff @(posedge clk_sys) begin
-		if (fifo_full_flag) led_timer <= 24'd9349794;
+		if (fifo_high_water) led_timer <= 24'd9349794;
 		else if (led_timer != 0) led_timer <= led_timer - 1'b1;
 	end
 	assign fifo_full_led = (led_timer != 0);
@@ -165,12 +167,11 @@ module vfb_rasterizer #(
 	wire rst_sys = rst_sys_sync[1];
 
 	// Flow: FIFO -> input register -> expansion stage -> tile cache.
-	//
 	// The input register holds one FIFO entry. The expansion stage emits the
-	// source pixel, then any diagonal fill or enlarged-dot pixels.
+	// source pixel, then any diagonal-fill or dot-scale pixels.
 	//   B_IDLE      - accept and emit a source pixel
-	//   B_CHECK_SUB - choose and emit a diagonal fill pixel
-	//   B_DOT_SUB   - emit enlarged-dot pixels
+	//   B_CHECK_SUB - choose and emit a diagonal-fill pixel
+	//   B_DOT_SUB   - emit dot-scale pixels
 
 	// Input register
 	logic [35:0] a_data;
@@ -240,9 +241,9 @@ module vfb_rasterizer #(
 	logic [10:0] read_last_x = 0;
 	logic [10:0] read_last_y = 0;
 
-	// Enlarged-dot state
-	logic [2:0]  dot_idx;
-	logic [2:0]  dot_last_idx;
+	// Dot-scale state
+	logic [4:0]  dot_idx;
+	logic [4:0]  dot_last_idx;
 	logic [2:0]  dot_mode;
 	logic [7:0]  dot_base_z;
 	logic [3:0]  dot_base_c;
@@ -256,6 +257,10 @@ module vfb_rasterizer #(
 		dot_candidate_y = {1'b0, dot_y};
 
 		case (dot_mode)
+		DOT_15X: begin
+			dot_candidate_x = {1'b0, dot_x} + 12'd1;
+		end
+
 		DOT_2X: begin
 			case (dot_idx)
 				3'd0: dot_candidate_x = {1'b0, dot_x} + 12'd1;
@@ -285,25 +290,133 @@ module vfb_rasterizer #(
 
 		DOT_3X: begin
 			case (dot_idx)
-				3'd0: begin
+				5'd0: begin
 					dot_candidate_x = {1'b0, dot_x} - 12'd1;
 					dot_candidate_y = {1'b0, dot_y} - 12'd1;
 				end
-				3'd1: dot_candidate_y = {1'b0, dot_y} - 12'd1;
-				3'd2: begin
+				5'd1: dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				5'd2: begin
 					dot_candidate_x = {1'b0, dot_x} + 12'd1;
 					dot_candidate_y = {1'b0, dot_y} - 12'd1;
 				end
-				3'd3: dot_candidate_x = {1'b0, dot_x} - 12'd1;
-				3'd4: dot_candidate_x = {1'b0, dot_x} + 12'd1;
-				3'd5: begin
+				5'd3: dot_candidate_x = {1'b0, dot_x} - 12'd1;
+				5'd4: dot_candidate_x = {1'b0, dot_x} + 12'd1;
+				5'd5: begin
 					dot_candidate_x = {1'b0, dot_x} - 12'd1;
 					dot_candidate_y = {1'b0, dot_y} + 12'd1;
 				end
-				3'd6: dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				5'd6: dot_candidate_y = {1'b0, dot_y} + 12'd1;
 				default: begin
 					dot_candidate_x = {1'b0, dot_x} + 12'd1;
 					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+			endcase
+		end
+
+		DOT_4X: begin
+			case (dot_idx)
+				5'd0: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd2;
+					dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				end
+				5'd1: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd1;
+					dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				end
+				5'd2: dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				5'd3: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd1;
+					dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				end
+				5'd4: dot_candidate_x = {1'b0, dot_x} - 12'd2;
+				5'd5: dot_candidate_x = {1'b0, dot_x} - 12'd1;
+				5'd6: dot_candidate_x = {1'b0, dot_x} + 12'd1;
+				5'd7: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd2;
+					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+				5'd8: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+				5'd9: dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				5'd10: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+				5'd11: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd2;
+					dot_candidate_y = {1'b0, dot_y} + 12'd2;
+				end
+				5'd12: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd2;
+				end
+				5'd13: dot_candidate_y = {1'b0, dot_y} + 12'd2;
+				default: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd2;
+				end
+			endcase
+		end
+
+		DOT_5X: begin
+			case (dot_idx)
+				5'd0: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd1;
+					dot_candidate_y = {1'b0, dot_y} - 12'd2;
+				end
+				5'd1: dot_candidate_y = {1'b0, dot_y} - 12'd2;
+				5'd2: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd1;
+					dot_candidate_y = {1'b0, dot_y} - 12'd2;
+				end
+				5'd3: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd2;
+					dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				end
+				5'd4: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd1;
+					dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				end
+				5'd5: dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				5'd6: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd1;
+					dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				end
+				5'd7: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd2;
+					dot_candidate_y = {1'b0, dot_y} - 12'd1;
+				end
+				5'd8: dot_candidate_x = {1'b0, dot_x} - 12'd2;
+				5'd9: dot_candidate_x = {1'b0, dot_x} - 12'd1;
+				5'd10: dot_candidate_x = {1'b0, dot_x} + 12'd1;
+				5'd11: dot_candidate_x = {1'b0, dot_x} + 12'd2;
+				5'd12: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd2;
+					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+				5'd13: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+				5'd14: dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				5'd15: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+				5'd16: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd2;
+					dot_candidate_y = {1'b0, dot_y} + 12'd1;
+				end
+				5'd17: begin
+					dot_candidate_x = {1'b0, dot_x} - 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd2;
+				end
+				5'd18: dot_candidate_y = {1'b0, dot_y} + 12'd2;
+				default: begin
+					dot_candidate_x = {1'b0, dot_x} + 12'd1;
+					dot_candidate_y = {1'b0, dot_y} + 12'd2;
 				end
 			endcase
 		end
@@ -324,7 +437,12 @@ module vfb_rasterizer #(
 	wire [10:0] step_dy = (a_y > read_last_y) ? (a_y - read_last_y)
 	                                           : (read_last_y - a_y);
 	wire step_is_diag = (step_dx == 11'd1 && step_dy == 11'd1);
-	wire primary_is_dot = a_is_dot && (a_dot < DOT_1X);
+	wire primary_is_dot = a_is_dot && ((a_dot == DOT_2X) ||
+	                                    (a_dot == DOT_25X) ||
+	                                    (a_dot == DOT_3X) ||
+	                                    (a_dot == DOT_4X) ||
+	                                    (a_dot == DOT_5X) ||
+	                                    (a_dot == DOT_15X));
 	wire is_neighbor  = (step_dx <= 11'd1) && (step_dy <= 11'd1);
 
 	assign a_ready = a_valid && b_output_free && (b_state == B_IDLE);
@@ -365,9 +483,12 @@ module vfb_rasterizer #(
 						if (primary_is_dot) begin
 							b_state      <= B_DOT_SUB;
 							dot_mode     <= a_dot;
-							dot_idx      <= 3'd0;
-							dot_last_idx <= (a_dot == DOT_2X)  ? 3'd2 :
-							                (a_dot == DOT_25X) ? 3'd4 : 3'd7;
+							dot_idx      <= 5'd0;
+							dot_last_idx <= (a_dot == DOT_15X) ? 5'd0 :
+							                (a_dot == DOT_2X)  ? 5'd2 :
+							                (a_dot == DOT_25X) ? 5'd4 :
+							                (a_dot == DOT_3X)  ? 5'd7 :
+							                (a_dot == DOT_4X)  ? 5'd14 : 5'd19;
 							dot_base_z   <= a_z;
 							dot_base_c   <= a_c;
 							dot_x        <= a_x;
@@ -400,8 +521,7 @@ module vfb_rasterizer #(
 				end
 			end
 
-			// If the preferred fill aligns with the next source pixel, use the
-			// other corner.
+			// If the preferred fill meets the next source pixel, use the other corner.
 			B_CHECK_SUB: begin
 				if (a_valid && b_output_free) begin
 					if (!a_eof && (pending_is_xdom ? (a_x == pending_sub_x) : (a_y == pending_sub_y))) begin
@@ -431,7 +551,7 @@ module vfb_rasterizer #(
 					if (dot_idx == dot_last_idx) begin
 						b_state <= B_IDLE;
 					end else begin
-						dot_idx <= dot_idx + 3'd1;
+						dot_idx <= dot_idx + 5'd1;
 					end
 				end
 			end
@@ -441,8 +561,11 @@ module vfb_rasterizer #(
 
 	assign pixel_tile_id = {s2_out_y[10:3], s2_out_x[10:3]};
 	assign pixel_offset  = {s2_out_y[2:0],  s2_out_x[2:0]};
+	// Convert the four-bit vector color to the framebuffer's three-bit RGB mask.
+	// These monochrome games drive every channel, so the two red bits may be combined.
 	assign pixel_data    = eof_token ? s2_eof_frame_tick_clks
-	                                 : {s2_out_c, draw_idx, 1'b0, s2_out_z};
+	                                 : {(s2_out_c[3] | s2_out_c[2]),
+	                                    s2_out_c[1:0], draw_idx, 1'b0, s2_out_z};
 	assign eof_completed_frame_tick_clks = s2_eof_completed_frame_tick_clks;
 
 endmodule

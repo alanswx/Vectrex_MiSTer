@@ -47,6 +47,18 @@ module vectrex_video
 	// here too, the fault is in this module's timing.
 	input         v_orient,       // 1 = rotate 90deg for a vertically mounted display
 	input         test_pattern,
+
+	// Overlay artwork: VART containers arrive over ioctl (index 2) and are
+	// stored in DDRAM by vfb_overlay inside vfb_top; blending happens after
+	// CRT presentation, which is where a plastic overlay on the tube sits.
+	input         overlay_off,
+	input         ioctl_download,
+	input         ioctl_wr,
+	input  [15:0] ioctl_index,
+	input  [26:0] ioctl_addr,
+	input   [7:0] ioctl_data,
+	output        ioctl_wait,
+	output        artwork_available,
 	input         osd_slot_mask_rows,
 
 	// Video out
@@ -145,6 +157,12 @@ always_ff @(posedge clk_125) begin
 end
 
 wire timing_reset = reset_125 || !mode_ready;
+
+// The rasterizer's source domain runs on clk_sys; give it the same "held in
+// reset until the mode settles" behaviour, synchronised into that domain.
+logic [1:0] mode_ready_sys_pipe = 2'b00;
+always_ff @(posedge clk_sys) mode_ready_sys_pipe <= {mode_ready_sys_pipe[0], mode_ready};
+wire source_reset = reset || !mode_ready_sys_pipe[1];
 
 // ---------------------------------------------------------------- modes ---
 // Raster sizes are 3:4 to match the Vectrex tube, sized to the display
@@ -246,9 +264,14 @@ logic        ce_pix = 1'b0;
 // do not cope with that, and it is what broke HDMI sync on hardware while VGA
 // still worked.
 logic [4:0] div_cnt = 5'd0;
+// The overlay decoder wants its own copy of the pixel enable; Asteroids keeps
+// it a separate preserved register so the fitter can place it near vfb_overlay
+// instead of fanning one enable across both.
+(* preserve, dont_merge *) logic ce_pix_ovl = 1'b0;
 always_ff @(posedge clk_125) begin
-	div_cnt <= div_cnt + 5'd1;
-	ce_pix  <= ((div_cnt & ((5'd1 << pix_div) - 5'd1)) == 5'd0);
+	div_cnt     <= div_cnt + 5'd1;
+	ce_pix      <= ((div_cnt & ((5'd1 << pix_div) - 5'd1)) == 5'd0);
+	ce_pix_ovl  <= ((div_cnt & ((5'd1 << pix_div) - 5'd1)) == 5'd0);
 	if (timing_reset) begin
 		h_cnt   <= 11'd0;
 		v_cnt   <= 11'd0;
@@ -445,18 +468,23 @@ assign vga_vblank = use_diag ? d_vblank   : fb_vga_vblank;
 wire [2:0] p_dot_mode, p_bloom_width, p_bloom_curve, p_halo_filter, p_halo_curve;
 wire [2:0] p_presentation_color;
 wire [1:0] p_tonemapping, p_halo_spread, p_halo_knee, p_inter_decay, p_intra_decay;
-wire       p_color_space, p_slot_mask, p_full_bypass;
+wire       p_full_bypass, p_artwork_enable;
+wire [2:0] p_artwork_blend;
 
 vfb_profile_resolver profile_resolver
 (
 	.profile(profile),
 	.fb_height(fb_height),
+	.game_is_deluxe(1'b0),
+	.game_is_lander(1'b0),
 	.off_dot_mode(3'd0),
 	.off_tonemapping(2'd0),
 	.off_inter_frame_decay(2'd0),
 	.off_intra_frame_decay(2'd0),
-	.custom1_settings(30'd0),
-	.custom2_settings(30'd0),
+	.custom1_settings(28'd0),
+	.custom2_settings(28'd0),
+	.custom_artwork_enable(1'b1),
+	.custom_artwork_blend(3'd0),
 	.dot_mode(p_dot_mode),
 	.tonemapping(p_tonemapping),
 	.bloom_width(p_bloom_width),
@@ -467,10 +495,10 @@ vfb_profile_resolver profile_resolver
 	.halo_knee(p_halo_knee),
 	.inter_frame_decay(p_inter_decay),
 	.intra_frame_decay(p_intra_decay),
-	.color_space(p_color_space),
 	.presentation_color(p_presentation_color),
-	.slot_mask(p_slot_mask),
-	.full_bypass(p_full_bypass)
+	.full_bypass(p_full_bypass),
+	.artwork_enable(p_artwork_enable),
+	.artwork_blend(p_artwork_blend)
 );
 
 // --------------------------------------------------------- framebuffer ---
@@ -491,9 +519,15 @@ generate if (!DIAG_SIMPLE) begin : gen_fb
 vfb_top framebuffer
 (
 	.clk_sys(clk_125),
-	.clk_source(clk_sys),
-	.source_tick(tick_pipe[2]),
+	// The new rasterizer dedups on position change, so sampling the beam on
+	// every clk_sys edge (24 MHz, against the nominal 12) pushes nothing
+	// extra; source_tick is gone from the interface.
+	.clk_12(clk_sys),
+	.clk_io(clk_sys),
 	.reset(reset_125),
+	.source_reset(source_reset),
+	.ddr_reset(reset_125),
+	.upload_reset(reset),
 	.video_timing_reset(timing_reset),
 
 	.X_VECTOR(pix_x[10:0]),
@@ -540,6 +574,7 @@ vfb_top framebuffer
 	.h_cnt(h_cnt),
 	.v_cnt(v_cnt),
 	.ce_pix(ce_pix),
+	.ce_pix_overlay(ce_pix_ovl),
 	.hsync(raw_hsync),
 	.vsync(raw_vsync),
 	.hblank(raw_hblank),
@@ -549,25 +584,42 @@ vfb_top framebuffer
 	.OSD_120HZ(1'b0),
 	.FRAME_DONE(frame_done),
 	.BUFFER_MODE(buffer_mode),
-	.DOT_MODE(dot_mode),
+	.DOT_MODE(p_dot_mode),
 	.FIFO_FULL_LED(fifo_full_led),
 
 	.osd_bloom_width(p_bloom_width),
 	.osd_bloom_curve(p_bloom_curve),
-	.osd_expand_highlights(p_tonemapping == 2'd2),
 	.osd_halo_filter(p_halo_filter),
 	.osd_halo_curve(p_halo_curve),
 	.osd_halo_knee(p_halo_knee),
 	.osd_phosphor_mode(p_intra_decay),
 	.osd_inter_frame_phosphor_mode(p_inter_decay),
 	.osd_halo_spread(p_halo_spread),
-	.osd_color_space(p_color_space),
-	.osd_presentation_color(3'd6),
-	.osd_slot_mask(p_slot_mask),
+	.osd_color_space(1'b0),
+	.osd_presentation_color(p_presentation_color),
+	.osd_slot_mask(1'b0),
 	.osd_slot_mask_rows(osd_slot_mask_rows),
-	.osd_full_bypass(p_full_bypass)
+	// No runtime path switching: the processed path is always prepared, and
+	// bypass follows the profile directly. Asteroids synchronises the switch
+	// to vblank with a state machine; if toggling CRT effects Off glitches a
+	// frame here, that machinery is the fix.
+	.full_bypass_active(p_full_bypass),
+	.processed_path_prepare(!p_full_bypass),
+	.artwork_enable(p_artwork_enable && !overlay_off),
+	.artwork_blend(p_artwork_blend),
+	.ioctl_download(ioctl_download),
+	.ioctl_wr(ioctl_wr),
+	.ioctl_index(ioctl_index),
+	.ioctl_addr(ioctl_addr),
+	.ioctl_data(ioctl_data),
+	.artwork_available(artwork_available),
+	.ioctl_wait(ioctl_wait),
+	.raw_path_vblank(),
+	.processed_path_vblank()
 );
 end else begin : gen_no_fb
+	assign ioctl_wait = 1'b0;
+	assign artwork_available = 1'b0;
 	assign fb_vga_r = 8'd0;
 	assign fb_vga_g = 8'd0;
 	assign fb_vga_b = 8'd0;

@@ -1,5 +1,5 @@
 // ============================================================================
-// FIFO for SDRAM staging.
+// Single-clock FIFO with registered head and lookahead words.
 // written 2026 by Videodr0me
 // ============================================================================
 
