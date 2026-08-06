@@ -42,10 +42,17 @@ Stage 1 is that each path can now be tuned independently from measurement -
 MAME schedules the same six effects separately (one shared 8.5 us value),
 which is the structure this adopts with the delays kept per-path.
 
-First experiment after the structure lands: `C_DELAY_BLANK` at ~102 ticks
-(8.5 us, MAME's value) to see whether delaying blanking with the beam rather
-than ahead of it changes the Test Cartridge or Clean Sweep. Each candidate is
-one sim run diffed against goldenref before it earns a hardware build.
+First experiment, done 2026-08-06: `C_DELAY_BLANK` at 102 ticks (8.5 us).
+Rejected - it moved 4058 of 4144 segment-endpoint lines in a 100 ms Armor
+Attack run, and the emulator survey (refs/emulators/NOTES.md) shows MAME's
+ANALOG_DELAY applies to the analog channels while CB2 blanking stays live,
+which is exactly the arrangement the defaults already encode. The tunable
+worth trying next is the analog group itself, 94 vs MAME's 102, but that
+wants the Stage 5 hardware measurement rather than another guess. Two model
+differences the survey surfaced for Stage 2: MAME snaps ZERO to a computed
+centre after the delay (one-shot) where this core and vecx clamp
+continuously while CA2 is low, and both models sum the zero-reference DAC
+into both axes' velocity.
 
 ## Stage 2 - stateful analog (next)
 

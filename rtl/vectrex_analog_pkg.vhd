@@ -13,10 +13,12 @@ use ieee.std_logic_1164.all;
 -- disturbing the others (VECTREX_ANALOG_FRONTEND_MODEL.md, Stage 1).
 --
 -- The defaults reproduce the original whole-bus behavior exactly: every path
--- at 94 (~7.9 us), blanking at 0 (undelayed). MAME models the same six
--- effects as separately scheduled events sharing one 8500 ns value, which at
--- 12 MHz is 102 ticks; that is the first candidate for C_DELAY_BLANK once
--- the structure is proven.
+-- at 94 (~7.9 us), blanking at 0 (undelayed). This is also structurally what
+-- MAME does: its ANALOG_DELAY of 8500 ns (102 ticks here) applies to the
+-- DAC, mux, sample-and-hold and RAMP effects, while CB2 blanking is taken
+-- live; vecx delays nothing at all (refs/emulators/NOTES.md). Delaying
+-- blanking to 102 was tried and rejected: it moved nearly every segment
+-- boundary in a 100 ms Armor Attack run, against both references.
 --
 -- A tap of 0 means the live, unregistered VIA output. Any other value N is
 -- delay_buffer(N) followed by the one-tick output register the original code
