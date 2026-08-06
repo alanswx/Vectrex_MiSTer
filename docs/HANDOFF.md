@@ -217,7 +217,34 @@ the premises this work started from were mostly wrong:
 
 ---
 
-## Overlays, when the renderer is working
+## Overlays: working (2026-08-06)
+
+The overlay feature is on hardware and verified by capture: VART artwork
+loads from the OSD ("Load Overlay", F2, extension ART) and composites after
+CRT presentation. 163 titles are generated in artwork/generated/ (gitignored)
+and deployed to /media/fat/games/VECTREX/; tools/overlays/build_vart.py
+converts one PNG, merge_sources.py rebuilds the whole set picking the best
+source per title. Four traps that cost this feature a day:
+
+- CONF_STR extensions are three characters. "F2,VART" silently parses as
+  VAR + T and the browser shows no files; the slot is "F2,ART".
+- The core reset included ioctl_download, which wiped the overlay upload as
+  it arrived. Reset now gates on rom_download (cartridge indexes only).
+- The vendored vfb_overlay whitelists artwork plane dimensions, and shipped
+  with the Asteroids cabinet's rasters. A valid container passes CRC and all
+  metadata checks but package_valid stays low. Patched to the Vectrex
+  rasters, both orientations (PROVENANCE.md notes it); found by simulating
+  the upload in isolation (sim/overlay_tb, Icarus).
+- Upload writes now stop at the artwork window's end: the F2 slot streams
+  whatever file the user picks, unlike the Asteroids MRA part which always
+  fits.
+
+The MS2109 capture card also serves ~50 frames of stale replay after each
+stream open, and can serve stale indefinitely if something (Zoom) held it;
+capture at least 150 frames and treat byte-identical repeats as stale. In
+the MiSTer OSD, values cycle with confirm - left/right switch menu pages.
+
+## Overlay notes from before the feature existed
 
 Asteroids gained a `vfb_overlay.sv` on 2026-08-05, newer than the Major Havoc
 version currently vendored here. It loads VART artwork from **ROM index 2**
