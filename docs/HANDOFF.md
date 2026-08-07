@@ -212,10 +212,18 @@ the premises this work started from were mostly wrong:
 (Items about the frame marker, orientation, scale and the CRT-effects menu
 from earlier revisions of this list are all fixed and described above.)
 
-1. **Second Intensity line** still renders at peak 40 when it should be
-   extinguished. A different `tone_mapping` value may fix it. The real fix
-   is the analog-frontend Stage 3 dwell/beam-energy work
-   (docs/analog-frontend-plan.md).
+1. **Beam-energy model (Stage 3) landed 2026-08-07**: grid cutoff at
+   dac_z 28 plus dwell-scaled intensity (sqrt(ticks-per-position / 8),
+   octave LUT, one-position emission latency) in `vectrex_video.sv`,
+   with an OSD A/B switch (Beam Model: Accurate/Raw). Measured with
+   `tools/testcart`'s calibration cartridge on hardware: z=8/16/24
+   lines extinguished (the manual's Intensity criterion now passes by
+   construction; the old "second Intensity line at peak 40" defect is
+   gone), equal-length lines drawn 5x apart in beam speed measure
+   2.2x apart in brightness (sqrt(5) predicted), line endpoints bloom
+   like real hardware. Remaining calibration: the 8-ticks/pixel
+   normalization and the cutoff value want real-Vectrex reference
+   footage (accuracy-plan M2); fast BIOS text now renders ~0.7x.
 2. **The OSD's video settings are structured after Videodr0me's Asteroids
    core** (2026-08-07): a "Video Profiles & Effects" page (profile selector
    with per-profile hidden overrides, full Custom 1/2 settings, Persistence,
@@ -225,7 +233,15 @@ from earlier revisions of this list are all fixed and described above.)
    status_menumask (bit 7 Off, 8 Touch, 9 Typical, A Overdriven,
    B flashing, D/E Custom 1/2, 5/6 bloom/halo curve gating). Don't put
    commas inside "-,text;" lines - the OSD truncates at the comma.
-3. **Renderer clock slack drifts negative build to build**: the verified
+3. **The calibration cartridge** (`tools/testcart/make_calcart.py`)
+   boots straight into an intensity ladder, a fast/slow dwell pair and
+   a dwell dot row - no button presses, so it runs over the remote
+   loop, in ghdl, and in vecx (`tools/goldenref/vecdump` runs it in a
+   second, which is how its bugs were found). Traps that cost time:
+   an empty title list in the cart header hangs the BIOS; Moveto_d at
+   scale $FF rails the integrators - use Moveto_d_7F ($F2FC), whose
+   mapping is displacement = coord x 127 (measured against vecx).
+4. **Renderer clock slack drifts negative build to build**: the verified
    2026-08-06 builds closed at -0.018 ns (md5 4f8b2108) and -0.234 ns
    (md5 ed40383164, Overlay Bright) on the 125 MHz vfb clock, HDMI clock
    positive both times. No artifacts observed by capture at either, but a

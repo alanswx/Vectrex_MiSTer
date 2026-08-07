@@ -57,6 +57,7 @@ module vectrex_video
 	// short/medium/long curves. Long persistence is the knob for games that
 	// multiplex their display list below ~25 Hz (Pole Position's HUD).
 	input   [1:0] pers_sel,
+	input         beam_raw,
 	// Profile-resolver plumbing for the Asteroids-style OSD: overrides used
 	// by the Off profile, and the two packed custom profiles.
 	input   [2:0] off_dot_mode,
@@ -334,6 +335,8 @@ wire          [7:0] z_q;
 logic               on_q;
 logic               zero_q;
 logic         [2:0] tick_pipe;
+logic        [15:0] z_pipe;
+logic         [7:0] z_raw_q;
 
 always_ff @(posedge clk_sys) begin
 	// stage 1: centre. Rotated, the columns come from the X integrator and
@@ -353,6 +356,101 @@ always_ff @(posedge clk_sys) begin
 	on_q      <= beam_on;
 	zero_q    <= ~beam_zero_n;
 	tick_pipe <= {tick_pipe[1:0], beam_tick};
+	z_pipe    <= {z_pipe[7:0], beam_z};
+	z_raw_q   <= z_pipe[15:8];
+end
+
+// ------------------------------------------------------- beam energy ---
+// Stage 3 of docs/analog-frontend-plan.md. Two effects the raw pipeline
+// lacks, both measured with tools/testcart's calibration cartridge:
+//
+// 1. Grid cutoff. A real CRT passes no beam current below the grid
+//    cutoff, so low commanded intensities draw nothing. The service
+//    manual's Intensity test requires the z=8..24 lines extinguished
+//    while Intensity_1F ($1F) content in games stays visible, which
+//    brackets the cutoff to (24, 31]. BEAM_CUTOFF sits inside that.
+// 2. Dwell. Phosphor excitation is beam current x time, and the
+//    rasterizer's position dedup discards time entirely: a parked dot
+//    and a flying stroke rendered identically (fast/slow calibration
+//    lines measured 137 vs 143). Beam ticks are counted per rasterized
+//    position and scale the commanded z by sqrt(dwell/8) - sqrt because
+//    phosphor response saturates, normalized at 8 ticks/pixel, which is
+//    the middle of measured game content (renderer-analysis: 4 to 43
+//    ticks/pixel). Each position is emitted with its final dwell-scaled
+//    z at the moment the beam leaves it (one-position latency).
+//
+// beam_raw (OSD "Beam Model: Raw") bypasses both for A/B comparison.
+localparam [7:0] BEAM_CUTOFF = 8'd28;
+
+// 16 * sqrt(dwell/8), octave-stepped, capped at 8x
+function automatic [7:0] dwell_boost16(input [9:0] d);
+	begin
+		if      (d >= 10'd512) dwell_boost16 = 8'd128;
+		else if (d >= 10'd256) dwell_boost16 = 8'd91;
+		else if (d >= 10'd128) dwell_boost16 = 8'd64;
+		else if (d >= 10'd64)  dwell_boost16 = 8'd45;
+		else if (d >= 10'd32)  dwell_boost16 = 8'd32;
+		else if (d >= 10'd16)  dwell_boost16 = 8'd23;
+		else if (d >= 10'd8)   dwell_boost16 = 8'd16;
+		else if (d >= 10'd4)   dwell_boost16 = 8'd11;
+		else if (d >= 10'd2)   dwell_boost16 = 8'd8;
+		else                   dwell_boost16 = 8'd6;
+	end
+endfunction
+
+wire on_cut = on_q && (beam_raw || (z_raw_q >= BEAM_CUTOFF));
+
+logic [11:0] hold_x = 12'd0, hold_y = 12'd0;
+logic  [7:0] hold_z = 8'd0;
+logic        hold_on = 1'b0;
+logic  [9:0] dwell_cnt = 10'd0;
+logic [11:0] emit_x = 12'd0, emit_y = 12'd0;
+logic  [7:0] emit_z = 8'd0;
+logic        emit_on = 1'b0;
+
+wire [14:0] boosted = 15'(hold_z) * 15'(dwell_boost16(dwell_cnt));
+wire  [7:0] dwell_z = (boosted[14:4] > 11'd127) ? 8'd127 : boosted[11:4];
+
+always_ff @(posedge clk_sys) begin
+	if (tick_pipe[2]) begin
+		if (beam_raw) begin
+			emit_x  <= pix_x;
+			emit_y  <= pix_y;
+			emit_z  <= z_raw_q;
+			emit_on <= on_q;
+		end
+		else if (!on_cut) begin
+			// beam went dark: flush the held position, then idle
+			if (hold_on) begin
+				emit_x <= hold_x;
+				emit_y <= hold_y;
+				emit_z <= dwell_z;
+				emit_on <= 1'b1;
+			end
+			else begin
+				emit_on <= 1'b0;
+			end
+			hold_on   <= 1'b0;
+			dwell_cnt <= 10'd0;
+		end
+		else if (!hold_on || pix_x != hold_x || pix_y != hold_y) begin
+			// beam moved: emit the completed position, start the new one
+			if (hold_on) begin
+				emit_x <= hold_x;
+				emit_y <= hold_y;
+				emit_z <= dwell_z;
+				emit_on <= 1'b1;
+			end
+			hold_x    <= pix_x;
+			hold_y    <= pix_y;
+			hold_z    <= z_raw_q;
+			hold_on   <= 1'b1;
+			dwell_cnt <= 10'd1;
+		end
+		else if (dwell_cnt != 10'h3FF) begin
+			dwell_cnt <= dwell_cnt + 10'd1;
+		end
+	end
 end
 
 // ----------------------------------------------------------- intensity ---
@@ -365,8 +463,8 @@ vfb_tone_mapper tone_mapper
 (
 	.clk_source(clk_sys),
 	.reset(reset),
-	.beam_on(beam_on),
-	.raw_intensity(beam_z),
+	.beam_on(emit_on),
+	.raw_intensity(emit_z),
 	.tone_mapping(p_tonemapping),
 	.mapped_intensity(z_q)
 );
@@ -546,12 +644,12 @@ vfb_top framebuffer
 	.upload_reset(reset),
 	.video_timing_reset(timing_reset),
 
-	.X_VECTOR(pix_x[10:0]),
-	.Y_VECTOR(pix_y[10:0]),
+	.X_VECTOR(emit_x[10:0]),
+	.Y_VECTOR(emit_y[10:0]),
 	.Z_VECTOR(z_q),
 	.COLOR(4'b1111),
 	.IS_DOT(1'b0),
-	.BEAM_ON(on_q),
+	.BEAM_ON(emit_on),
 
 	.DDRAM_CLK(ddram_clk),
 	.DDRAM_BUSY(ddram_busy),
