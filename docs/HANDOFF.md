@@ -216,11 +216,25 @@ from earlier revisions of this list are all fixed and described above.)
    extinguished. A different `tone_mapping` value may fix it. The real fix
    is the analog-frontend Stage 3 dwell/beam-energy work
    (docs/analog-frontend-plan.md).
-2. **Renderer clock slack drifts negative build to build**: the verified
+2. **The OSD's video settings are structured after Videodr0me's Asteroids
+   core** (2026-08-07): a "Video Profiles & Effects" page (profile selector
+   with per-profile hidden overrides, full Custom 1/2 settings, Persistence,
+   Overlay controls) and a "Video Timing & Geometry" page. The status word
+   is 128-bit; custom-profile bits match Asteroids' positions except Off's
+   Dot Scale (status[63:61] here). h-flag visibility comes from
+   status_menumask (bit 7 Off, 8 Touch, 9 Typical, A Overdriven,
+   B flashing, D/E Custom 1/2, 5/6 bloom/halo curve gating). Don't put
+   commas inside "-,text;" lines - the OSD truncates at the comma.
+3. **Renderer clock slack drifts negative build to build**: the verified
    2026-08-06 builds closed at -0.018 ns (md5 4f8b2108) and -0.234 ns
    (md5 ed40383164, Overlay Bright) on the 125 MHz vfb clock, HDMI clock
    positive both times. No artifacts observed by capture at either, but a
    build that lands further negative deserves a reseed before deploying.
+   The deployed OSD-restructure build needed exactly that: seed 1 came out
+   -0.370/-0.169 (first HDMI-negative build; still synced on the bench),
+   `SEED 3` in the qsf gave -0.012/+0.159 (md5 727c612d, deployed). The
+   SEED line stays uncommitted like the rest of the qsf churn, so a future
+   rebuild starts from seed 1 again - check slack, reseed as needed.
 
 ---
 

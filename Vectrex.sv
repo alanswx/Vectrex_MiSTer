@@ -62,20 +62,71 @@ localparam CONF_STR = {
 	"F2,ART,Load Overlay;",
 	"OB,Skip logo,No,Yes;",
 	"-;",
-	"OK,Orientation,Horz,Vert;",
-	"OGH,Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
-	"OIJ,Scale,Normal,V-Integer,Narrower HV-Integer,Wider HV-Integer;",
-	"O9,Frame,No,Yes;",
-	// "O4,Resolution,High,Low;" was disabled because low-res ruined the
-	// overlay. That constraint is gone; revisit alongside the new renderer.
-	"O23,Persistence,Profile,Short,Medium,Long;",
-	"O56,Pseudocolor,Off,1,2,3;",
-	"O8,Overburn,No,Yes;",
-	"OD,HDMI test pattern,Off,On;",
-	"OLN,CRT effects,Typical,Off,Touch,Overdriven,Red Alert,Ultraviolet;",
-	"OO,Overlay,On,Off;",
-	"OPR,Overlay Bright,100%,90%,80%,70%,60%,50%,40%,30%;",
-	"OS,Render Res,1080p,Match output;",
+	// Video menu structured after Videodr0me's Asteroids core: a profiles
+	// page whose override entries appear per selected profile (the h masks
+	// index status_menumask below), and a timing/geometry page. Custom
+	// profile bit positions match Asteroids where free; the old renderer's
+	// Frame/Pseudocolor/Overburn entries are gone (legacy path only).
+	"P1,Video Profiles & Effects;",
+	"P1-;",
+	"P1O[68:66],Profile,80s Cruise Control,80s Overdrive,Red Alert,Ultraviolet,Custom 1,Custom 2,Off,A Touch of CRT;",
+	"h7P1O[63:61],Dot Scale,2x,2.5x,3x,4x,5x,1x,1.5x;",
+	"h7P1O[38:37],Tone Mapping,Off,Linear 1,Linear 2,Bright;",
+	"h7P1O[119:118],Inter-Frame Decay,Off,Short,Medium,Long;",
+	"h7P1O[56:55],Intra-Frame Decay,Off,LUT A,LUT B,LUT C;",
+	"h8P1-;",
+	"h8P1-,Modern clarity with a touch;",
+	"h8P1-,of old. Subtle halo & bloom;",
+	"h8P1-,while vectors stay crisp.;",
+	"h9P1-;",
+	"h9P1-,The familiar vector CRT glow;",
+	"h9P1-,richer halo & stronger bloom;",
+	"h9P1-,and a restrained trail.;",
+	"hAP1-;",
+	"hAP1-,The arcade look you remember;",
+	"hAP1-,hot vectors and heavy bloom;",
+	"hAP1-,phosphor trails linger.;",
+	"hBP1-;",
+	"hBP1-,Voltage up. Rules dissolve.;",
+	"hBP1-,Red or ultraviolet visions.;",
+	"hBP1-;",
+	"hBP1-,     Epilepsy warning:;",
+	"hBP1-,    excessive flashing;",
+	"hDP1O[71:69],> Dot Scale,2x,2.5x,3x,4x,5x,1x,1.5x;",
+	"hDP1O[73:72],> Tone Mapping,Off,Linear 1,Linear 2,Bright;",
+	"hDP1O[76:74],> Bloom Width,Off,Thin,Tight,Soft,Normal,Broad,Wide-,Wide;",
+	"hDH5P1O[79:77],> Bloom Curve,Minimal,Min+,Mild,Mild+,Moderate,Mod+,Strong-,Strong;",
+	"hDP1O[82:80],> Halo,Off,0.25x,0.33x,0.5x,0.75x,1.0x,1.25x,1.5x;",
+	"hDH6P1O[43:41],> Halo Curve,Minimal,Min+,Mild,Mild+,Moderate,Mod+,Strong-,Strong;",
+	"hDH6P1O[84:83],> Halo Spread,Original,Wide 1,Wide 2,Wide 3;",
+	"hDH6P1O[48:47],> Halo Compression,Off,8,16,24;",
+	"hDP1O[86:85],> Inter-Frame Decay,Off,Short,Medium,Long;",
+	"hDP1O[88:87],> Intra-Frame Decay,Off,LUT A,LUT B,LUT C;",
+	"hDP1O[91:89],> Vector Color,White,Deluxe Blue,Lunar Green,Red,Purple,Cyan,Yellow;",
+	"hEP1O[94:92],> Dot Scale,2x,2.5x,3x,4x,5x,1x,1.5x;",
+	"hEP1O[96:95],> Tone Mapping,Off,Linear 1,Linear 2,Bright;",
+	"hEP1O[99:97],> Bloom Width,Off,Thin,Tight,Soft,Normal,Broad,Wide-,Wide;",
+	"hEH5P1O[102:100],> Bloom Curve,Minimal,Min+,Mild,Mild+,Moderate,Mod+,Strong-,Strong;",
+	"hEP1O[105:103],> Halo,Off,0.25x,0.33x,0.5x,0.75x,1.0x,1.25x,1.5x;",
+	"hEH6P1O[46:44],> Halo Curve,Minimal,Min+,Mild,Mild+,Moderate,Mod+,Strong-,Strong;",
+	"hEH6P1O[107:106],> Halo Spread,Original,Wide 1,Wide 2,Wide 3;",
+	"hEH6P1O[50:49],> Halo Compression,Off,8,16,24;",
+	"hEP1O[109:108],> Inter-Frame Decay,Off,Short,Medium,Long;",
+	"hEP1O[111:110],> Intra-Frame Decay,Off,LUT A,LUT B,LUT C;",
+	"hEP1O[114:112],> Vector Color,White,Deluxe Blue,Lunar Green,Red,Purple,Cyan,Yellow;",
+	"P1-;",
+	"P1O[3:2],Persistence,Profile,Short,Medium,Long;",
+	"P1-;",
+	"P1O[24],Overlay,On,Off;",
+	"P1O[27:25],Overlay Bright,100%,90%,80%,70%,60%,50%,40%,30%;",
+	"-;",
+	"P2,Video Timing & Geometry;",
+	"P2-;",
+	"P2O[20],Orientation,Horz,Vert;",
+	"P2O[17:16],Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
+	"P2O[19:18],Scale,Normal,V-Integer,Narrower HV-Integer,Wider HV-Integer;",
+	"P2O[28],Render Res,1080p,Match output;",
+	"P2O[13],HDMI test pattern,Off,On;",
 	"-;",
 	"OC,Port 2,Joystick,Speech;",
 	"OA,CPU Model,1,2;",
@@ -118,7 +169,35 @@ pll_vfb pll_vfb
 
 ///////////////////////////////////////////////////
 
-wire [31:0] status;
+wire [127:0] status;
+
+// Menu order is Asteroids': +2 mod 8 turns it into the resolver's
+// profile numbering (0 Off, 1 Touch, 2 Typical, ... 6/7 Custom).
+wire [2:0] vfb_profile = status[68:66] + 3'd2;
+wire profile_off        = (vfb_profile == 3'd0);
+wire profile_touch      = (vfb_profile == 3'd1);
+wire profile_typical    = (vfb_profile == 3'd2);
+wire profile_overdriven = (vfb_profile == 3'd3);
+wire profile_flashing   = (vfb_profile == 3'd4) || (vfb_profile == 3'd5);
+wire profile_custom_1   = (vfb_profile == 3'd6);
+wire profile_custom_2   = (vfb_profile == 3'd7);
+wire custom_active = profile_custom_1 || profile_custom_2;
+wire [2:0] custom_bloom_width = profile_custom_2 ? status[99:97] : status[76:74];
+wire [2:0] custom_halo_sel = profile_custom_2 ? status[105:103] : status[82:80];
+wire custom_bloom_off = custom_active && (custom_bloom_width == 3'd0);
+wire custom_halo_off  = custom_active && (custom_halo_sel == 3'd0);
+// The menus put the resolver's encoding-3 (Off) first, as Asteroids does.
+wire [1:0] off_tone_mapping = status[38:37] + 2'd3;
+wire [1:0] custom_1_tone    = status[73:72] + 2'd3;
+wire [1:0] custom_2_tone    = status[96:95] + 2'd3;
+wire [27:0] custom_1_settings = {
+	status[48:47], status[71:69], custom_1_tone, status[76:74],
+	status[79:77], status[82:80], status[43:41], status[84:83],
+	status[86:85], status[88:87], status[91:89]};
+wire [27:0] custom_2_settings = {
+	status[50:49], status[94:92], custom_2_tone, status[99:97],
+	status[102:100], status[105:103], status[46:44], status[107:106],
+	status[109:108], status[111:110], status[114:112]};
 wire  [1:0] buttons;
 
 wire [15:0] joystick_0, joystick_1;
@@ -136,6 +215,12 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 
 	.buttons(buttons),
 	.status(status),
+	// h-flag visibility for the profiles page, Asteroids' scheme: bit 5
+	// bloom-curve hide, 6 halo hides, 7-B per-profile, D/E custom pages.
+	.status_menumask({1'b0, profile_custom_2, profile_custom_1, 1'b0,
+	                  profile_flashing, profile_overdriven, profile_typical,
+	                  profile_touch, profile_off, custom_halo_off,
+	                  custom_bloom_off, 5'b0}),
 
 	.ioctl_download(ioctl_download),
 	.ioctl_wr(ioctl_wr),
@@ -259,13 +344,6 @@ end else begin : gen_new_video
 	);
 end endgenerate
 
-// The menu lists Typical first so a zeroed status still lands on the intended
-// default; remap the first three entries back to the resolver's encoding.
-wire [2:0] prof_sel = status[23:21];
-wire [2:0] vfb_profile = (prof_sel == 3'd0) ? 3'd2 :
-                         (prof_sel == 3'd1) ? 3'd0 :
-                         (prof_sel == 3'd2) ? 3'd1 : prof_sel;
-
 // Beam taps from the core, feeding the new renderer.
 wire signed [19:0] dbg_beam_x, dbg_beam_y;
 wire  [7:0] dbg_z;
@@ -370,6 +448,12 @@ vectrex_video vectrex_video
 	.overlay_off(status[24]),
 	.ovl_bright(status[27:25]),
 	.pers_sel(status[3:2]),
+	.off_dot_mode(status[63:61]),
+	.off_tonemapping(off_tone_mapping),
+	.off_inter_frame_decay(status[119:118]),
+	.off_intra_frame_decay(status[56:55]),
+	.custom1_settings(custom_1_settings),
+	.custom2_settings(custom_2_settings),
 	.ioctl_download(ioctl_download),
 	.ioctl_wr(ioctl_wr),
 	.ioctl_index(ioctl_index),

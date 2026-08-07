@@ -57,6 +57,14 @@ module vectrex_video
 	// short/medium/long curves. Long persistence is the knob for games that
 	// multiplex their display list below ~25 Hz (Pole Position's HUD).
 	input   [1:0] pers_sel,
+	// Profile-resolver plumbing for the Asteroids-style OSD: overrides used
+	// by the Off profile, and the two packed custom profiles.
+	input   [2:0] off_dot_mode,
+	input   [1:0] off_tonemapping,
+	input   [1:0] off_inter_frame_decay,
+	input   [1:0] off_intra_frame_decay,
+	input  [27:0] custom1_settings,
+	input  [27:0] custom2_settings,
 	input         ioctl_download,
 	input         ioctl_wr,
 	input  [15:0] ioctl_index,
@@ -485,12 +493,12 @@ vfb_profile_resolver profile_resolver
 	.fb_height(fb_height),
 	.game_is_deluxe(1'b0),
 	.game_is_lander(1'b0),
-	.off_dot_mode(3'd0),
-	.off_tonemapping(2'd0),
-	.off_inter_frame_decay(2'd0),
-	.off_intra_frame_decay(2'd0),
-	.custom1_settings(28'd0),
-	.custom2_settings(28'd0),
+	.off_dot_mode(off_dot_mode),
+	.off_tonemapping(off_tonemapping),
+	.off_inter_frame_decay(off_inter_frame_decay),
+	.off_intra_frame_decay(off_intra_frame_decay),
+	.custom1_settings(custom1_settings),
+	.custom2_settings(custom2_settings),
 	.custom_artwork_enable(1'b1),
 	.custom_artwork_blend(3'd0),
 	.dot_mode(p_dot_mode),
