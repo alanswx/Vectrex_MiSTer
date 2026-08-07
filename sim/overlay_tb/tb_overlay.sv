@@ -7,6 +7,7 @@
 `timescale 1ns/1ps
 
 module tb_overlay;
+	parameter [15:0] UPLOAD_INDEX = 16'd2;
 	logic clk_sys = 0;   // 125 MHz render/framebuffer clock
 	logic clk_io  = 0;   // 24 MHz machine clock (hps_io domain)
 	always #4 clk_sys = ~clk_sys;      // 125 MHz
@@ -116,7 +117,7 @@ module tb_overlay;
 
 		// hps_io-style upload: index set, download high, one byte per few
 		// clk_io cycles, honouring ioctl_wait before each write.
-		ioctl_index = 16'd2;
+		ioctl_index = UPLOAD_INDEX;
 		ioctl_download = 1;
 		@(posedge clk_io);
 

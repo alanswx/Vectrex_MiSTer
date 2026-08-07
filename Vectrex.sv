@@ -57,6 +57,7 @@ assign FB_FORCE_BLANK = 0;
 localparam CONF_STR = {
 	"VECTREX;;",
 	"-;",
+	"f1,ART;",
 	"F1,VECBINROM;",
 	"F2,ART,Load Overlay;",
 	"OB,Skip logo,No,Yes;",

@@ -50,3 +50,7 @@ If a change to these files turns out to be unavoidable, note it here.
   brightness ladder (100% down to 30% in the OSD's menu order) instead of
   upstream's signed offsets around a profile default; 100% (64/64) is the
   default and reproduces the original core's full-strength alphablend.
+- `vfb_overlay.sv`: `upload_active` also accepts main's auto-loaded
+  companion file (`"f1,ART;"` in CONF_STR): the addon arrives with the
+  addon number in `ioctl_index[9:8]` and the ROM slot in the low bits,
+  the same decode the original core's `bg_download` used.

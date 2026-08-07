@@ -263,6 +263,15 @@ absolute paths work:
 
 then `echo 'load_core /media/fat/pole_test.mgl' > /dev/MiSTer_cmd`.
 
+Auto-load works as it did on master: main's generic addon mechanism (the
+lowercase `"f1,ART;"` CONF_STR entry, directly before the cart's F entry)
+loads `<rom name>.art` from the ROM's folder automatically after every
+cartridge load, including MGL loads. The addon arrives with the addon
+number in ioctl_index[9:8], not index 2, so vfb_overlay's upload_active
+accepts both (the original core's bg_download decode). Nothing lives in
+the C binary specifically for this - process_addon in menu.cpp is
+generic, keyed entirely off the CONF_STR entry.
+
 Two more capture-loop traps, established 2026-08-06:
 
 - Opening or closing the capture card's video stream tickles the HDMI link

@@ -173,7 +173,12 @@ module vfb_overlay #(
 	// Upload clock crossing
 	// ------------------------------------------------------------------------
 
-	wire upload_active = ioctl_download && (ioctl_index == 16'd2);
+	// Local change (see PROVENANCE.md): accept the auto-loaded companion
+	// file as well as the manual F2 slot. When main loads a cartridge whose
+	// F entry is preceded by "f1,ART;", it streams <rom>.ART with the addon
+	// number in ioctl_index[9:8] and the ROM slot in the low bits.
+	wire upload_active = ioctl_download &&
+	                     ((ioctl_index[4:0] == 5'd2) || (ioctl_index[9:8] == 2'b01));
 	logic upload_active_q = 1'b0;
 	logic upload_start_pending = 1'b0;
 	logic upload_end_pending = 1'b0;
