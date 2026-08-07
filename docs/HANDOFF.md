@@ -138,11 +138,18 @@ running core immediately.
 
 ### Renderer
 
-`videodr0me_fb` is vendored from Major Havoc and renders correctly on
-hardware, now over HDMI as well. `LEGACY_VIDEO = 0` in `Vectrex.sv` and
+`videodr0me_fb` is vendored from Asteroids (ab07109, 2026-08-05; see
+`rtl/videodr0me_fb/PROVENANCE.md` for the local deviations) and renders
+correctly on hardware, now over HDMI as well. `LEGACY_VIDEO = 0` in `Vectrex.sv` and
 `DIAG_SIMPLE = 0` in `rtl/vectrex_video.sv` is the shipping configuration;
 setting them to 1 restores the original video path for diagnosis.
 
+- the internal raster is 810x1080 by default regardless of output mode
+  ("Render Res" in the OSD switches back to matching the output); the
+  scaler downsamples, which reads much cleaner at 720p/480p. Enabling
+  this exposed a 32-bit overflow in the beam scale factors (1080 << 22)
+  that crushed the long axis 19x - fixed with 34-bit intermediates in
+  `vectrex_video.sv`
 - geometry matches the old core **99.9% / 100.0%**
 - block memory drops **3.87 Mbit to 2.26**, RAM blocks **491 to 304**, which
   is the 1080p ceiling lifted

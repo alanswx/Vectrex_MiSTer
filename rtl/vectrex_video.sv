@@ -240,13 +240,16 @@ always_comb begin
 		end
 	end
 
+	// The shift needs more than 32 bits before the divide: 1080 << 22
+	// overflows a 32-bit intermediate (the 1080p rasters were the first to
+	// hit this), which crushed the long axis by ~19x on hardware.
 	if (height_q[12]) begin
-		scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_X);
-		scale_y = (32'(fb_height) << SHIFT) / (2 * MAX_Y);
+		scale_x = 32'((34'(fb_width)  << SHIFT) / (2 * MAX_X));
+		scale_y = 32'((34'(fb_height) << SHIFT) / (2 * MAX_Y));
 	end
 	else begin
-		scale_x = (32'(fb_width)  << SHIFT) / (2 * MAX_Y);
-		scale_y = (32'(fb_height) << SHIFT) / (2 * MAX_X);
+		scale_x = 32'((34'(fb_width)  << SHIFT) / (2 * MAX_Y));
+		scale_y = 32'((34'(fb_height) << SHIFT) / (2 * MAX_X));
 	end
 end
 

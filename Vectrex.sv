@@ -75,6 +75,7 @@ localparam CONF_STR = {
 	"OLN,CRT effects,Typical,Off,Touch,Overdriven,Red Alert,Ultraviolet;",
 	"OO,Overlay,On,Off;",
 	"OPR,Overlay Bright,100%,90%,80%,70%,60%,50%,40%,30%;",
+	"OS,Render Res,1080p,Match output;",
 	"-;",
 	"OC,Port 2,Joystick,Speech;",
 	"OA,CPU Model,1,2;",
@@ -358,7 +359,10 @@ vectrex_video vectrex_video
 	.beam_tick(dbg_ce),
 	.beam_zero_n(dbg_zero_n),
 
-	.hdmi_height(HDMI_HEIGHT),
+	// Rendering at 1080p regardless of the output mode supersamples the
+	// beam: the scaler downsamples 810x1080 to 720p/480p, which reads far
+	// cleaner than rastering at the output height (Videodr0me's advice).
+	.hdmi_height(status[28] ? HDMI_HEIGHT : 12'd1080),
 
 	.v_orient(status[20]),
 	.test_pattern(status[13]),
