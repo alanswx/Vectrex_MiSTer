@@ -221,9 +221,19 @@ from earlier revisions of this list are all fixed and described above.)
    construction; the old "second Intensity line at peak 40" defect is
    gone), equal-length lines drawn 5x apart in beam speed measure
    2.2x apart in brightness (sqrt(5) predicted), line endpoints bloom
-   like real hardware. Remaining calibration: the 8-ticks/pixel
-   normalization and the cutoff value want real-Vectrex reference
-   footage (accuracy-plan M2); fast BIOS text now renders ~0.7x.
+   like real hardware. Confirmed on the real Test
+   Cartridge's Intensity screen (human button press): lines 2-4
+   extinguished, line 5 visible - the manual's criterion passes. The
+   screen's shimmer was A/B'd via the OSD switch: Raw shimmers MORE
+   (per-line std 7.5-25.5 vs 0-20 Accurate), so it is the test
+   screen's own analog redraw variation, not the beam model - real
+   machines shimmer here too. Remaining calibration, wants
+   real-Vectrex reference footage (accuracy-plan M2): the
+   8-ticks/pixel normalization and cutoff value; and the dwell boost
+   clamps the slow-drawn Intensity lines at the ceiling, flattening
+   the ladder gradation Raw shows (61-227 ramp) - whether a real tube
+   keeps that gradation decides the boost knee. Fast BIOS text
+   renders ~0.7x.
 2. **The OSD's video settings are structured after Videodr0me's Asteroids
    core** (2026-08-07): a "Video Profiles & Effects" page (profile selector
    with per-profile hidden overrides, full Custom 1/2 settings, Persistence,
