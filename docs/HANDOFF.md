@@ -198,22 +198,18 @@ the premises this work started from were mostly wrong:
 
 ## Known broken or unfinished
 
-1. **Frame marker.** `vectrex_video`'s long-blank heuristic does not find real
-   frame boundaries. Proven: `BUFFER_MODE = 0` honours `FRAME_DONE` and gives
-   a mostly black screen; mode 1 ignores it and renders. Currently on mode 1,
-   which is why the picture tears. The fix is to derive the marker from the
-   BIOS's `Wait_Recal`, which pulls CA2 low to zero the integrators once per
-   display pass. `zero_integrator_n` needs adding to the `dbg_*` taps.
-2. **Orientation option does nothing** under the new renderer. It reaches
-   `vectrex.vhd`, which swaps `lim_x`/`lim_y`, but the taps read the
-   integrators upstream of that swap. Rotation has to move into
-   `vectrex_video`.
-3. **Scale option** was lost with `video_freak` and is restored only under
-   `LEGACY_VIDEO`.
-4. **OSD controls** for halo, bloom and phosphor are hardcoded to
-   `PROFILE_TYPICAL`. They should be menu entries.
-5. **Second Intensity line** still renders at peak 40 when it should be
-   extinguished. A different `tone_mapping` value may fix it.
+(Items about the frame marker, orientation, scale and the CRT-effects menu
+from earlier revisions of this list are all fixed and described above.)
+
+1. **Second Intensity line** still renders at peak 40 when it should be
+   extinguished. A different `tone_mapping` value may fix it. The real fix
+   is the analog-frontend Stage 3 dwell/beam-energy work
+   (docs/analog-frontend-plan.md).
+2. **Renderer clock slack drifts negative build to build**: the verified
+   2026-08-06 builds closed at -0.018 ns (md5 4f8b2108) and -0.234 ns
+   (md5 ed40383164, Overlay Bright) on the 125 MHz vfb clock, HDMI clock
+   positive both times. No artifacts observed by capture at either, but a
+   build that lands further negative deserves a reseed before deploying.
 
 ---
 
@@ -247,6 +243,46 @@ The MS2109 capture card also serves ~50 frames of stale replay after each
 stream open, and can serve stale indefinitely if something (Zoom) held it;
 capture at least 150 frames and treat byte-identical repeats as stale. In
 the MiSTer OSD, values cycle with confirm - left/right switch menu pages.
+
+Ambient brightness is an OSD option ("Overlay Bright", status[27:25],
+100% down to 30%). The vendored blend selector default put unlit artwork
+at 26/64 of its color, visibly dimmer than the original core's alphablend;
+the table is now a straight ladder and 100% (64/64) is the default, which
+is the original look. Verified with Pole Position: ambient regions measure
+2.5x brighter, the 64/26 ratio (commit a0d9f0d).
+
+An .mgl loads core + cartridge + overlay in one shot, much faster than OSD
+navigation - file entries with index 1 (cart) and index 2 (overlay),
+absolute paths work:
+
+    <mistergamedescription>
+        <rbf>_console/vectrex_dev</rbf>
+        <file delay="2" type="f" index="1" path="/media/fat/games/VECTREX/Games/Pole Position (1983)(GCE).bin"/>
+        <file delay="4" type="f" index="2" path="/media/fat/games/VECTREX/pole.art"/>
+    </mistergamedescription>
+
+then `echo 'load_core /media/fat/pole_test.mgl' > /dev/MiSTer_cmd`.
+
+Two more capture-loop traps, established 2026-08-06:
+
+- Opening or closing the capture card's video stream tickles the HDMI link
+  enough that MiSTer main re-detects video and shows the framework info box
+  for video_info (5) seconds - which the first non-stale frames of the new
+  stream then catch. It looks like the core's video mode is flapping
+  (measured rate readings also wobble one LSB, 44.84 vs 44.86 KHz). It is
+  the act of capturing: three idle minutes produce zero MiSTer_fb re-init
+  events in /var/log/messages, and the box times out mid-recording. Do not
+  chase "unstable video timing" from info-box sightings alone.
+- Pole Position's HUD flashing is the game, not the core. The heavy racing
+  display list overruns 20 ms, so the game runs at ~25 Hz and draws HUD
+  elements in alternating groups: score digits every frame (steady at
+  p99.5=246 in capture), GAME OVER and the speed readout on alternating
+  frames in anti-phase (p99.5 swings 190/159). Real hardware flickers
+  exactly like this; renderer persistence holds off-frames at ~65% so it
+  reads as shimmer rather than blinking. The frame marker stays healthy
+  throughout (sim: Wait_Recal 6.6 ms holds every 20 ms on the title
+  screen, nowhere near the 40 ms watchdog; capture: zero single-frame
+  dropouts in 1041 frames).
 
 ## Overlay notes from before the feature existed
 
