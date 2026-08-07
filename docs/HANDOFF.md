@@ -249,7 +249,7 @@ Ambient brightness is an OSD option ("Overlay Bright", status[27:25],
 at 26/64 of its color, visibly dimmer than the original core's alphablend;
 the table is now a straight ladder and 100% (64/64) is the default, which
 is the original look. Verified with Pole Position: ambient regions measure
-2.5x brighter, the 64/26 ratio (commit a0d9f0d).
+2.5x brighter, the 64/26 ratio (commit 60f8594).
 
 An .mgl loads core + cartridge + overlay in one shot, much faster than OSD
 navigation - file entries with index 1 (cart) and index 2 (overlay),
