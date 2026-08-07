@@ -10,7 +10,7 @@ use ieee.std_logic_1164.all;
 -- all of that with a single 94-tap delay of the whole VIA output bus, with
 -- blanking taken undelayed; these constants split that into one documented
 -- delay per physical path so each can be tuned from measurement without
--- disturbing the others (VECTREX_ANALOG_FRONTEND_MODEL.md, Stage 1).
+-- disturbing the others (docs/VECTREX_ANALOG_FRONTEND_MODEL.md, Stage 1).
 --
 -- The defaults reproduce the original whole-bus behavior exactly: every path
 -- at 94 (~7.9 us), blanking at 0 (undelayed). This is also structurally what

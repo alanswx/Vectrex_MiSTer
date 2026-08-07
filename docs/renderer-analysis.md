@@ -8,6 +8,10 @@ left in commit messages.
 Reproduce with `sim/run.sh`, `tools/goldenref/vecdump`, `tools/goldenref/compare.py`
 and `tools/goldenref/beamspeed.py`.
 
+Status notes in **[resolved: ...]** brackets were added after the fact; the
+measurements stand, but every open problem this document ends on has since
+been closed. `docs/HANDOFF.md` has the current state.
+
 ## Verified on hardware
 
 The whole chain agrees. Deploying the core to a MiSTer, loading the Test
@@ -214,6 +218,9 @@ better argument for the renderer work than anything about dropped vectors.
 
 ## HDMI is broken on this branch, and not by the video path
 
+**[resolved: two stacked faults, the qsf fitter settings and an unwired
+generate branch - see "How HDMI was fixed" in docs/HANDOFF.md.]**
+
 Every build from this branch shows "input not supported" on HDMI, while
 unmodified master works. The video path has been ruled out: restoring the
 original arrangement wholesale, the core's own framebuffer, video_freak,
@@ -250,7 +257,9 @@ Settled by measurement:
     double. Presentation now selects CHANNEL_BW, and lit pixels measure
     [55.4, 55.4, 55.4]
 
-Not settled:
+Not settled: **[both since resolved - timing was clock-domain constraints
+(closed to ~0), and the wobble was the single-buffered framebuffer, gone
+under BUFFER_MODE 0.]**
 
   * timing does not close. -10.6ns on the 125 MHz clock, every worst path from
     the HPS f2sdram bridge into vfb_ddr_arbiter. Both ends are the same clock,
@@ -263,6 +272,9 @@ Not settled:
     Stills cannot separate the two; this needs someone watching the screen
 
 ## The frame marker is wrong
+
+**[resolved: the marker now derives from CA2/Wait_Recal exactly as proposed
+below, and BUFFER_MODE 0 renders without tearing - rtl/vectrex_video.sv.]**
 
 The Vectrex has no frame signal, so vectrex_video guesses one: it watches for
 an unusually long stretch with the beam blanked, on the theory that the BIOS
@@ -296,6 +308,10 @@ said so with `-from {emu|vectrex|limited_*}`, but synthesis infers a DSP for the
 Constraining the destinations instead: +3.978ns, TNS 0.000.
 
 ## What remains unexamined
+
+**[since measured on hardware: the Intensity test fails on lines 3 and 4,
+recorded above and in docs/HANDOFF.md; the fix is the Stage 3 dwell work in
+docs/analog-frontend-plan.md.]**
 
 Not yet measured:
 

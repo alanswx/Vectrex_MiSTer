@@ -7,7 +7,8 @@ reverted rather than committed (`git checkout -- Vectrex.qsf`).
 **HDMI is fixed (2026-08-06).** The new renderer drives HDMI at
 540x720 44.86KHz into the 720p scaler, verified on hardware by capture card:
 BIOS boot screen and Minestorm gameplay. `LEGACY_VIDEO = 0` and
-`DIAG_SIMPLE = 0` are the shipping configuration. Timing met at +0.104 ns.
+`DIAG_SIMPLE = 0` are the shipping configuration. The HDMI clock closes
+positive; the 125 MHz renderer clock hovers just negative (see Known broken).
 
 ---
 
@@ -292,29 +293,6 @@ Two more capture-loop traps, established 2026-08-06:
   throughout (sim: Wait_Recal 6.6 ms holds every 20 ms on the title
   screen, nowhere near the 40 ms watchdog; capture: zero single-frame
   dropouts in 1041 frames).
-
-## Overlay notes from before the feature existed
-
-Asteroids gained a `vfb_overlay.sv` on 2026-08-05, newer than the Major Havoc
-version currently vendored here. It loads VART artwork from **ROM index 2**
-into DDRAM and blends it **after** CRT presentation, which is right for a
-plastic overlay on the tube.
-
-Index 2 is exactly where the old OVR loading lived, so the menu slot is free:
-a `"F2,VART"` entry feeding `ioctl_index 2` is all the plumbing needed, and no
-MRA is required since `vfb_overlay` takes the ioctl signals directly.
-
-`refs/Arcade-Asteroids_MiSTer/artwork/build_artwork.py` converts indexed PNGs
-into a VART container, one image per output resolution. The 95 overlays in
-`overlays/` are all 540x720, which is already the native 720p raster; the other
-planes need scaling to 810x1080, 360x480 and 180x240. Artwork does not follow
-vector orientation, so portrait art is correct for a portrait raster.
-
-Taking the newer Asteroids framebuffer means about 4,900 changed lines against
-the vendored Major Havoc one. `rtl/videodr0me_fb/PROVENANCE.md` asks that local
-changes stay in the wiring rather than in his files, which is what makes that
-upgrade a copy rather than a merge. His framebuffer has moved substantially
-twice in eleven days.
 
 ---
 

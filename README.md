@@ -4,13 +4,32 @@ Port of Vectrex by Dar (darfpga@aol.fr) http://darfpga.blogspot.fr
 
 Supports both digital and analog joystick/gamepad
 
-### Installation:
-Copy the *.rbf file at the root of the SD card. Copy *.vec/*.bin files to Vectrex folder.
+### Installation
+Copy the *.rbf file to `_Console/` on the SD card. Copy *.vec/*.bin files to
+`games/VECTREX/`.
 
 ### Overlays
-Overlay support is temporarily removed while the vector rendering engine is
-rebuilt. The artwork in `overlays/` is retained and overlays will return once
-the new renderer lands.
+Overlays are `.art` files (VART containers holding the artwork at several
+resolutions). Ready-made overlays for 163 titles are in `artwork/generated/`;
+copy them to `games/VECTREX/`.
+
+An overlay loads two ways:
+
+* **Automatically**: name it after the ROM (`Pole Position (1983)(GCE).art`
+  next to `Pole Position (1983)(GCE).bin`) and it loads with the cartridge,
+  as .ovr files did before. `tools/overlays/name_for_roms.py` generates
+  these copies for a ROM library.
+* **Manually**: the OSD's "Load Overlay" entry.
+
+The overlay composites as the physical plastic did: the artwork acts as a
+colored filter in front of the tube, so vectors take the overlay's color
+where they pass behind it, and the unlit artwork shows as ambient
+reflection. "Overlay Bright" in the OSD sets the ambient strength, and
+"Overlay" turns compositing off.
+
+To build an overlay from a PNG (portrait, with alpha), use
+`tools/overlays/build_vart.py image.png`; `tools/overlays/merge_sources.py`
+rebuilds the whole generated set from the source packs.
 
 ### Credits
 

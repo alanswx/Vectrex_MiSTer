@@ -2,6 +2,16 @@
 
 Proposal date: 2026-07-31
 
+> **Status (2026-08-06)**: `docs/analog-frontend-plan.md` is the staged
+> execution plan for this proposal and tracks what is done. Stage 1
+> (per-path delays, `rtl/vectrex_analog_pkg.vhd`) is implemented; the VFB
+> integration this document calls Stage 4 happened by other means (the
+> vendored Asteroids `videodr0me_fb`), and frame segmentation is solved by
+> the CA2/Wait_Recal marker in `rtl/vectrex_video.sv`, so those sections
+> are historical. The referenced `VECTREX_VECTOR_PIPELINE_AUDIT.md` and
+> `background_research/` are from the machine this was drafted on and are
+> not in this repository.
+
 ## Purpose
 
 This document proposes a replacement for the fixed digital delay currently

@@ -1,6 +1,6 @@
 # Analog frontend: implementation plan and progress
 
-Working plan for executing `VECTREX_ANALOG_FRONTEND_MODEL.md` (2026-07-31),
+Working plan for executing `VECTREX_ANALOG_FRONTEND_MODEL.md` (2026-07-31, this directory),
 staged so every step is verifiable against the ghdl simulation (which matches
 silicon 100%, see docs/HANDOFF.md) and `tools/goldenref/`.
 
