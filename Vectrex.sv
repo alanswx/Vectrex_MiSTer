@@ -68,7 +68,7 @@ localparam CONF_STR = {
 	"O9,Frame,No,Yes;",
 	// "O4,Resolution,High,Low;" was disabled because low-res ruined the
 	// overlay. That constraint is gone; revisit alongside the new renderer.
-	"O23,Phosphor persistance,1,2,3,4;",
+	"O23,Persistence,Profile,Short,Medium,Long;",
 	"O56,Pseudocolor,Off,1,2,3;",
 	"O8,Overburn,No,Yes;",
 	"OD,HDMI test pattern,Off,On;",
@@ -369,6 +369,7 @@ vectrex_video vectrex_video
 
 	.overlay_off(status[24]),
 	.ovl_bright(status[27:25]),
+	.pers_sel(status[3:2]),
 	.ioctl_download(ioctl_download),
 	.ioctl_wr(ioctl_wr),
 	.ioctl_index(ioctl_index),

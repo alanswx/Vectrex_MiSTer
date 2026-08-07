@@ -53,6 +53,10 @@ module vectrex_video
 	// CRT presentation, which is where a plastic overlay on the tube sits.
 	input         overlay_off,
 	input   [2:0] ovl_bright,
+	// 0 keeps the profile's inter-frame decay; 1..3 force the compositor's
+	// short/medium/long curves. Long persistence is the knob for games that
+	// multiplex their display list below ~25 Hz (Pole Position's HUD).
+	input   [1:0] pers_sel,
 	input         ioctl_download,
 	input         ioctl_wr,
 	input  [15:0] ioctl_index,
@@ -597,7 +601,7 @@ vfb_top framebuffer
 	.osd_halo_curve(p_halo_curve),
 	.osd_halo_knee(p_halo_knee),
 	.osd_phosphor_mode(p_intra_decay),
-	.osd_inter_frame_phosphor_mode(p_inter_decay),
+	.osd_inter_frame_phosphor_mode(pers_sel == 2'd0 ? p_inter_decay : pers_sel),
 	.osd_halo_spread(p_halo_spread),
 	.osd_color_space(1'b0),
 	.osd_presentation_color(p_presentation_color),
