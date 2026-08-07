@@ -52,6 +52,7 @@ module vectrex_video
 	// stored in DDRAM by vfb_overlay inside vfb_top; blending happens after
 	// CRT presentation, which is where a plastic overlay on the tube sits.
 	input         overlay_off,
+	input   [2:0] ovl_bright,
 	input         ioctl_download,
 	input         ioctl_wr,
 	input  [15:0] ioctl_index,
@@ -611,7 +612,7 @@ vfb_top framebuffer
 	// overlay, so here the OSD switch is the authority, and the blend is
 	// the one the Deluxe profiles pair with artwork (BLEND_0).
 	.artwork_enable(!overlay_off),
-	.artwork_blend(3'd0),
+	.artwork_blend(ovl_bright),
 	.ioctl_download(ioctl_download),
 	.ioctl_wr(ioctl_wr),
 	.ioctl_index(ioctl_index),

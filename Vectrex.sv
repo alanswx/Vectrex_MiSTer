@@ -73,6 +73,7 @@ localparam CONF_STR = {
 	"OD,HDMI test pattern,Off,On;",
 	"OLN,CRT effects,Typical,Off,Touch,Overdriven,Red Alert,Ultraviolet;",
 	"OO,Overlay,On,Off;",
+	"OPR,Overlay Bright,100%,90%,80%,70%,60%,50%,40%,30%;",
 	"-;",
 	"OC,Port 2,Joystick,Speech;",
 	"OA,CPU Model,1,2;",
@@ -362,6 +363,7 @@ vectrex_video vectrex_video
 	.test_pattern(status[13]),
 
 	.overlay_off(status[24]),
+	.ovl_bright(status[27:25]),
 	.ioctl_download(ioctl_download),
 	.ioctl_wr(ioctl_wr),
 	.ioctl_index(ioctl_index),

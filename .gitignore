@@ -50,3 +50,4 @@ tools/goldenref/*.o
 # ghdl simulation build output
 sim/build/
 __pycache__/
+captures/

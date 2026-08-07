@@ -149,17 +149,22 @@ module vfb_overlay #(
 		end
 	endfunction
 
+	// Local change (see PROVENANCE.md): in the transmissive compositor the
+	// weight sets the ambient (unlit artwork) brightness, so the table is a
+	// straight brightness ladder driven from the OSD instead of upstream's
+	// signed offsets around a profile default. 64/64 reproduces the original
+	// core's alphablend (artwork at full color * alpha).
 	function automatic [6:0] blend_weight(input logic [2:0] selection);
 		begin
 			case (selection)
-				3'b000: blend_weight = 7'd26; //  0: 40.6%
-				3'b001: blend_weight = 7'd27; // +1: 42.2%
-				3'b010: blend_weight = 7'd32; // +2: 50.0%
-				3'b011: blend_weight = 7'd37; // +3: 57.8%
-				3'b100: blend_weight = 7'd20; // -4: 31.3%
-				3'b101: blend_weight = 7'd22; // -3: 34.4%
-				3'b110: blend_weight = 7'd24; // -2: 37.5%
-				default: blend_weight = 7'd25; // -1: 39.1%
+				3'b000: blend_weight = 7'd64; // 100%
+				3'b001: blend_weight = 7'd58; //  90%
+				3'b010: blend_weight = 7'd51; //  80%
+				3'b011: blend_weight = 7'd45; //  70%
+				3'b100: blend_weight = 7'd38; //  60%
+				3'b101: blend_weight = 7'd32; //  50%
+				3'b110: blend_weight = 7'd26; //  40%
+				default: blend_weight = 7'd19; //  30%
 			endcase
 		end
 	endfunction

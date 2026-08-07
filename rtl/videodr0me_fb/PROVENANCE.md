@@ -46,4 +46,7 @@ If a change to these files turns out to be unavoidable, note it here.
   filter's transmission color (white where alpha is zero, the art color
   where opaque), plus a faint ambient-reflection term, which is the
   original core's alphablend behavior. The blend selector now sets the
-  ambient strength (2026-08-06).
+  ambient strength (2026-08-06), and the `blend_weight` table is a straight
+  brightness ladder (100% down to 30% in the OSD's menu order) instead of
+  upstream's signed offsets around a profile default; 100% (64/64) is the
+  default and reproduces the original core's full-strength alphablend.
