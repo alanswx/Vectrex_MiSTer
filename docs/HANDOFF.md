@@ -221,7 +221,7 @@ CRT presentation. The compositor is a transmissive filter model, not the
 vendored screen blend: vectors are multiplied by the overlay's transmission
 color (a white beam under Armor Attack's green playfield renders green, as
 the original core's alphablend did), unlit artwork shows as ambient
-reflection, and the OSD blend selector sets the ambient strength. 163 titles are generated in artwork/generated/ (gitignored)
+reflection, and the OSD blend selector sets the ambient strength. 163 titles are tracked in artwork/generated/
 and deployed to /media/fat/games/VECTREX/; tools/overlays/build_vart.py
 converts one PNG, merge_sources.py rebuilds the whole set picking the best
 source per title. Four traps that cost this feature a day:
