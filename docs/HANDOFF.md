@@ -70,7 +70,10 @@ The MiSTer's HDMI passes through a MiraBox capture box (MS2109,
 `534d:2109`) on its way to the monitor, and the box's USB goes to this
 machine: video at the `/dev/video*` node whose udev `ID_MODEL` is
 `MiraBox_Capture` (currently `/dev/video4`; `/dev/video0/2` are a webcam),
-audio at the ALSA card named `MS2109`. This sees the real HDMI output —
+audio at the ALSA card named `MS2109`. The MiSTer's output mode is
+1920x1080@60 (`video_mode=8` in MiSTer.ini, changed 2026-08-07; the prior
+720p file is MiSTer.ini.bak_claude) - capture at `-video_size 1920x1080`,
+which the MS2109 delivers at 30 fps MJPEG (60 fps needs 1280x720). This sees the real HDMI output —
 scaler, OSD, info overlay and all — so it can distinguish "syncs" from
 "input not supported" without a human at the monitor.
 
