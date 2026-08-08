@@ -229,10 +229,15 @@ from earlier revisions of this list are all fixed and described above.)
    screen's own analog redraw variation, not the beam model - real
    machines shimmer here too. Remaining calibration, wants
    real-Vectrex reference footage (accuracy-plan M2): the
-   8-ticks/pixel normalization and cutoff value; and the dwell boost
-   clamps the slow-drawn Intensity lines at the ceiling, flattening
-   the ladder gradation Raw shows (61-227 ramp) - whether a real tube
-   keeps that gradation decides the boost knee. Fast BIOS text
+   8-ticks/pixel normalization and cutoff value; The flattening
+   question was settled same-day by real-hardware footage (an SVM
+   System Test intensity ladder on a GCE machine, serial 0058095 -
+   refs/reference-captures/INDEX.md): a real tube grades its ladder
+   smoothly to the top, so the hard clamp became a soft knee above
+   energy 100 (piecewise 100 + 27*(E-100)/(E-100+127), max 125).
+   Verified on hardware: ladder, cutoff and dwell pair unchanged
+   below the knee; re-check the Test Cartridge's Intensity screen to
+   see the restored top-end gradation. Fast BIOS text
    renders ~0.7x.
 2. **The OSD's video settings are structured after Videodr0me's Asteroids
    core** (2026-08-07): a "Video Profiles & Effects" page (profile selector

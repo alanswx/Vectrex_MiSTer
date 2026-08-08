@@ -409,7 +409,23 @@ logic  [7:0] emit_z = 8'd0;
 logic        emit_on = 1'b0;
 
 wire [14:0] boosted = 15'(hold_z) * 15'(dwell_boost16(dwell_cnt));
-wire  [7:0] dwell_z = (boosted[14:4] > 11'd127) ? 8'd127 : boosted[11:4];
+wire [10:0] beam_energy = boosted[14:4];
+// Soft knee above 100 instead of a hard clamp: real-tube reference
+// footage (refs/reference-captures/INDEX.md, SVM System Test intensity
+// ladder) shows smooth gradation all the way up, which a hard ceiling
+// flattens. Piecewise-linear 100 + 27*(E-100)/(E-100+127), max 125.
+function automatic [7:0] soft_knee(input [10:0] e);
+	begin
+		if      (e <= 11'd100)  soft_knee = e[7:0];
+		else if (e <= 11'd127)  soft_knee = 8'd100 + 8'(((e - 11'd100) * 3) >> 4);
+		else if (e <= 11'd200)  soft_knee = 8'd105 + 8'(((e - 11'd128) * 3) >> 5);
+		else if (e <= 11'd320)  soft_knee = 8'd112 + 8'(((e - 11'd201) * 3) >> 6);
+		else if (e <= 11'd640)  soft_knee = 8'd117 + 8'((e - 11'd321) >> 6);
+		else                    soft_knee = (8'd122 + 8'((e - 11'd641) >> 9) > 8'd125)
+		                                    ? 8'd125 : 8'd122 + 8'((e - 11'd641) >> 9);
+	end
+endfunction
+wire  [7:0] dwell_z = soft_knee(beam_energy);
 
 always_ff @(posedge clk_sys) begin
 	if (tick_pipe[2]) begin
