@@ -219,7 +219,8 @@ better argument for the renderer work than anything about dropped vectors.
 ## HDMI is broken on this branch, and not by the video path
 
 **[resolved: two stacked faults, the qsf fitter settings and an unwired
-generate branch - see "How HDMI was fixed" in docs/HANDOFF.md.]**
+generate branch: the qsf fitter settings were placement-breaking HDMI,
+and the gen_new_video branch had no video wiring (fixed in c6e943e).]**
 
 Every build from this branch shows "input not supported" on HDMI, while
 unmodified master works. The video path has been ruled out: restoring the
@@ -232,7 +233,8 @@ neither the machine nor videodr0me_fb.
 
 What remains untested is the non-video changes: the qsf fitter settings, the
 SDC clock groups, pll_vfb existing, the FB_* tie-offs, and vectrex.vhd's
-register initialisers. See docs/HANDOFF.md.
+register initialisers; the culprits were the qsf fitter settings and
+the unwired generate branch, and the other suspects are innocent.
 
 ## Port status
 
@@ -310,8 +312,8 @@ Constraining the destinations instead: +3.978ns, TNS 0.000.
 ## What remains unexamined
 
 **[since measured on hardware: the Intensity test fails on lines 3 and 4,
-recorded above and in docs/HANDOFF.md; the fix is the Stage 3 dwell work in
-docs/analog-frontend-plan.md.]**
+recorded above; the fix is the Stage 3 dwell work in
+docs/beam-model.md.]**
 
 Not yet measured:
 

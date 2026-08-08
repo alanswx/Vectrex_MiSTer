@@ -22,3 +22,17 @@ were made.
 * https://github.com/libretro/overlay-borders (MIT license)
 * https://github.com/thebezelproject/bezelproject-GCEVectrex/tree/master/retroarch/overlay/GameBezels/GCEVectrex
 * https://github.com/raphkoster/vectrex-overlays
+
+## How the core loads overlays
+
+The OSD's "Load Overlay" is the `F2,ART` CONF_STR slot (extensions are
+exactly three characters). Auto-load is main's generic addon mechanism:
+the lowercase `f1,ART;` entry directly before the cart's F entry makes
+main stream `<rom name>.ART` from the ROM's folder after every cartridge
+load, including MGL loads. Addon uploads arrive with the addon number in
+`ioctl_index[9:8]` (not index 2), so `vfb_overlay`'s `upload_active`
+accepts both. Core reset gates on cartridge indexes only, so an overlay
+upload never resets the machine. The compositor is a transmissive filter:
+vectors multiply by the artwork color where they pass behind it, unlit
+artwork shows as ambient reflection ("Overlay Bright" sets the strength,
+default 100% = the original core's look).

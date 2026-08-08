@@ -31,6 +31,14 @@ To build an overlay from a PNG (portrait, with alpha), use
 `tools/overlays/build_vart.py image.png`; `tools/overlays/merge_sources.py`
 rebuilds the whole generated set from the source packs.
 
+### Developer documentation
+
+`docs/` holds the reference set: `hardware-loop.md` (bench and
+measurement how-to), `beam-model.md` (the beam energy model and its
+evidence), `renderer-analysis.md` (the measurement record),
+`VECTREX_ANALOG_FRONTEND_MODEL.md` (analog frontend analysis), and
+`HANDOFF.md` (current state and TODO - the only evolving document).
+
 ### Credits
 
 Original Vectrex core by Dar (darfpga@aol.fr), http://darfpga.blogspot.fr

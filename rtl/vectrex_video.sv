@@ -361,7 +361,7 @@ always_ff @(posedge clk_sys) begin
 end
 
 // ------------------------------------------------------- beam energy ---
-// Stage 3 of docs/analog-frontend-plan.md. Two effects the raw pipeline
+// The beam energy model (docs/beam-model.md). Two effects the raw pipeline
 // lacks, both measured with tools/testcart's calibration cartridge:
 //
 // 1. Grid cutoff. A real CRT passes no beam current below the grid

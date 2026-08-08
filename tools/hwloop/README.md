@@ -25,8 +25,8 @@ grid to the INTENSITY screen, verified both places, is:
 python3 /media/fat/vpad.py --hold 0.25 --gap 0 x 1.05 x 0.45 x 4.4 x 4.75 x 3.05 x
 ```
 
-See docs/HANDOFF.md ("Vectrex buttons ARE pressable remotely") for the
-full Test Cartridge screen order and its traps.
+See docs/hardware-loop.md for the full Test Cartridge screen order
+and its traps.
 
 ## Batch game regression: game_sweep.py
 

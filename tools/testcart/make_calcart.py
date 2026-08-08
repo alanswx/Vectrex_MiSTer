@@ -14,7 +14,7 @@ Vectrex):
     brightness rises with dwell
 
 BIOS entry points used (each verified by disassembling refs/vecx/rom.dat,
-see docs/accuracy-plan.md workstream 1):
+see docs/beam-model.md):
 
   $F1AA DP_to_D0      $F192 Wait_Recal     $F354 Reset0Ref
   $F2AB Intensity_a   $F2FC Moveto_d_7F (A=y,B=x, sets its own scale)

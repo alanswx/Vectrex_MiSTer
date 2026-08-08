@@ -2,13 +2,17 @@
 
 Proposal date: 2026-07-31
 
-> **Status (2026-08-06)**: `docs/analog-frontend-plan.md` is the staged
-> execution plan for this proposal and tracks what is done. Stage 1
-> (per-path delays, `rtl/vectrex_analog_pkg.vhd`) is implemented; the VFB
-> integration this document calls Stage 4 happened by other means (the
-> vendored Asteroids `videodr0me_fb`), and frame segmentation is solved by
-> the CA2/Wait_Recal marker in `rtl/vectrex_video.sv`, so those sections
-> are historical. The referenced `VECTREX_VECTOR_PIPELINE_AUDIT.md` and
+> **Status**: the analysis below is the reference; parts of the proposal
+> are implemented. Per-path delays exist in `rtl/vectrex_analog_pkg.vhd`
+> with identity defaults; the VFB integration this document calls Stage 4
+> happened by other means (the vendored Asteroids `videodr0me_fb`); frame
+> segmentation is solved by the CA2/Wait_Recal marker in
+> `rtl/vectrex_video.sv`; beam energy is in (`docs/beam-model.md`). Two
+> model differences vs MAME worth knowing when calibrating the stateful
+> analog stage: MAME snaps ZERO to a computed centre after its delay
+> (one-shot) where this core and vecx clamp continuously while CA2 is
+> low, and both sum the zero-reference DAC into both axes' velocity.
+> The referenced `VECTREX_VECTOR_PIPELINE_AUDIT.md` and
 > `background_research/` are from the machine this was drafted on and are
 > not in this repository.
 
