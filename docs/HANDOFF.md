@@ -174,6 +174,12 @@ metric - intra-frame phosphor decay means each line's brightness depends
 on its age since the beam drew it when the frame was snapped - so the
 sweep takes three captures and uses the per-line max.
 
+**Batch game regression**: `tools/hwloop/game_sweep.py` (see the hwloop
+README) covers the full 101-title catalog with vecx attract references;
+`validate` passes 98/98 offline. The hardware `run` mode needs the
+explicit `--yes-touch-the-mister` flag - never run it while the bench
+is in use for something else.
+
 ---
 
 ## What works and is worth keeping

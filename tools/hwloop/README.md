@@ -27,3 +27,24 @@ python3 /media/fat/vpad.py --hold 0.25 --gap 0 x 1.05 x 0.45 x 4.4 x 4.75 x 3.05
 
 See docs/HANDOFF.md ("Vectrex buttons ARE pressable remotely") for the
 full Test Cartridge screen order and its traps.
+
+## Batch game regression: game_sweep.py
+
+`game_sweep.py` extends the same idea to the whole catalog. `gen-refs`
+renders every title's hands-off attract sequence in vecx (84 frames,
+~0.8 s apart, using the BIOS extracted from `rtl/bios_rom.vhd` so
+BIOS-dependent behavior matches the core) into `refs/game_sweep/`
+(gitignored, regenerable). `validate` is the offline self-test: each
+game's most-lit frame must match its own reference set above threshold
+with the exact frame excluded — 98/98 on the current refs, with three
+titles auto-skipped for drawing nothing hands-off (the 3-D imager games
+and the Rocket Sledge bad dump). `run` launches each game on the MiSTer,
+captures framework screenshots, and passes a game when any capture
+matches any of its reference frames; it requires an explicit
+`--yes-touch-the-mister` flag because it repeatedly loads cores on the
+bench. ROMs are pulled from the SD card to `refs/roms/sd/` so both sides
+run identical bytes.
+
+Matching is the binarized structural correlation from tc_sweep with an
+FFT-based translation search; the reference is a frame SET because
+launch latency makes the hardware's attract phase unpredictable.
