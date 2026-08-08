@@ -156,6 +156,24 @@ Input sequences can be rehearsed offline with `tools/goldenref/vecbtn`
 (`--press START:LEN:MASK` in 1/30 s frames, mask bit N = P1 button N+1),
 which is how the timing above was found.
 
+**Automated regression sweep**: `tools/hwloop/tc_sweep.py` walks every
+Test Cartridge screen closed-loop (identify screen -> press -> verify,
+retrying through the cart's dead windows), captures each one, and checks
+screen identity against vecx reference renders, the checksum digits, and
+the manual's INTENSITY criteria. Exit 0 = green. First run caught a real
+finding: **the cart checksums the BIOS along with itself**, and this core
+ships the Mine Storm bug-fix BIOS (crc32 105afd6a, `rtl/bios_rom.vhd`),
+so the correct on-screen value is **6293** - the manual's B796 is what
+the factory BIOS (crc32 ba13fb57, vecx's rom.dat) produces. Verified by
+running vecx with the extracted core BIOS: it shows 6293 exactly. The
+sweep expects 6293, which doubles as a BIOS-integrity check. If a
+"factory vs bug-fix BIOS" menu option ever lands, B796 returns on the
+factory setting (and so does the authentic Mine Storm level-13 crash).
+A single screenshot of the INTENSITY ladder is not a stable brightness
+metric - intra-frame phosphor decay means each line's brightness depends
+on its age since the beam drew it when the frame was snapped - so the
+sweep takes three captures and uses the per-line max.
+
 ---
 
 ## What works and is worth keeping

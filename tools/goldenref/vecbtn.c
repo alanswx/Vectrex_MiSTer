@@ -110,12 +110,13 @@ static int load(const char *path, unsigned char *buf, size_t max, const char *wh
 
 int main(int argc, char **argv)
 {
-	const char *bios = NULL, *cartf = NULL;
+	const char *bios = NULL, *cartf = NULL, *fill = "zero";
 	int i;
 
 	for (i = 1; i < argc; i++) {
 		if      (!strcmp(argv[i], "--bios") && i + 1 < argc) bios = argv[++i];
 		else if (!strcmp(argv[i], "--cart") && i + 1 < argc) cartf = argv[++i];
+		else if (!strcmp(argv[i], "--fill") && i + 1 < argc) fill = argv[++i];
 		else if (!strcmp(argv[i], "--until") && i + 1 < argc) until = atol(argv[++i]);
 		else if (!strcmp(argv[i], "--every") && i + 1 < argc) dump_every = atol(argv[++i]);
 		else if (!strcmp(argv[i], "--dump") && i + 1 < argc) dump_list[n_dump++] = atol(argv[++i]);
@@ -141,7 +142,22 @@ int main(int argc, char **argv)
 	memset(rom, 0, sizeof rom);
 	memset(cart, 0, sizeof cart);
 	if (load(bios, rom, sizeof rom, "bios") < 0) return 1;
-	if (cartf && load(cartf, cart, sizeof cart, "cart") < 0) return 1;
+	if (cartf) {
+		FILE *cf = fopen(cartf, "rb");
+		long clen;
+		if (!cf) { perror(cartf); return 1; }
+		clen = (long)fread(cart, 1, sizeof cart, cf);
+		fclose(cf);
+		fprintf(stderr, "loaded cart: %s (%ld bytes, fill=%s)\n", cartf, clen, fill);
+		if (clen > 0 && clen < (long)sizeof cart) {
+			long a;
+			if (!strcmp(fill, "ff"))
+				memset(cart + clen, 0xff, sizeof cart - clen);
+			else if (!strcmp(fill, "mirror"))
+				for (a = clen; a < (long)sizeof cart; a++)
+					cart[a] = cart[a % clen];
+		}
+	}
 
 	fb = calloc((size_t)pgm_w * pgm_h, 1);
 	alg_jch0 = alg_jch1 = alg_jch2 = alg_jch3 = 0x80;
