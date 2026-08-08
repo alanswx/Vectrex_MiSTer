@@ -44,6 +44,7 @@ refs/
 
 # golden-reference harness build artifacts
 tools/goldenref/vecdump
+tools/goldenref/vecbtn
 tools/goldenref/gen_*.c
 tools/goldenref/*.o
 

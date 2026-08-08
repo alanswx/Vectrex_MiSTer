@@ -131,9 +131,30 @@ localised the HDMI fault to the output side.
 
 `POST /api/controls/keyboard/{name}` accepts only MiSTer system keys: `osd`,
 `up`, `down`, `left`, `right`, `reset`, `confirm`, `back`, `menu`, `user`,
-`screenshot`, `volume_up`. It cannot press Vectrex buttons, so walking the
-Test Cartridge menu needs a human. Be careful: `reset` and `osd` act on the
-running core immediately.
+`screenshot`, `volume_up`. It cannot press Vectrex buttons. Be careful:
+`reset` and `osd` act on the running core immediately.
+
+**Vectrex buttons ARE pressable remotely**: `tools/hwloop/vpad.py` (deployed
+at `/media/fat/vpad.py`) creates a uinput virtual gamepad cloning the bench
+pad's identity (045e:028e), so MiSTer applies the existing mapping in
+`config/inputs/input_045e_028e_v3.map` and the virtual pad drives player 1
+with zero setup. Per that map, evdev `b a y x` = Vectrex Buttons 1 2 3 4.
+Example: `ssh root@192.168.1.75 'python3 /media/fat/vpad.py --hold 0.25
+--gap 0 x 1.05 x 0.45 x 4.4 x 4.75 x 3.05 x'` — bare float tokens are extra
+sleeps. That exact sequence walks the rev 4 Test Cartridge from the
+linearity grid to the INTENSITY screen (verified on hardware 2026-08-08).
+
+Test Cartridge (rev 4) navigation, verified in vecx and on hardware:
+Button 4 = next screen, Button 3 = previous. Order: linearity grid (auto,
+~14 s after launch) → ADJUST DAC OFFSET → INTEGRATOR OFFSET → FORMING
+CHECKSUM/B796 → DEFLECTION PROTECT (auto-runs into BEAM CUTOFF) → SOUND
+TEST → INTENSITY → FOCUS → DISTORTION → DISTORTION 2 → KEY/JOYSTICK. The
+two scope screens only accept presses while their words are on screen
+(words reappear ~every 6 s); the sound test only during a words phase; the
+KEY/JOYSTICK screen is a trap — no button leaves it, relaunch the cart.
+Input sequences can be rehearsed offline with `tools/goldenref/vecbtn`
+(`--press START:LEN:MASK` in 1/30 s frames, mask bit N = P1 button N+1),
+which is how the timing above was found.
 
 ---
 

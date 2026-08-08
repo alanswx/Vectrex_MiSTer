@@ -22,12 +22,18 @@ CFLAGS?= -O2 -Wall -Wextra -Wno-unused-parameter -I$(VECX)
 OBJS = vecdump.o vecx.o e6809.o
 GEN  = gen_vecx.c gen_e6809.c
 
-all: vecdump
+all: vecdump vecbtn
 
 vecdump: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
 vecdump.o: vecdump.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+vecbtn: vecbtn.o vecx.o e6809.o
+	$(CC) $(CFLAGS) -o $@ vecbtn.o vecx.o e6809.o
+
+vecbtn.o: vecbtn.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 gen_%.c: $(VECX)/%.c
@@ -40,6 +46,6 @@ e6809.o: gen_e6809.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f vecdump $(OBJS) $(GEN)
+	rm -f vecdump vecbtn vecbtn.o $(OBJS) $(GEN)
 
 .PHONY: all clean
