@@ -105,6 +105,39 @@ Also mine the written record - it encodes what footage can't:
   downstream relative; worth a look at what they changed, and a future
   beneficiary of this work.
 
+### 2d. No-tube reference results (2026-08-07)
+
+Two of the substitutes above were executed the day this section was
+added; both bear directly on the Stage 3 constants.
+
+**Intensity census across the ROM corpus** (162 ROMs, static scan for
+`Intensity_a` immediates and the `Intensity_1F/3F/5F/7F` entries; 156
+scannable): the workhorse values are $7F (114 games) and $5F (86), with
+a working spread down to $30. The commercial-era floor is $1E/$1F
+(30/31), the per-game minimum for 8 titles; exactly one ROM - a 1999
+homebrew - uses a nonzero value below 28. Designers, who all tested on
+real tubes, treated 30 as the dimmest useful intensity: combined with
+the Test Cartridge criterion (z=24 must extinguish), the cutoff is
+bracketed to (24, 30] from two independent directions. BEAM_CUTOFF=28
+sits inside it.
+
+**Z-axis circuit analysis** (service manual p.30 power-board schematic
++ CRT board): the Z input is AC-coupled (C409 0.47u) with a DC-restore
+clamp (D402), so intensity is referenced to blank level; the amplifier
+(Q503) drives the CRT cathode, and G1 bias comes from the BRIGHTNESS
+pot (R509 250K) off -30V. Consequences: (1) the cutoff position in DAC
+counts is what the brightness pot adjusts, and the manual's Intensity
+screen is that pot's calibration procedure - so modeling "a correctly
+adjusted machine" means placing the cutoff exactly where the criterion
+puts it, which is what BEAM_CUTOFF does; (2) gun physics (cathode
+drive, I proportional to V^~2.5-3 above cutoff) means z=30 content is
+roughly 1% luminance on a real tube - visible on a 300:1 CRT in a dark
+room, crushed on an 8-bit LCD pipeline - so the renderer tone mapper's
+low-end lift is display adaptation of an accurate model, not error.
+The open question that still wants footage is how much of the tube's
+steep ladder gradation to preserve in presentation (the dwell-boost
+ceiling currently flattens it; Raw shows 61-227).
+
 ## 3. Comparison infrastructure (build once, use everywhere)
 
 - **Reference corpus layout**: `refs/reference-captures/<game>/` holding
