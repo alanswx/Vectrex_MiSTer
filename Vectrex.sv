@@ -20,6 +20,9 @@
 //============================================================================
 
 module emu
+#(
+	parameter integer ANALOG_MODEL = 0
+)
 (
 	`include "sys/emu_ports.vh"
 );
@@ -72,7 +75,7 @@ localparam CONF_STR = {
 	"P1O[68:66],Profile,80s Cruise Control,80s Overdrive,Red Alert,Ultraviolet,Custom 1,Custom 2,Off,A Touch of CRT;",
 	"h7P1O[63:61],Dot Scale,2x,2.5x,3x,4x,5x,1x,1.5x;",
 	"h7P1O[38:37],Tone Mapping,Off,Linear 1,Linear 2,Bright;",
-	"h7P1O[119:118],Inter-Frame Decay,Off,Short,Medium,Long;",
+	"h7P1O[119:118],Inter-Frame Mode,Off,Blend,Medium,Long;",
 	"h7P1O[56:55],Intra-Frame Decay,Off,LUT A,LUT B,LUT C;",
 	"h8P1-;",
 	"h8P1-,Modern clarity with a touch;",
@@ -100,7 +103,7 @@ localparam CONF_STR = {
 	"hDH6P1O[43:41],> Halo Curve,Minimal,Min+,Mild,Mild+,Moderate,Mod+,Strong-,Strong;",
 	"hDH6P1O[84:83],> Halo Spread,Original,Wide 1,Wide 2,Wide 3;",
 	"hDH6P1O[48:47],> Halo Compression,Off,8,16,24;",
-	"hDP1O[86:85],> Inter-Frame Decay,Off,Short,Medium,Long;",
+	"hDP1O[86:85],> Inter-Frame Mode,Off,Blend,Medium,Long;",
 	"hDP1O[88:87],> Intra-Frame Decay,Off,LUT A,LUT B,LUT C;",
 	"hDP1O[91:89],> Vector Color,White,Deluxe Blue,Lunar Green,Red,Purple,Cyan,Yellow;",
 	"hEP1O[94:92],> Dot Scale,2x,2.5x,3x,4x,5x,1x,1.5x;",
@@ -111,11 +114,11 @@ localparam CONF_STR = {
 	"hEH6P1O[46:44],> Halo Curve,Minimal,Min+,Mild,Mild+,Moderate,Mod+,Strong-,Strong;",
 	"hEH6P1O[107:106],> Halo Spread,Original,Wide 1,Wide 2,Wide 3;",
 	"hEH6P1O[50:49],> Halo Compression,Off,8,16,24;",
-	"hEP1O[109:108],> Inter-Frame Decay,Off,Short,Medium,Long;",
+	"hEP1O[109:108],> Inter-Frame Mode,Off,Blend,Medium,Long;",
 	"hEP1O[111:110],> Intra-Frame Decay,Off,LUT A,LUT B,LUT C;",
 	"hEP1O[114:112],> Vector Color,White,Deluxe Blue,Lunar Green,Red,Purple,Cyan,Yellow;",
 	"P1-;",
-	"P1O[3:2],Persistence,Profile,Short,Medium,Long;",
+	"P1O[3:2],Persistence,Profile,Blend,Medium,Long;",
 	"P1O[29],Beam Model,Accurate,Raw;",
 	"P1-;",
 	"P1O[24],Overlay,On,Off;",
@@ -131,6 +134,7 @@ localparam CONF_STR = {
 	"-;",
 	"OC,Port 2,Joystick,Speech;",
 	"OA,CPU Model,1,2;",
+	"OE,BIOS,Bug-fixed,Factory;",
 	"-;",
 	"R7,Reset;",
 	"J1,Button 1,Button 2,Button 3,Button 4;",
@@ -242,10 +246,14 @@ assign AUDIO_R = {audio, 6'd0};
 assign AUDIO_S = 1;
 assign AUDIO_MIX = 0;
 
+reg bios_factory_d = 0;
+always @(posedge clk_sys) bios_factory_d <= status[14];
+wire bios_changed = bios_factory_d ^ status[14];
+
 // Reset on cartridge loads only: the overlay (ioctl index 2) uploads into
 // vfb_overlay's DDRAM store, and holding the core in reset through that
 // upload wipes it as it arrives.
-wire reset = (RESET | status[0] | status[7] | buttons[1] | rom_download | second_reset);
+wire reset = (RESET | status[0] | status[7] | buttons[1] | rom_download | second_reset | bios_changed);
 
 reg second_reset = 0;
 always @(posedge clk_sys) begin
@@ -348,7 +356,7 @@ end endgenerate
 // Beam taps from the core, feeding the new renderer.
 wire signed [19:0] dbg_beam_x, dbg_beam_y;
 wire  [7:0] dbg_z;
-wire        dbg_blank_n, dbg_ce, dbg_zero_n;
+wire        dbg_blank_n, dbg_ce, dbg_cpu_ce, dbg_zero_n;
 wire [7:0] r,g,b;
 
 
@@ -363,11 +371,13 @@ always @(posedge clk_sys) begin
 	if(rom_download && ioctl_wr && (ioctl_addr[14:0] & ~addr_mask)) addr_mask <= ((addr_mask<<1)|15'd1);
 end
 
-vectrex #(.INTERNAL_FB(LEGACY_VIDEO ? 1 : 0)) vectrex
+vectrex #(.INTERNAL_FB(LEGACY_VIDEO ? 1 : 0), .STABLE_CPU_ENABLE(1),
+          .ANALOG_MODEL(ANALOG_MODEL)) vectrex
 (
 	.reset(reset),
 	.clock(clk_sys),
 	.cpu(status[10]),
+	.bios_factory(status[14]),
 
 	.cart_data(ioctl_dout),
 	.cart_addr(ioctl_addr),
@@ -412,6 +422,7 @@ vectrex #(.INTERNAL_FB(LEGACY_VIDEO ? 1 : 0)) vectrex
 	.dbg_blank_n(dbg_blank_n),
 	.dbg_z(dbg_z),
 	.dbg_ce(dbg_ce),
+	.dbg_cpu_ce(dbg_cpu_ce),
 	.dbg_zero_n(dbg_zero_n)
 );
 

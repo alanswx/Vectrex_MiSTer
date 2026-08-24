@@ -48,6 +48,12 @@ echo 'load_core /media/fat/whatever.mgl' > /dev/MiSTer_cmd
 </mistergamedescription>
 ```
 
+The game-launch API can return HTTP 200 without changing cartridges. Confirm
+the next screenshot actually changed before starting a closed-loop test. After
+the 2026-08-09 full sweep it remained stale even across a core reload, which
+prevented a redundant native-720 Test Cartridge sweep; do not interpret the
+resulting `never reached grid` exception as a renderer failure.
+
 ## Framework screenshots
 
 POST `/api/screenshots`, confirm the newest `modified` timestamp advanced
@@ -60,8 +66,11 @@ the output stages — a clean screenshot proves nothing about HDMI/VGA.
 MiSTer HDMI passes through a MiraBox MS2109 whose USB lands on this
 machine: video at the `/dev/video*` node with udev `ID_MODEL
 MiraBox_Capture` (currently `/dev/video4`), audio at ALSA card `MS2109`.
-Output mode is 1920x1080@60 (`video_mode=8`), which the MS2109 delivers
-at 30 fps MJPEG; 60 fps needs 1280x720.
+The bench is currently left at native 1280x720@60 (`video_mode=0`) after the
+2026-08-09 presentation test; the previous setting was 1920x1080@60
+(`video_mode=8`). The MS2109 delivers 1080p at 30 fps MJPEG; 60 fps needs
+1280x720. The pre-test global configuration is backed up on the MiSTer as
+`/media/fat/MiSTer.ini.pre_vectrex_720p_20260809`.
 
 ```bash
 ffmpeg -f v4l2 -input_format mjpeg -video_size 1920x1080 -i /dev/video4 \
@@ -75,6 +84,14 @@ Traps:
 - An app holding the device (Zoom) makes it serve stale/no-signal frames
   forever; quit the app and `USBDEVFS_RESET` the USB device.
 - The chip latches no-signal at power-up; reset it after input changes.
+- Requesting 1280x720 from the MiraBox does **not** prove the MiSTer source is
+  720p; the dongle will downscale a 1080p input and can introduce hairline
+  beading. Capture at the source resolution when judging scaler artifacts.
+- At native 720p, use the core render setting `Match output`. The 1080p render
+  target downscaled to native 720p beads vertical hairlines in both framework
+  and raw HDMI captures; Match output produces a 540x720 active image with
+  continuous vectors. The full 98-title/588-frame review is recorded in
+  `game_sweep_native720_match_full_20260809/`.
 - **Opening or closing the stream re-triggers MiSTer's video info box**
   for ~5 s and wobbles the reported rate one LSB. It looks like the
   core's video is flapping; it is the act of capturing. It also paints
@@ -107,8 +124,9 @@ ssh root@192.168.1.75 'python3 /media/fat/vpad.py --hold 0.25 --gap 0 \
   x 1.05 x 0.45 x 4.4 x 4.75 x 3.05 x'
 ```
 
-The expected checksum is **6293** with the shipped BIOS, not the
-manual's B796 — see `docs/beam-model.md` for why.
+The expected checksum is **6293** with the default Bug-fixed BIOS and **B796**
+with Factory selected. Use `tc_sweep.py --expected-bios fixed|factory`; see
+`docs/beam-model.md` for why the values differ.
 
 ## Regression suites
 

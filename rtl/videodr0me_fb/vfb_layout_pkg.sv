@@ -1,13 +1,13 @@
 package vfb_layout_pkg;
 
-	localparam integer VFB_BUFFER_COUNT = 5;
+	localparam integer VFB_BUFFER_COUNT = 6;
 	localparam integer VFB_TILE_SIZE = 8;
 	localparam logic [15:0] VFB_TILEMAP_ENTRIES_480 = 16'd11520;
 
 	localparam logic [28:0] VFB_FRAMEBUFFER_BASE = 29'h06000000;
-	localparam logic [28:0] VFB_FRAMEBUFFER_LAST = 29'h0654ffff;
-	localparam logic [28:0] VFB_ARTWORK_BASE = 29'h06550000;
-	localparam logic [28:0] VFB_ARTWORK_LAST = 29'h065cffff;
+	localparam logic [28:0] VFB_FRAMEBUFFER_LAST = 29'h0665ffff;
+	localparam logic [28:0] VFB_ARTWORK_BASE = 29'h06660000;
+	localparam logic [28:0] VFB_ARTWORK_LAST = 29'h066dffff;
 
 	function automatic logic [28:0] vfb_buffer_base(
 		input logic [2:0] index
@@ -19,6 +19,7 @@ package vfb_layout_pkg;
 				3'd2: vfb_buffer_base = 29'h06220000;
 				3'd3: vfb_buffer_base = 29'h06330000;
 				3'd4: vfb_buffer_base = 29'h06440000;
+				3'd5: vfb_buffer_base = 29'h06550000;
 				default: vfb_buffer_base = VFB_FRAMEBUFFER_BASE;
 			endcase
 		end

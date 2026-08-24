@@ -172,7 +172,15 @@ module vfb_top (
 	end
 
 	wire fb_reset_request = reset;
-	wire fb_client_reset = fb_reset_request | arbiter_reset_busy;
+	logic [1:0] inter_frame_mode_reset_q = 2'd0;
+	logic       inter_frame_mode_reset_pulse = 1'b0;
+	always_ff @(posedge clk_sys) begin
+		inter_frame_mode_reset_pulse <=
+			(inter_frame_mode_vid != inter_frame_mode_reset_q);
+		inter_frame_mode_reset_q <= inter_frame_mode_vid;
+	end
+	wire fb_client_reset = fb_reset_request | arbiter_reset_busy |
+	                       inter_frame_mode_reset_pulse;
 
 	logic filter_reset_q = 1'b1;
 	always_ff @(posedge clk_sys)
@@ -187,6 +195,7 @@ module vfb_top (
 	wire                 compose_req;
 	wire                 compose_done;
 	wire [BUF_IDX_W-1:0] compose_source_buf;
+	wire [BUF_IDX_W-1:0] compose_raw_buf;
 	wire [BUF_IDX_W-1:0] compose_target_buf;
 	wire                 compose_has_source;
 	wire                 compose_source_is_composed;
@@ -216,7 +225,7 @@ module vfb_top (
 		.presentation_120hz(osd_120hz_vid),
 		.BUFFER_MODE(buffer_mode_vid),
 		.compose_req(compose_req),
-		.compose_buf(compose_target_buf),
+		.compose_buf(compose_raw_buf),
 		.raw_frame_dropped(raw_frame_dropped),
 		.raw_frame_dropped_buf(raw_frame_dropped_buf),
 		.compose_draw_idx(compose_draw_idx),
@@ -318,6 +327,7 @@ module vfb_top (
 		.clear_done(clear_done),
 		.compose_req(compose_req),
 		.compose_source_buf(compose_source_buf),
+		.compose_raw_buf(compose_raw_buf),
 		.compose_target_buf(compose_target_buf),
 		.compose_has_source(compose_has_source),
 		.compose_source_is_composed(compose_source_is_composed),
@@ -440,6 +450,7 @@ module vfb_top (
 		.inter_frame_mode(inter_frame_mode_vid),
 		.compose_req(compose_req),
 		.compose_source_buf(compose_source_buf),
+		.compose_raw_buf(compose_raw_buf),
 		.compose_target_buf(compose_target_buf),
 		.compose_has_source(compose_has_source),
 		.compose_source_is_composed(compose_source_is_composed),
@@ -535,7 +546,6 @@ module vfb_top (
 		.artwork_read_burstcnt(artwork_read_burstcnt),
 		.artwork_read_data(artwork_read_data),
 		.artwork_read_data_valid(artwork_read_data_valid),
-
 		.reset_busy(arbiter_reset_busy)
 	);
 
@@ -791,6 +801,7 @@ module vfb_top (
 		.artwork_read_data(artwork_read_data),
 		.artwork_read_data_valid(artwork_read_data_valid)
 	);
+
 
 	// Full bypass selects the unfiltered readout.
 	always_ff @(posedge clk_sys) begin

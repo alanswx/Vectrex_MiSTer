@@ -31,4 +31,15 @@ package vectrex_analog_pkg is
 	constant C_DELAY_RAMP  : integer := 94;  -- PB7 -> integrator RAMP switch
 	constant C_DELAY_ZERO  : integer := 94;  -- CA2 -> integrator ZERO switch
 	constant C_DELAY_BLANK : integer := 0;   -- CB2 -> beam blanking
+
+	-- Stage-2 fixed-point frontend. These are deliberately centralized so a
+	-- future hardware-derived calibration cannot turn into per-game tuning.
+	-- The stateful path is opt-in; ANALOG_MODEL=0 in vectrex preserves the
+	-- original integer sample/hold and instantaneous ZERO behavior exactly.
+	constant C_ANALOG_FRAC_BITS     : natural := 8;
+	constant C_HOLD_GUARD_BITS      : natural := 16; -- resolves multi-second S/H leakage
+	constant C_DAC_SETTLE_SHIFT     : natural := 2;  -- tau 0.290 us at 12 MHz
+	constant C_SH_ACQUIRE_SHIFT     : natural := 6;  -- tau 5.292 us at 12 MHz
+	constant C_SH_DROOP_SHIFT       : natural := 30; -- tau 89.48 s at 12 MHz
+	constant C_ZERO_DISCHARGE_SHIFT : natural := 6;  -- tau 5.292 us at 12 MHz
 end package;

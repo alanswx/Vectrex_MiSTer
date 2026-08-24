@@ -19,6 +19,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.vectrex_analog_pkg.all;
 use std.textio.all;
 
 entity tb_vectrex is
@@ -36,7 +37,17 @@ entity tb_vectrex is
 		PRESS_HOLD  : integer := 15;     -- ms held. The ROM polls per frame and
 		                                 -- counts every poll while held, so 120ms
 		                                 -- advances a menu about six stages.
-		DUMP_FILE  : string  := "seg.txt"
+		DUMP_FILE    : string  := "seg.txt";
+		STABLE_CPU_ENABLE : integer := 0;
+		ANALOG_MODEL         : integer := 0;
+		ANALOG_LIVE_INPUTS   : integer := 1;
+		ANALOG_SETTLE_SHIFT  : natural := C_DAC_SETTLE_SHIFT;
+		ANALOG_ACQUIRE_SHIFT : natural := C_SH_ACQUIRE_SHIFT;
+		ANALOG_DROOP_SHIFT   : natural := C_SH_DROOP_SHIFT;
+		ANALOG_DROOP_ENABLE  : integer := 1;
+		ANALOG_ZERO_SHIFT    : natural := C_ZERO_DISCHARGE_SHIFT;
+		BIOS_FACTORY   : integer := 0;
+		TRACE_CURVE_TOL : integer := 0  -- 0 exact; >0 bounds tangent error per axis
 	);
 end tb_vectrex;
 
@@ -49,6 +60,7 @@ architecture sim of tb_vectrex is
 	signal clock : std_logic := '0';
 	signal reset : std_logic := '1';
 	signal halt  : boolean   := false;
+	signal bios_factory_s : std_logic;
 
 	signal cart_data   : std_logic_vector(7 downto 0)  := (others => '0');
 	signal cart_addr   : std_logic_vector(14 downto 0) := (others => '0');
@@ -67,6 +79,7 @@ architecture sim of tb_vectrex is
 	signal beam_blank_n   : std_logic;
 	signal beam_z         : std_logic_vector(7 downto 0);
 	signal beam_ce        : std_logic;
+	signal cpu_ce         : std_logic;
 	signal beam_zero_n    : std_logic;
 
 	signal video_r, video_g, video_b  : std_logic_vector(7 downto 0);
@@ -75,14 +88,27 @@ architecture sim of tb_vectrex is
 
 begin
 
+	bios_factory_s <= '1' when BIOS_FACTORY /= 0 else '0';
 	clock <= not clock after CLK_PERIOD/2 when not halt else '0';
 
 	dut : entity work.vectrex
+	generic map
+	(
+		STABLE_CPU_ENABLE    => STABLE_CPU_ENABLE,
+		ANALOG_MODEL         => ANALOG_MODEL,
+		ANALOG_LIVE_INPUTS   => ANALOG_LIVE_INPUTS,
+		ANALOG_SETTLE_SHIFT  => ANALOG_SETTLE_SHIFT,
+		ANALOG_ACQUIRE_SHIFT => ANALOG_ACQUIRE_SHIFT,
+		ANALOG_DROOP_SHIFT   => ANALOG_DROOP_SHIFT,
+		ANALOG_DROOP_ENABLE  => ANALOG_DROOP_ENABLE,
+		ANALOG_ZERO_SHIFT    => ANALOG_ZERO_SHIFT
+	)
 	port map
 	(
 		clock        => clock,
 		reset        => reset,
 		cpu          => '0',            -- VHDL cpu09; see sim/mc6809_sim.vhd
+		bios_factory => bios_factory_s,
 
 		cart_data    => cart_data,
 		cart_addr    => cart_addr,
@@ -119,6 +145,7 @@ begin
 		dbg_blank_n => beam_blank_n,
 		dbg_z       => beam_z,
 		dbg_ce      => beam_ce,
+		dbg_cpu_ce  => cpu_ce,
 		dbg_zero_n  => beam_zero_n
 	);
 
@@ -226,6 +253,51 @@ begin
 		wait;
 	end process;
 
+	-- A true 12 MHz enable on the 24 MHz system clock must have exactly two
+	-- source clocks between pulses. Count the actual gaps so legacy video-line
+	-- wrapping cannot silently frequency-modulate the beam and CPU timing.
+	ce_gap_monitor : process
+		variable clocks_since_ce : integer := 0;
+		variable gap_1, gap_2, gap_3, gap_other : integer := 0;
+		variable clocks_since_cpu : integer := 0;
+		variable cpu_gap_2, cpu_gap_4, cpu_gap_other : integer := 0;
+	begin
+		wait until reset = '0';
+		while not halt loop
+			wait on clock, halt;
+			exit when halt;
+			if rising_edge(clock) then
+				clocks_since_ce := clocks_since_ce + 1;
+				clocks_since_cpu := clocks_since_cpu + 1;
+				if beam_ce = '1' then
+				case clocks_since_ce is
+					when 1 => gap_1 := gap_1 + 1;
+					when 2 => gap_2 := gap_2 + 1;
+					when 3 => gap_3 := gap_3 + 1;
+					when others => gap_other := gap_other + 1;
+				end case;
+					clocks_since_ce := 0;
+				end if;
+				if cpu_ce = '1' then
+					case clocks_since_cpu is
+						when 2 => cpu_gap_2 := cpu_gap_2 + 1;
+						when 4 => cpu_gap_4 := cpu_gap_4 + 1;
+						when others => cpu_gap_other := cpu_gap_other + 1;
+					end case;
+					clocks_since_cpu := 0;
+				end if;
+			end if;
+		end loop;
+		report "CEGAPS clocks: one=" & integer'image(gap_1) &
+		       " two=" & integer'image(gap_2) &
+		       " three=" & integer'image(gap_3) &
+		       " other=" & integer'image(gap_other);
+		report "CPUGAPS clocks: two=" & integer'image(cpu_gap_2) &
+		       " four=" & integer'image(cpu_gap_4) &
+		       " other=" & integer'image(cpu_gap_other);
+		wait;
+	end process;
+
 	-- ------------------------------------------------------------------
 	-- Vectoring state machine, transcribed from vecx alg_sstep.
 	-- ------------------------------------------------------------------
@@ -258,6 +330,7 @@ begin
 		variable n_blank_end : integer := 0;   -- beam blanked
 		variable n_delta_end : integer := 0;   -- commanded delta changed
 		variable n_col_end   : integer := 0;   -- intensity changed
+		variable motion_end  : boolean := false;
 
 		-- vecx groups vectors into phosphor-decay periods of VECTREX_MHZ/30
 		-- CPU cycles, i.e. 1/30 s. Marking the same boundaries here is what
@@ -265,6 +338,8 @@ begin
 		constant FRAME_PERIOD : time := 1 sec / 30;
 		variable frame_at     : time := 1 sec / 30;
 		variable frame_no     : integer := 0;
+		variable zero_ticks   : integer := 0;
+		variable redraw_no    : integer := 0;
 
 		-- Read through the core's dbg_* ports rather than VHDL-2008 external
 		-- names, which fault under ghdl's llvm backend. The core taps its
@@ -326,11 +401,41 @@ begin
 			end if;
 
 			if clken_12 = '1' then
+				-- Match vectrex_video's production frame marker exactly: the
+				-- 12,001st consecutive zero-integrator beam tick is the long
+				-- Wait_Recal marker. Short Reset0Ref pulses never reach it.
+				if beam_zero_n = '0' then
+					zero_ticks := zero_ticks + 1;
+					if zero_ticks = 12001 then
+						redraw_no := redraw_no + 1;
+						if capturing then
+							write(lframe, string'("# redraw "));
+							write(lframe, redraw_no);
+							write(lframe, string'(" at_us "));
+							write(lframe, integer(now / 1 us));
+							writeline(f, lframe);
+						end if;
+					end if;
+				else
+					zero_ticks := 0;
+				end if;
+
 				x   := to_integer(int_x);
 				y   := to_integer(int_y);
 				dx  := x - prev_x;
 				dy  := y - prev_y;
 				col := to_integer(unsigned(dacz));
+				-- Zero keeps the vecx-compatible exact segmentation. A positive
+				-- tolerance ends a chord only after its initial tangent misses the
+				-- current sample by more than that many integrator units per axis;
+				-- this is trace compression only and is not production RTL.
+				if TRACE_CURVE_TOL = 0 then
+					motion_end := dx /= dx0 or dy /= dy0;
+				else
+					motion_end :=
+						abs(x - (x0 + dx0 * seg_ticks)) > TRACE_CURVE_TOL or
+						abs(y - (y0 + dy0 * seg_ticks)) > TRACE_CURVE_TOL;
+				end if;
 				if blank_n = '1' then
 					unblank_ticks := unblank_ticks + 1;
 				end if;
@@ -349,7 +454,7 @@ begin
 						vectoring_on := false;
 						n_blank_end := n_blank_end + 1;
 						if capturing then emit; end if;
-					elsif dx /= dx0 or dy /= dy0 or col /= col0 then
+					elsif motion_end or col /= col0 then
 						if col /= col0 then
 							n_col_end := n_col_end + 1;
 						else

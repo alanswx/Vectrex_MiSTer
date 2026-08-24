@@ -136,6 +136,33 @@ def peak_corr(capF, refF, n, m=SHIFT_MAX):
     return float(win.max() / n)
 
 
+def mask_coverage(cap, ref, m=SHIFT_MAX):
+    """Bidirectional whole-image coverage at the best small translation.
+
+    Normalized correlation can match one local fragment while ignoring extra
+    displaced copies. Keeping each image's full lit-pixel total in the
+    denominator makes extra drawing reduce capture coverage and missing or
+    clipped drawing reduce reference coverage.
+    """
+    def mask(im):
+        a = np.asarray(im.convert("L").resize(SIZE, Image.BILINEAR), float)
+        return a > max(8.0, a.max() * 0.15)
+
+    c, r = mask(cap), mask(ref)
+    cn, rn = int(c.sum()), int(r.sum())
+    if not cn or not rn:
+        return 0.0, 0.0, 0.0
+    best_hit = 0
+    for dy in range(-m, m + 1):
+        for dx in range(-m, m + 1):
+            cc = c[max(0, dy):c.shape[0] + min(0, dy),
+                   max(0, dx):c.shape[1] + min(0, dx)]
+            rr = r[max(0, -dy):r.shape[0] + min(0, -dy),
+                   max(0, -dx):r.shape[1] + min(0, -dx)]
+            best_hit = max(best_hit, int(np.count_nonzero(cc & rr)))
+    return best_hit / cn, best_hit / rn, 2.0 * best_hit / (cn + rn)
+
+
 class RefBank:
     def __init__(self, slugs=None):
         self.games = {}
@@ -228,7 +255,7 @@ def launch(host, sd_path):
     urllib.request.urlopen(req, timeout=10).read()
 
 
-def run(host, out, threshold, captures, only):
+def run(host, out, threshold, coverage, captures, only):
     bank = RefBank(only)
     os.makedirs(out, exist_ok=True)
     results = {}
@@ -237,25 +264,34 @@ def run(host, out, threshold, captures, only):
         print(f"{slug}: launching...", flush=True)
         launch(host, g["sd"])
         time.sleep(14)                   # BIOS announcement on hardware
-        best, best_png = -2.0, None
+        best_quality = -2.0
+        best, best_png, best_cov = -2.0, None, (0.0, 0.0, 0.0)
         for k in range(captures):
             png = os.path.join(out, f"{slug}_{k}.png")
             screenshot(host, png)
-            r, _ = bank.score(Image.open(png), slug)
-            if r > best:
-                best, best_png = r, png
+            cap = Image.open(png)
+            r, best_ref = bank.score(cap, slug)
+            cov = mask_coverage(cap, Image.open(
+                os.path.join(REF_ROOT, slug, best_ref)))
+            quality = r * min(cov[0], cov[1])
+            if quality > best_quality:
+                best_quality, best, best_png, best_cov = quality, r, png, cov
             time.sleep(2.0)
-        ok = best > threshold
-        results[slug] = (best, ok, best_png)
-        print(f"  {slug}: best {best:.2f}  {'ok' if ok else 'FAIL'}")
-    fails = [s for s, (_, ok, _) in results.items() if not ok]
+        cap_cov, ref_cov, dice = best_cov
+        ok = best > threshold and min(cap_cov, ref_cov) >= coverage
+        results[slug] = (best, cap_cov, ref_cov, dice, ok, best_png)
+        print(f"  {slug}: corr {best:.2f}  coverage "
+              f"{cap_cov:.2f}/{ref_cov:.2f}  {'ok' if ok else 'FAIL'}")
+    fails = [s for s, result in results.items() if not result[4]]
     print(f"\n{len(results) - len(fails)}/{len(results)} matched "
-          f"(threshold {threshold})")
+          f"(correlation {threshold}, coverage {coverage})")
     for s in fails:
-        print(f"  FAIL {s}: best {results[s][0]:.2f} ({results[s][2]})")
-    json.dump({s: {"score": r, "ok": ok} for s, (r, ok, _) in
-               results.items()}, open(os.path.join(out, "results.json"),
-                                      "w"), indent=1)
+        print(f"  FAIL {s}: corr {results[s][0]:.2f}, coverage "
+              f"{results[s][1]:.2f}/{results[s][2]:.2f} ({results[s][5]})")
+    json.dump({s: {"score": r, "capture_coverage": cc,
+                   "reference_coverage": rc, "dice": dice, "ok": ok}
+               for s, (r, cc, rc, dice, ok, _) in results.items()},
+              open(os.path.join(out, "results.json"), "w"), indent=1)
     return 0 if not fails else 1
 
 
@@ -269,6 +305,7 @@ def main():
     r.add_argument("--host", default="192.168.1.75")
     r.add_argument("--out", default="game_sweep_out")
     r.add_argument("--threshold", type=float, default=0.4)
+    r.add_argument("--coverage", type=float, default=0.48)
     r.add_argument("--captures", type=int, default=6)
     r.add_argument("--only", nargs="*", help="slugs to run (default all)")
     r.add_argument("--yes-touch-the-mister", action="store_true",
@@ -283,7 +320,7 @@ def main():
     if not args.yes_touch_the_mister:
         ap.error("run mode drives the MiSTer; pass --yes-touch-the-mister "
                  "once the bench is free")
-    return run(args.host, args.out, args.threshold, args.captures,
+    return run(args.host, args.out, args.threshold, args.coverage, args.captures,
                args.only)
 
 

@@ -113,14 +113,14 @@ module vfb_ddr_arbiter (
 		arb_select = '0;
 		if (readout_ready)
 			arb_select = SELECT_READOUT;
-		else if (flush_ready)
-			arb_select = SELECT_FLUSH;
-		else if (fill_ready)
-			arb_select = SELECT_FILL;
 		else if (compose_read_ready)
 			arb_select = SELECT_COMPOSE_READ;
 		else if (compose_write_ready)
 			arb_select = SELECT_COMPOSE_WRITE;
+		else if (flush_ready)
+			arb_select = SELECT_FLUSH;
+		else if (fill_ready)
+			arb_select = SELECT_FILL;
 		else if (upload_write_ready)
 			arb_select = SELECT_UPLOAD_WRITE;
 		else if (artwork_read_ready)
@@ -193,6 +193,7 @@ module vfb_ddr_arbiter (
 		1'b0;
 
 	wire reset_read_drain_timeout =
+		rst_active &&
 		(arb_state != ARB_IDLE) &&
 		!arb_drain_progress &&
 		(&reset_drain_wdog);
@@ -205,7 +206,7 @@ module vfb_ddr_arbiter (
 			reset_pending <= 0;
 		end
 
-		if (arb_state != ARB_IDLE) begin
+		if (rst_active && (arb_state != ARB_IDLE)) begin
 			if (arb_drain_progress)
 				reset_drain_wdog <= '0;
 			else

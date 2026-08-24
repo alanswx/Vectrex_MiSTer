@@ -1,4 +1,5 @@
 set_global_assignment -name VHDL_FILE rtl/bios_rom.vhd
+set_global_assignment -name VHDL_FILE rtl/bios_factory_rom.vhd
 set_global_assignment -name VHDL_FILE rtl/gen_rom.vhd
 set_global_assignment -name VHDL_FILE rtl/gen_dpram.vhd
 set_global_assignment -name VHDL_FILE rtl/gen_ram.vhd
@@ -11,6 +12,7 @@ set_global_assignment -name VHDL_FILE rtl/cpu09l_128a.vhd
 set_global_assignment -name VERILOG_FILE rtl/mc6809is.v
 set_global_assignment -name VERILOG_FILE rtl/mc6809.v
 set_global_assignment -name VHDL_FILE rtl/vectrex_analog_pkg.vhd
+set_global_assignment -name VHDL_FILE rtl/vectrex_analog_frontend.vhd
 set_global_assignment -name VHDL_FILE rtl/vectrex.vhd
 set_global_assignment -name VERILOG_FILE rtl/pll_vfb/pll_vfb_core.v
 set_global_assignment -name VERILOG_FILE rtl/pll_vfb/pll_vfb.v

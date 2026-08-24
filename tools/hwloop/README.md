@@ -45,6 +45,14 @@ matches any of its reference frames; it requires an explicit
 bench. ROMs are pulled from the SD card to `refs/roms/sd/` so both sides
 run identical bytes.
 
-Matching is the binarized structural correlation from tc_sweep with an
-FFT-based translation search; the reference is a frame SET because
-launch latency makes the hardware's attract phase unpredictable.
+Matching uses the binarized structural correlation from tc_sweep with an
+FFT-based translation search, plus bidirectional whole-image coverage at the
+best small translation. The coverage gate penalizes extra displaced copies
+and missing/clipped drawing that normalized correlation can hide. The
+reference is a frame SET because launch latency makes hardware phase
+unpredictable. `run` defaults to correlation 0.4 and coverage 0.48. That coverage threshold
+flagged all 12 saved failed-model title sets but also flags some known-good
+sets, so it is intentionally a conservative review gate: a failed gate requires
+direct capture review and is not by itself proof of a renderer defect. On the
+2026-08-08 compatibility control run, 65/98 passed automatically and 33 were flagged for review. Direct review of
+all 588 captures then gave 98/98 visual acceptance; three blank hands-off titles were skipped.

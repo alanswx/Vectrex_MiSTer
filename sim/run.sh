@@ -4,7 +4,10 @@
 #   ./run.sh <cart.bin> [run_ms] [out.txt]
 #
 # Segments land in out.txt (default seg.txt) and can be diffed against
-# tools/goldenref output with tools/goldenref/compare.py.
+# tools/goldenref output with tools/goldenref/compare.py. Stateful experiments
+# can override ANALOG_MODEL, ANALOG_LIVE_INPUTS, ANALOG_SETTLE_SHIFT,
+# ANALOG_ACQUIRE_SHIFT, ANALOG_DROOP_SHIFT, ANALOG_DROOP_ENABLE, and
+# ANALOG_ZERO_SHIFT without editing RTL.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -27,6 +30,16 @@ PRESS_COUNT="${6:-1}"
 PRESS_EVERY="${7:-1000}"
 PRESS_BTN="${8:-1}"
 PRESS_HOLD="${9:-15}"
+ANALOG_MODEL="${ANALOG_MODEL:-0}"
+ANALOG_LIVE_INPUTS="${ANALOG_LIVE_INPUTS:-1}"
+ANALOG_SETTLE_SHIFT="${ANALOG_SETTLE_SHIFT:-2}"
+ANALOG_ACQUIRE_SHIFT="${ANALOG_ACQUIRE_SHIFT:-6}"
+ANALOG_DROOP_SHIFT="${ANALOG_DROOP_SHIFT:-30}"
+ANALOG_DROOP_ENABLE="${ANALOG_DROOP_ENABLE:-1}"
+ANALOG_ZERO_SHIFT="${ANALOG_ZERO_SHIFT:-6}"
+BIOS_FACTORY="${BIOS_FACTORY:-0}"
+TRACE_CURVE_TOL="${TRACE_CURVE_TOL:-0}"
+STABLE_CPU_ENABLE="${STABLE_CPU_ENABLE:-0}"
 
 # ---------------------------------------------------------------- backend --
 # mcode is the default when both backends are installed, but llvm is roughly
@@ -72,6 +85,7 @@ echo "cart: $SIZE bytes, mask $MASK"
 ghdl -a $FLAGS \
 	"$ROOT/sim/gen_mem_sim.vhd" \
 	"$ROOT/rtl/bios_rom.vhd" \
+	"$ROOT/rtl/bios_factory_rom.vhd" \
 	"$ROOT/rtl/sp0256_al2_decoded.vhd" \
 	"$ROOT/rtl/sp0256.vhd" \
 	"$ROOT/rtl/m6522a.vhd" \
@@ -79,6 +93,7 @@ ghdl -a $FLAGS \
 	"$ROOT/sim/mc6809_sim.vhd" \
 	"$ROOT/sim/ym2149_sim.vhd" \
 	"$ROOT/rtl/vectrex_analog_pkg.vhd" \
+	"$ROOT/rtl/vectrex_analog_frontend.vhd" \
 	"$ROOT/rtl/vectrex.vhd" \
 	"$ROOT/sim/tb_vectrex.vhd" 2>&1 | grep -v "shared variable" || true
 
@@ -88,12 +103,12 @@ ghdl -e $FLAGS tb_vectrex 2>&1 | grep -vE "compressor|default configuration" || 
 echo "running ${RUN_MS}ms (expect roughly 0.7s of wall clock per emulated ms)"
 if [ -x ./tb_vectrex ]; then
 	./tb_vectrex -gCART_FILE=cart.hex -gCART_MASK=$MASK \
-		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gPRESS_MS="$PRESS_MS" -gPRESS_COUNT="$PRESS_COUNT" -gPRESS_EVERY="$PRESS_EVERY" -gPRESS_BTN="$PRESS_BTN" -gPRESS_HOLD="$PRESS_HOLD" -gDUMP_FILE="$OUT" --ieee-asserts=disable
+		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gSTABLE_CPU_ENABLE="$STABLE_CPU_ENABLE" -gPRESS_MS="$PRESS_MS" -gPRESS_COUNT="$PRESS_COUNT" -gPRESS_EVERY="$PRESS_EVERY" -gPRESS_BTN="$PRESS_BTN" -gPRESS_HOLD="$PRESS_HOLD" -gANALOG_MODEL="$ANALOG_MODEL" -gANALOG_LIVE_INPUTS="$ANALOG_LIVE_INPUTS" -gANALOG_SETTLE_SHIFT="$ANALOG_SETTLE_SHIFT" -gANALOG_ACQUIRE_SHIFT="$ANALOG_ACQUIRE_SHIFT" -gANALOG_DROOP_SHIFT="$ANALOG_DROOP_SHIFT" -gANALOG_DROOP_ENABLE="$ANALOG_DROOP_ENABLE" -gANALOG_ZERO_SHIFT="$ANALOG_ZERO_SHIFT" -gBIOS_FACTORY="$BIOS_FACTORY" -gTRACE_CURVE_TOL="$TRACE_CURVE_TOL" -gDUMP_FILE="$OUT" --ieee-asserts=disable
 else
 	# mcode does not produce a binary; it runs through the driver.
 	# shellcheck disable=SC2086
 	ghdl -r $FLAGS tb_vectrex -gCART_FILE=cart.hex -gCART_MASK=$MASK \
-		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gPRESS_MS="$PRESS_MS" -gPRESS_COUNT="$PRESS_COUNT" -gPRESS_EVERY="$PRESS_EVERY" -gPRESS_BTN="$PRESS_BTN" -gPRESS_HOLD="$PRESS_HOLD" -gDUMP_FILE="$OUT" --ieee-asserts=disable
+		-gRUN_MS="$RUN_MS" -gWARM_MS="$WARM_MS" -gSTABLE_CPU_ENABLE="$STABLE_CPU_ENABLE" -gPRESS_MS="$PRESS_MS" -gPRESS_COUNT="$PRESS_COUNT" -gPRESS_EVERY="$PRESS_EVERY" -gPRESS_BTN="$PRESS_BTN" -gPRESS_HOLD="$PRESS_HOLD" -gANALOG_MODEL="$ANALOG_MODEL" -gANALOG_LIVE_INPUTS="$ANALOG_LIVE_INPUTS" -gANALOG_SETTLE_SHIFT="$ANALOG_SETTLE_SHIFT" -gANALOG_ACQUIRE_SHIFT="$ANALOG_ACQUIRE_SHIFT" -gANALOG_DROOP_SHIFT="$ANALOG_DROOP_SHIFT" -gANALOG_DROOP_ENABLE="$ANALOG_DROOP_ENABLE" -gANALOG_ZERO_SHIFT="$ANALOG_ZERO_SHIFT" -gBIOS_FACTORY="$BIOS_FACTORY" -gTRACE_CURVE_TOL="$TRACE_CURVE_TOL" -gDUMP_FILE="$OUT" --ieee-asserts=disable
 fi
 
 echo "segments written to $BUILD/$OUT"

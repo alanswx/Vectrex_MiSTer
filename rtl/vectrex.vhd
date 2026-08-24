@@ -130,13 +130,26 @@ generic
 	-- handed to rtl/vectrex_video.sv, because the four scan buffers are
 	-- 3.11 Mbit and the device only has 5.66, so the two cannot coexist.
 	-- Everything downstream of them is left in place and pruned as unused.
-	INTERNAL_FB : integer := 1
+	INTERNAL_FB  : integer := 1;
+	-- Keep CPU/VIA timing independent of the 554-clock legacy video line.
+	-- Zero is retained only for simulation A/B against the old behavior.
+	STABLE_CPU_ENABLE : integer := 1;
+	-- Opt-in until nominal constants can be checked against hardware-grade
+	-- measurements. Zero preserves the pre-Stage-2 arithmetic exactly.
+	ANALOG_MODEL         : integer := 0;
+	ANALOG_LIVE_INPUTS   : integer := 1;
+	ANALOG_SETTLE_SHIFT  : natural := C_DAC_SETTLE_SHIFT;
+	ANALOG_ACQUIRE_SHIFT : natural := C_SH_ACQUIRE_SHIFT;
+	ANALOG_DROOP_SHIFT   : natural := C_SH_DROOP_SHIFT;
+	ANALOG_DROOP_ENABLE  : integer := 1;
+	ANALOG_ZERO_SHIFT    : natural := C_ZERO_DISCHARGE_SHIFT
 );
 port
 (
 	clock		    : in  std_logic;
 	reset        : in  std_logic;
 	cpu          : in  std_logic;
+	bios_factory : in  std_logic;
 
 	cart_data    : in  std_logic_vector(7 downto 0);
 	cart_addr    : in  std_logic_vector(14 downto 0);
@@ -184,6 +197,7 @@ port
 	dbg_blank_n  : out std_logic;
 	dbg_z        : out std_logic_vector(7 downto 0);
 	dbg_ce       : out std_logic;
+	dbg_cpu_ce   : out std_logic;
 	dbg_zero_n   : out std_logic
 );
 end vectrex;
@@ -226,6 +240,8 @@ signal ram_we          : std_logic;
 
 signal rom_cs          : std_logic;
 signal rom_do          : std_logic_vector( 7 downto 0);
+signal rom_fixed_do    : std_logic_vector( 7 downto 0);
+signal rom_factory_do  : std_logic_vector( 7 downto 0);
 
 signal cart_cs         : std_logic;
 signal cart_do         : std_logic_vector( 7 downto 0);
@@ -255,6 +271,7 @@ signal ramp_integrator_n : std_logic;
 signal beam_blank_n      : std_logic;
 
 signal dac             : signed(8 downto 0);
+signal dac_raw_frontend : std_logic_vector(7 downto 0);
 signal dac_y           : signed(8 downto 0) := (others => '0');
 signal dac_z           : std_logic_vector(7 downto 0) := (others => '0');
 signal ref_level       : signed(8 downto 0) := (others => '0');
@@ -286,6 +303,7 @@ signal scan_video_addr : std_logic_vector(19 downto 0);
 signal video_addr      : std_logic_vector(17 downto 0);
 
 signal phase           : std_logic_vector(1 downto 0);
+signal cpu_phase       : unsigned(1 downto 0) := (others => '0');
 
 signal video_we_0      : std_logic;
 signal video_we_1      : std_logic;
@@ -443,16 +461,22 @@ dbg_beam_y  <= integrator_y;
 dbg_blank_n <= beam_blank_n_delayed;
 dbg_z       <= dac_z;
 dbg_ce      <= clken_12;
+dbg_cpu_ce  <= cpu_en;
 dbg_zero_n  <= zero_integrator_n;
 
-sh_dac            <= sh_dac_d;
-dac_mux           <= dac_mux_d;
-zero_integrator_n <= via_ca2_o_d;
-ramp_integrator_n <= ramp_d;
+-- The 94-tick taps are the compatibility path's historical lumped analog
+-- delay.  The stateful frontend models that response explicitly, so feeding
+-- it the delayed controls as well would count the analog latency twice.
+sh_dac            <= sh_dac_d      when ANALOG_MODEL = 0 or ANALOG_LIVE_INPUTS = 0 else via_pb_o(0);
+dac_mux           <= dac_mux_d     when ANALOG_MODEL = 0 or ANALOG_LIVE_INPUTS = 0 else via_pb_o(2 downto 1);
+zero_integrator_n <= via_ca2_o_d   when ANALOG_MODEL = 0 or ANALOG_LIVE_INPUTS = 0 else via_ca2_o;
+ramp_integrator_n <= ramp_d        when ANALOG_MODEL = 0 or ANALOG_LIVE_INPUTS = 0 else via_pb_o(7);
 -- A blank tap of 0 means the live CB2, exactly the original arrangement.
 beam_blank_n      <= via_cb2_o when C_DELAY_BLANK = 0 else blank_d;
 
-dac <= signed(via_pa_o_d(7)&via_pa_o_d); -- must ensure sign extension for 0x80 value to be used in integrator equation
+dac <= signed(via_pa_o_d(7)&via_pa_o_d) when ANALOG_MODEL = 0 or ANALOG_LIVE_INPUTS = 0 else
+	   signed(via_pa_o(7)&via_pa_o); -- must sign-extend the 0x80 code
+dac_raw_frontend <= via_pa_o_d when ANALOG_MODEL = 0 or ANALOG_LIVE_INPUTS = 0 else via_pa_o;
 
 m_x          <= (2*max_x) when v_orient = '0' else (2*max_y);
 m_y          <= (2*max_y) when v_orient = '0' else (2*max_x);
@@ -461,30 +485,40 @@ video_height <= v_height  when v_orient = '0' else v_width;
 lim_x        <= limited_x when v_orient = '0' else (2*max_y) - limited_y;
 lim_y        <= limited_y when v_orient = '0' else limited_x;
 
+analog_frontend : entity work.vectrex_analog_frontend
+generic map
+(
+	G_ENABLE        => ANALOG_MODEL,
+	G_SETTLE_SHIFT  => ANALOG_SETTLE_SHIFT,
+	G_ACQUIRE_SHIFT => ANALOG_ACQUIRE_SHIFT,
+	G_DROOP_SHIFT   => ANALOG_DROOP_SHIFT,
+	G_DROOP_ENABLE  => ANALOG_DROOP_ENABLE,
+	G_ZERO_SHIFT    => ANALOG_ZERO_SHIFT
+)
+port map
+(
+	clock        => clock,
+	ce           => clken_12,
+	reset        => reset,
+	dac_code     => dac,
+	dac_raw      => dac_raw_frontend,
+	sh_n         => sh_dac,
+	mux_sel      => dac_mux,
+	ramp_n       => ramp_integrator_n,
+	zero_n       => zero_integrator_n,
+	held_y       => dac_y,
+	held_ref     => ref_level,
+	held_z       => dac_z,
+	held_sound   => dac_sound,
+	integrator_x => integrator_x,
+	integrator_y => integrator_y
+);
+
 process (clock)
 	variable limit_n : std_logic;
 begin
 	if rising_edge(clock) then
 		if clken_12 = '1' then
-
-			if sh_dac = '0' then
-				case dac_mux is
-				when "00"   => dac_y     <= dac;
-				when "01"   => ref_level <= dac;
-				when "10"   => dac_z     <= via_pa_o_d;
-				when others => dac_sound <= via_pa_o_d;
-				end case;
-			end if;
-
-			if zero_integrator_n = '0' then
-				integrator_x <= (others=>'0');
-				integrator_y <= (others=>'0');
-			else
-				if ramp_integrator_n = '0' then
-					integrator_x <= integrator_x + (ref_level - dac_y);
-					integrator_y <= integrator_y - (ref_level - dac);
-				end if;
-			end if;
 
 			-- set 'preserve registers' wihtin assignments editor to ease signaltap debuging
 
@@ -541,6 +575,7 @@ process (clock)
 begin
 	if rising_edge(clock) then
 		phase <= hcnt(1 downto 0);
+		cpu_phase <= cpu_phase + 1;
 
 		video_we_0 <= '0';
 		video_we_1 <= '0';
@@ -551,7 +586,7 @@ begin
 
 		case phase is
 			when "00" =>
-				cpu_en <= '1';
+				if STABLE_CPU_ENABLE = 0 then cpu_en <= '1'; end if;
 				video_addr <= scan_video_addr(19 downto 2);
 
 			when "10" =>
@@ -577,6 +612,10 @@ begin
 					end case;
 				end if;
 		end case;
+
+		if STABLE_CPU_ENABLE /= 0 and cpu_phase = 0 then
+			cpu_en <= '1';
+		end if;
 
 		if phase = "01" then
 			read_0 <= read_0b;
@@ -674,13 +713,23 @@ scan_video_addr <= vcnt * video_width + hcnt;
 
 --------------------------------------------------------------------
 
-main_rom : entity work.bios_rom
+fixed_bios_rom : entity work.bios_rom
 port map
 (
 	clk  => clock,
 	addr => cpu_addr(12 downto 0),
-	data => rom_do
+	data => rom_fixed_do
 );
+
+factory_bios_rom : entity work.bios_factory_rom
+port map
+(
+	clk  => clock,
+	addr => cpu_addr(12 downto 0),
+	data => rom_factory_do
+);
+
+rom_do <= rom_factory_do when bios_factory = '1' else rom_fixed_do;
 
 cart_rom : entity work.gen_rom
 port map

@@ -52,3 +52,10 @@ tools/goldenref/*.o
 sim/build/
 __pycache__/
 captures/
+
+# Hardware-loop evidence and generated analysis (kept locally, summarized in docs)
+game_sweep_*
+tc_sweep_*
+hdmi_*
+wobble_baseline_*
+sim/build-analog/

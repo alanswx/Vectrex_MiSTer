@@ -16,6 +16,122 @@ Proposal date: 2026-07-31
 > `background_research/` are from the machine this was drafted on and are
 > not in this repository.
 
+### Implementation status (2026-08-08)
+
+Stage 2 now has a synthesizable structural implementation in
+`rtl/vectrex_analog_frontend.vhd`. It provides Q8 fixed-point DAC and X/Y
+integrator state, higher-precision Y/active-ground/Z/audio holds, first-order
+DAC and hold acquisition, hold droop, and exponential ZERO discharge. All
+coefficients live in `rtl/vectrex_analog_pkg.vhd`.
+
+The production default remains `ANALOG_MODEL=0`. That compatibility generate
+reproduces the former immediate sample/hold and ZERO arithmetic exactly; a
+50 ms Clean Sweep segment trace is byte-identical to the untouched pre-refactor
+core. `ANALOG_MODEL=1` enables schematic- and datasheet-bounded coefficients
+for simulation. They are not measurements of one physical Vectrex and are not
+exposed in the OSD yet.
+
+The 2026-08-08 hardware pilot rejected this calibration. Clean Sweep showed
+enlarged/displaced title and maze drawing; Star Castle showed enlarged offset
+rings, edge fragments, and retained/displaced drawing. Correlation alone
+reported 0.71 and 0.83, so the pilot initially looked green; direct image
+comparison exposed the error. Bidirectional whole-image coverage correctly
+separates the known-good/failed pairs (Clean Sweep 0.533/0.642 versus
+0.327/0.432; Star Castle 0.495/0.649 versus 0.455/0.496). Across the 12
+comparable titles captured before the catalog run was aborted, correlation
+above 0.4 accepted every failed-model set; coverage 0.48 flagged all 12. It is
+a conservative review gate, not a correctness oracle: only 4 of the same 12
+stable-build sets clear 0.48 automatically, so actual captures remain the
+acceptance evidence. The disabled compatibility build was therefore used as a
+control: RBF SHA-256 `b5e1f80d51fa6f2530ff94c6350bdaac5cf9df26c03b3de9b29bd7f07c92894c`
+passed the Clean Sweep/Star Castle automated gate and direct inspection of all
+12 pilot captures. Its full catalog run automatically passed 65/98 and flagged 33 for review;
+direct inspection of the complete 588-image set found clean geometry, giving
+98/98 visual acceptance. Three titles with blank hands-off
+attract sequences were skipped.
+
+The first enabled build fed the stateful RC model controls already delayed by
+the compatibility path's historical 94 ticks, double-counting analog latency.
+Enabled mode now consumes live VIA DAC/mux/S&H/RAMP/ZERO signals while
+`ANALOG_MODEL=0` retains the delayed taps; the compatibility trace remains
+byte-identical. That correction alone does not fix software geometry: the
+revised enabled Clean Sweep frame still spans X -158472..114892 versus the
+compatibility frame's -130688..128773. The coefficient/state equations remain provisional, and `ANALOG_MODEL=1`
+must not be deployed or exposed in the OSD. Whole-core simulation now exposes
+`ANALOG_LIVE_INPUTS`, the four shift coefficients, and
+`ANALOG_DROOP_ENABLE` as environment/testbench controls. With delayed inputs,
+instant DAC/S&H/ZERO steps, and droop disabled, the 50 ms Clean Sweep trace is
+byte-identical to compatibility: 816 lines, bounds X -130688..128773 and Y
+-87807..89934, intensity 127, SHA-256
+`3b931453e524543ee1835b354fccb5b266650c8b094ce0095bb95ecdc5b01f8c`.
+This is the behavior supported by MAME (delayed step events) and is also
+consistent with vecx apart from vecx omitting the delay. The local emulator and
+document evidence does not justify gradual RC activation; further Stage-2
+calibration requires a physical measurement or independent physical reference.
+
+### Schematic-derived calibration (2026-08-08)
+
+The local service manual (`refs/Vectrex-Service_Manual.pdf`, logic-board
+schematic and parts list) resolves the relevant parts:
+
+- IC301 MC1408 DAC, IC302 CD4052B mux, IC303 LF347/TL084,
+  IC304 LF353/TL082, and IC305 CD4066B;
+- C304-C306 and C312-C313 are 0.01 uF;
+- the integrator inputs are R316/R319 10 kOhm;
+- each ZERO path includes R317/R320 220 Ohm and a CD4066 switch.
+
+At a 12 MHz update rate, the exact time constant represented by shift `s` is
+`-83.333 ns / ln(1 - 2^-s)`. The selected defaults are:
+
+| Stage | Evidence bound | Shift | Model tau |
+| --- | --- | ---: | ---: |
+| DAC settle | DAC0808/MC1408 family: 150 ns typical full-scale settling; schematic 3.6 kOhm/47 pF converter feedback is 169 ns | 2 | 0.290 us |
+| S/H acquire | CD4052B at a 10 V span: 180 Ohm typical, 400 Ohm maximum into 10 nF, or 1.8-4.0 us before source impedance | 6 | 5.292 us |
+| S/H droop | 10 nF; CD4052B 0.3 nA typical off leakage plus LF347 50 pA typical input bias imply tens to hundreds of seconds depending on voltage | 30 | 89.48 s |
+| ZERO discharge | CD4066B 180/400 Ohm plus 220 Ohm series resistance across 10 nF gives about 4.0/6.2 us typical/maximum | 6 | 5.292 us |
+
+Primary component references:
+
+- https://www.ti.com/lit/ds/symlink/dac0808.pdf
+- https://www.ti.com/lit/ds/symlink/cd4052b.pdf
+- https://www.ti.com/lit/ds/symlink/cd4066b.pdf
+- https://www.ti.com/lit/ds/symlink/lf347.pdf
+
+The hold nodes use 16 guard bits beyond externally visible Q8. Without them,
+the provisional minimum-step implementation reduced a nominal long decay by
+one Q8 sub-LSB every tick and lost a full-scale hold in milliseconds. The
+focused regression now holds a sampled value for 1,200 ticks and rejects that
+failure. Droop toward digital zero remains a behavioral approximation:
+datasheets bound leakage magnitude, not its sign on every board and voltage.
+
+Run the focused synthetic checks with `sim/run_analog.sh`. Run a software trace
+with the stateful model using, for example:
+
+```sh
+TRACE_CURVE_TOL=16 ANALOG_MODEL=1 sim/run.sh "refs/roms/sd/Clean Sweep (1982)(GCE).bin" 50 analog.txt
+```
+
+The focused checks cover finite DAC/hold acquisition, disconnected droop,
+gradual ZERO discharge, convergence, and the exact compatibility semantics.
+Whole-core compatibility and stateful Clean Sweep traces both elaborate and
+run under GHDL; enabled-model GHDL synthesis also passes. Exact extraction
+of the calibrated 50 ms Clean Sweep run has 12,172 segments, no non-positive
+durations, and no coordinate overflow (X -158472..126184, Y -87807..89934).
+The first complete frame has 4,889 exact segments versus 393 in compatibility.
+A 16-unit per-axis tangent tolerance compresses that calibrated frame to 435
+segments and the full trace to 958, while retaining 43 curvature subdivisions.
+
+This fragmentation exists only in the simulation-only analytic extractor.
+The production `vectrex_video.sv` path consumes and rasterizes beam coordinates
+on every 12 MHz tick; it has no analytic-segment queue or throughput issue.
+
+Quartus synthesis, fit, and assembly pass for both generates. The enabled build
+uses 72,038 logic cells and its 24 MHz machine domain has +4.130 ns setup slack;
+the only miss was -0.035 ns in the placement-sensitive 125 MHz framebuffer
+domain. Buildability is not activation evidence: the hardware image is wrong,
+so the next gate is full-frame geometry against emulator/video references,
+followed by direct review of the two-title hardware pilot.
+
 ## Purpose
 
 This document proposes a replacement for the fixed digital delay currently

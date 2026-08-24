@@ -22,6 +22,33 @@ The raw DAC intensity `z` passes through, in order:
 5. The tone mapper, whose low-end lift is display adaptation (see gun
    physics below), then the phosphor/halo/bloom pipeline.
 
+## Phosphor decay is display adaptation
+
+The renderer's decay LUTs are not a physical model of the Vectrex tube and
+should not be calibrated as beam constants. The service manual identifies
+the CRT as a Samsung `240RB40`; the Japanese `B4` suffix is the equivalent of
+the JEDEC `P4` black-and-white television phosphor. RCA's direct-view P4
+data gives roughly 22 us to 10% for the blue component and 60 us to 10% for
+the white blend:
+
+- Vectrex Service Manual, specification page 1 (`refs/Vectrex-Service_Manual.pdf`)
+- Sencore, *Understanding How CRTs Work and How They Are Numbered*
+- RCA TPM-1508A, *RCA Phosphors* (October 1961), pp. 7-8
+
+By contrast, `vfb_phosphor_timing` quantizes age at about 1.54 ms and the
+three inherited intra-frame LUTs retain 94%, 96%, or 98% after one quantum.
+Their corresponding single-exponential time constants are about 25, 38, and
+76 ms--hundreds to thousands of times slower than P4. This is intentional
+for a sample-and-hold display: it makes the CRT's brief impulses visible over
+a digital frame and offers aesthetic trails. A literal P4 LUT would be zero
+at every nonzero renderer age and would show only the most recently drawn
+slice of a display list.
+
+Treat the LUTs and inter-frame persistence modes as presentation controls.
+They may be tuned by visual preference, but they are not unknown Vectrex
+hardware constants. The remaining physical calibration questions are the
+dwell normalization and the high-energy knee.
+
 ## Evidence
 
 **Cutoff = 28.** Three independent sources bracket it:
@@ -59,6 +86,9 @@ clipping; `refs/reference-captures/`) shows a working tube grades its
 ladder smoothly and monotonically to the very top. An earlier hard
 ceiling flattened the top of the ladder; the knee replaced it and the
 real Test Cartridge's INTENSITY screen now grades ~135→218 on capture.
+Phone gamma, auto-exposure, rolling shutter, and the unknown rear-panel
+brightness setting make this footage an ordering constraint, not enough
+evidence to fit a unique numerical knee.
 
 **The shimmer on the INTENSITY screen is authentic.** A/B over the OSD
 switch: Raw shimmers *more* (per-line std 7.5-25.5) than Accurate
@@ -82,10 +112,11 @@ The Test Cartridge checksums the BIOS along with itself:
 
 Verified by running vecx with the BIOS extracted from `bios_rom.vhd`:
 it renders 6293 exactly. The cart-space fill (zeros/FF/mirror beyond
-the 4 KB ROM) does not enter the checksum. So 6293 on the core is
-correct-as-shipped, and the checksum screen doubles as a BIOS integrity
-check. A factory-BIOS option would restore B796 — and the authentic
-Mine Storm level-13 crash.
+the 4 KB ROM) does not enter the checksum. So 6293 is correct for the default Bug-fixed selection, and the checksum
+screen doubles as a BIOS integrity check. The OSD `BIOS` option now selects
+either image at runtime and resets the core on a change. Factory restores B796
+and the authentic Mine Storm level-13 crash. Hardware Test Cartridge sweeps on
+2026-08-08 verified both 6293 and B796 end to end.
 
 ## Related analysis
 

@@ -24,6 +24,7 @@ module vfb_phosphor_compositor #(
 	input  logic                 compose_req,
 	input  logic [BUF_IDX_W-1:0] compose_source_buf,
 	input  logic [BUF_IDX_W-1:0] compose_target_buf,
+	input  logic [BUF_IDX_W-1:0] compose_raw_buf,
 	input  logic                 compose_has_source,
 	input  logic                 compose_source_is_composed,
 	output logic                 compose_done,
@@ -213,6 +214,7 @@ module vfb_phosphor_compositor #(
 	logic [BUF_IDX_W-1:0] source_buf_q;
 	logic [BUF_IDX_W-1:0] target_buf_q;
 	logic                 has_source_q;
+	logic [BUF_IDX_W-1:0] raw_buf_q;
 	logic                 source_is_composed_q;
 	logic [1:0]           intra_mode_q;
 	logic [1:0]           inter_mode_q;
@@ -263,6 +265,8 @@ module vfb_phosphor_compositor #(
 	wire [15:0] current_tile_id = {tile_y, tile_x};
 	wire [28:0] source_tile_addr = vfb_buffer_base(source_buf_q)
 		+ ({13'd0, current_tile_id} << 4);
+	wire [28:0] raw_tile_addr = vfb_buffer_base(raw_buf_q)
+		+ ({13'd0, current_tile_id} << 4);
 	wire [28:0] target_tile_addr = vfb_buffer_base(target_buf_q)
 		+ ({13'd0, current_tile_id} << 4);
 
@@ -272,6 +276,7 @@ module vfb_phosphor_compositor #(
 	wire [15:0] raw_pixel = raw_word[pixel_bit_offset +: 16];
 	wire [15:0] old_pixel = old_word[pixel_bit_offset +: 16];
 	wire [15:0] selected_inter_factors =
+		(inter_mode_q == 2'd1) ? 16'hffff :
 		inter_decay_factors(inter_mode_q, raw_frame_age);
 	wire [63:0] next_raw_word = raw_tile[lookahead_pixel_index[5:2]];
 	wire [63:0] next_old_word = source_tile[lookahead_pixel_index[5:2]];
@@ -290,7 +295,8 @@ module vfb_phosphor_compositor #(
 		decay_factor(intra_mode_q, staged_raw_pixel_age);
 	wire [8:0] raw_energy = raw_bypass_q
 		? raw_intensity_q : raw_product_q[16:8];
-	wire [8:0] old_energy = old_product_q[16:8];
+	wire [8:0] old_energy = (inter_mode_q == 2'd1 && !source_is_composed_q)
+		? old_intensity_q : old_product_q[16:8];
 	wire       raw_present = (raw_energy != 9'd0);
 	wire       old_present = (old_energy != 9'd0);
 	wire       raw_wins = raw_present &&
@@ -331,6 +337,7 @@ module vfb_phosphor_compositor #(
 			fresh_decay_factor_q <= 8'd255;
 			tail_decay_factor_q <= 8'd255;
 			tile_x <= 8'd0;
+			raw_buf_q <= '0;
 			tile_y <= 8'd0;
 			tile_columns <= 8'd0;
 			tile_rows <= 8'd0;
@@ -378,6 +385,7 @@ module vfb_phosphor_compositor #(
 				COMP_IDLE: begin
 					if (compose_req) begin
 						source_buf_q <= compose_source_buf;
+						raw_buf_q <= compose_raw_buf;
 						target_buf_q <= compose_target_buf;
 						target_buf_hot_q <=
 							{{(BUFFER_COUNT-1){1'b0}}, 1'b1} << compose_target_buf;
@@ -410,7 +418,7 @@ module vfb_phosphor_compositor #(
 
 				COMP_MAP_WAIT: begin
 					source_tile_dirty <= has_source_q && tilemap_dout[source_buf_q];
-					raw_tile_dirty <= tilemap_dout[target_buf_q];
+					raw_tile_dirty <= tilemap_dout[raw_buf_q];
 					state <= COMP_MAP_DECIDE;
 				end
 
@@ -420,7 +428,7 @@ module vfb_phosphor_compositor #(
 						read_ready <= 1'b1;
 						state <= COMP_OLD_REQUEST;
 					end else if (raw_tile_dirty) begin
-						read_addr <= target_tile_addr;
+						read_addr <= raw_tile_addr;
 						read_ready <= 1'b1;
 						state <= COMP_RAW_REQUEST;
 					end else begin
@@ -441,7 +449,7 @@ module vfb_phosphor_compositor #(
 						source_tile[read_beat] <= read_data;
 						if (read_beat == 4'd15) begin
 							if (raw_tile_dirty) begin
-								read_addr <= target_tile_addr;
+								read_addr <= raw_tile_addr;
 								read_ready <= 1'b1;
 								state <= COMP_RAW_REQUEST;
 							end else begin

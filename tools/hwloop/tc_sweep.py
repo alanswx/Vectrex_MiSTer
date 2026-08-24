@@ -14,12 +14,13 @@ a framework screenshot of each, and scores it:
     BIOS (vecx's rom.dat, crc32 ba13fb57) yields B796 - the value in the
     service manual; the Mine Storm bug-fix BIOS this core ships (crc32
     105afd6a, rtl/bios_rom.vhd) yields 6293. Both references are rendered
-    and the capture must match the core-BIOS one, which makes this a
-    BIOS-integrity check.
+    and `--expected-bios fixed|factory` selects which one the capture must
+    match, making this a BIOS-integrity check.
   - INTENSITY criteria (service manual p.19): lines 2-4 extinguished,
     line 5 visible, ladder graded and monotonic (the soft-knee check).
 
 Usage: tc_sweep.py [--host 192.168.1.75] [--out DIR]
+                   [--expected-bios fixed|factory]
 Exit code 0 = all checks pass.
 """
 
@@ -266,6 +267,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--host", default="192.168.1.75")
     ap.add_argument("--out", default="tc_sweep_out")
+    ap.add_argument("--expected-bios", choices=("fixed", "factory"),
+                    default="fixed")
     args = ap.parse_args()
 
     refdir = os.path.join(args.out, "refs")
@@ -322,7 +325,10 @@ def main():
 
     ck = checksum_verdict(w.shots["checksum"], refdir)
     best = max(ck, key=ck.get)
-    ok = best.startswith("6293") and ck[best] > min(ck.values()) + 0.05
+    expected = "6293" if args.expected_bios == "fixed" else "B796"
+    # The factory digits share more strokes with 6293 than the reverse;
+    # hardware calibration gives margins 0.043 (factory) and 0.147 (fixed).
+    ok = best.startswith(expected) and ck[best] >= min(ck.values()) + 0.03
     fails += 0 if ok else 1
     print(f"\nchecksum: matches {best} "
           + " ".join(f"[{k} r={v:.2f}]" for k, v in ck.items())
