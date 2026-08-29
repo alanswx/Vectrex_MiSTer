@@ -1,0 +1,4296 @@
+[
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/agt.png",
+    "source_sha256": "842dcf0cf4bb90f5fab9d92e2810b8ac96c196852029d4a16dc27788746475ff",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/agt.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "548bdb6405ab7f800992be88a10e550746b0d27a9a4d21ac5d99905f836571b7",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/agt.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "394aa0224a3c067a0fdb5fb3bd359e55c58e8aa52e0dec4b111952302714052a",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/agt.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "784872cce2c7ab05828b96c035183f07925a1d07c07a0738e12b66c5b7159ea5",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/agt2.png",
+    "source_sha256": "aa2b51d10dbc490b98d834513af37586c7e20f1969392f4f15c04a1f7cc75202",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/agt2.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "e9e187e34f11352f32d375604ff7e5bbfb21e07b8935c580ac14fdfa91ba869f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/agt2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "582f5727d9737781e2e1860bbfe2a4a859706e118bab55db1d20fa921c0196a2",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/agt2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f8643aa885269f5ecde64d3aae9e03a46cee549b3339ff6772097438e136990f",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/anim_action.png",
+    "source_sha256": "d41eed94b5dc9d184617642a44a965e04ab639fb25486222e026b30120b332c7",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/anim_action.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "2cd55c1a7feec1eaeb1ce11905e51562c394e3a12ab280abd3c3b17b249d48db",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/anim_action.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9f30501fcde4bd5e2fbc58a0f0ac7fb387b2daf446e7f6dadb67f1b444cfff3e",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/anim_action.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3e99ab34c9a6de1fa698807ceb57676bb3f56b5f83f98dc15bbde3b76f2da08f",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/armor.png",
+    "source_sha256": "a20d9caa70b78a4a3f44bf747250ff2c42488a10fa63392322e53045f9500b04",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/armor.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "8fe22f5fb2dcb662fb7248bba2af6d8be3b3214fbe3d0513eab6da4bfe1fa883",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/armor.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "73619481174af6ac5faa8bacbbcbee3808a90a4933dd54f1b56b1ffe349f7d6b",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/armor.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "634695c0fcfa39f66fea5f581fc17bbb2716cf9f1aa0b9fdb027b0c7e3101fcf",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/art_master.png",
+    "source_sha256": "6c3f67760cb11aed97622cff249b135d08a34071c375af347e7fa29d5e235c92",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/art_master.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "335cda4d82bdf2adc4ca1dae79053bf16368b1375f1d800716406036379c2f5b",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/art_master.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f9205d74e1319fb68e5e3dff10cc59e5522f6bef311b51eccdb42cbca59c4a91",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/art_master.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c1a2f5b5f58ab89ba00ff5e9337d1e8ee8e3b07b71c48b1b9d2a95b26170d863",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/asteroid_cowboy.png",
+    "source_sha256": "a371ecafe24258766c5f200739098192572e68df51ff959f8c4848c40d92df5a",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/asteroid_cowboy.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "7f9baea88b0a3645f884bc7c5943859c0f697901cbcc2656e7a48111e46da170",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/asteroid_cowboy.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ca04f18900fb5be1ca2f1f3bcd381f62eb1f39d440cdfde3913c0746db0691ce",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/asteroid_cowboy.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1af008d6e7e49711af4e0ee33e3f9d2813c14737557e11da7c0af762bad0fb40",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/asteroids.png",
+    "source_sha256": "8e154187a4af7b665d98eb742feafd25a7f5917383c85d933823e15e9cf0b9dd",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/asteroids.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "d5eddf1ec728133a88d8176443c3250b91f637bbfa4cf5d89618da20a89d747a",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/asteroids.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6eca928c544be2c9c550edfbb6db5a5ee85de9016403cdaa6389cd97a910ecbf",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/asteroids.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f9f1291108e924f731c20c4a51dbbb3d5e46f365081b6a04ff72efdc9751e72f",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/bedlam.png",
+    "source_sha256": "d4a47552eafbd4d4b265e2c85adafb30aa59b7b52062067cb166a1d195a4f27b",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/bedlam.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a2168e9c91f0fffbd48cb2db2fdb09b7e4ad58bb145b716fbada532d72fb5d75",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/bedlam.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "0cdc724e4320918770e440569a83e50b7585f8e953050406bf89439c6ecf931c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/bedlam.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a37bdcd68bc6ac1e507efd8c4dbdcd286b9b7fb812d1e5339b39d300ea43878d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/berzerk.png",
+    "source_sha256": "b9a564835e16f1c6f23578f4a384aafb070de821f97997a7082e710f0998f3b5",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/berzerk.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "473c8066f27400c0283887999b29ef96e8481cc86e4ec5d5c2e18c2fa2cac47d",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/berzerk.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3b20c17d9e26a71a215f49917a80aa4e213c9d4dd7b7a5e9c917a719e06be807",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/berzerk.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "567cbf6c8db79947a914358793f97c5a4ace304883fa60744288a08f7cd04aff",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/blitz.png",
+    "source_sha256": "802e10a795e77f37b1df4ea51c8087cfedd6d8436450843674ae140bf250131f",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/blitz.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "29a6359a6de9177a7f9b0c980d9aaf83ccc125d8c1acff380a376edcb9fedd3b",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/blitz.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "81e798a98655146dc474879f06b8636861268f50ad9945563761bb04276610e2",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/blitz.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1673ac4de03af6e7bbd88a2c26146c3a92c690926e475d9cc895cfed9f592199",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/block_bomb.png",
+    "source_sha256": "c521fc8966b6459c6606d974f0c18cc662e62f87235233986d65e432aaf779a2",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/block_bomb.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "982e24bb014fcbe8e5d393c93957ba22997990a2c8b9866ae02605bc679e84f3",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/block_bomb.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5fbef5f14d5651b4711a2ca17651ac3d42291bd79ac621300d64ee14b14465a7",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/block_bomb.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1edfe0432bc90866b79aba9b2ffb1e32b8afbc7cfec20e0d84a3ce8b0926ec39",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/blox.png",
+    "source_sha256": "40063eef535b51184b4dfea61e1eb968a442cc3a572eb02cb1d31c91a74557ce",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/blox.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "fbe2f36b4ccb693bb47a5eb85f1e987a23ed1200028e7d68d5d500ea95682372",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/blox.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ee61c8eda384b3f5271db99dd939febf0775a2e4398afda965613292f7782f7a",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/blox.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "2ab013eb67700337fb2b29a16af1cf71af59714fa562806b4b186770e83feee9",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/brick_crushers.png",
+    "source_sha256": "7212d8d3f6d14bbe20fb02be47ce153f6b750df95a8971a8304ea694b6f0ccf4",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/brick_crushers.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "21896f85fc0aa1e4e95f5e6a2ac85b714154d01c15f6edc84615ea6036361868",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/brick_crushers.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1d9d5002d21df87202dd4933dd928dc7bd917762fd660944dcc021505d7e522a",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/brick_crushers.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4aa6e48a62780870d26f78ac62bb6c91d38b0ec32ece3bec3a5fb4f4a2257884",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/castle.png",
+    "source_sha256": "06afbb925e0196280236ab4d1bffa61b1c4525d951d9d4ecdabd7b1c55ff46fe",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/castle.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "5b58455067e7e9cd29871f9af547394007f63fe24beb10ec124ccf09dcf33f18",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/castle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "73a5a42bf6c1339f16fd44f84e65e2c6a0d67ae735fb2c014ab2d0b313c7a5ea",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/castle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a61abaff671daf222c2cba9ae0ca3b297e297f1006987d5213ca8325d6b63550",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/castle_defender.png",
+    "source_sha256": "015d814063f8d6365d5c1434776f0e6bfede094831d5f9f57f2f85fc304da217",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/castle_defender.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "880b4521acb98ec7cc5043bb9d2c03a41ff2f34ecfc806dcdaa39b7f8c095e19",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/castle_defender.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "386a1493c360ad886b397eff3f95c0bfb8635cc65a27da06ba0c865e1022076c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/castle_defender.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ecc8c61cda274d85d842a77be0f7570c04b4b47f1e9a2d972941c67b31e3e686",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/castle_vs_castle.png",
+    "source_sha256": "69bfaba1ba353bed3f204f9782bb62638300dc7d239a50459d090469cf22b7b0",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/castle_vs_castle.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "3677eab4ffa6762c11be01f03b2a66566b56d64fa0fd1d5592876eecf7408541",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/castle_vs_castle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b720e2e69e367a78f23e9ec483471ca50eefebc183ddd17805f1e64c00f5f196",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/castle_vs_castle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b28b134e8b3c39e0937d4c7174de694c71d2b673caa486e34081462433674256",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/chasm.png",
+    "source_sha256": "311110db500beedfdb830d87158bba4eb49a54247f2634cb8755f50e77e0784d",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/chasm.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "6ccaf69affffe3756e9bd853f0ab37f2223bc99c4b340ed8d101bf6dc538737b",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/chasm.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "508e084c43e1cd69a0df258f98b68c36c0ea19510657049eb45d0b41c0d99df8",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/chasm.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "bb902cf2bc661480ffddfa2997971e00e544b3ebcb0142cfe3bc15190bc949ed",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/climb_it.png",
+    "source_sha256": "c68acfe71102262b3bbbae33b27843691a1157cba85f2d45145af80d1c2534ae",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/climb_it.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "79e3e765f3f581fff93cfc9265bfac8e2abd5d8cc4b949c929dc444799ec2b22",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/climb_it.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "dc022817bf57e4e9f7f2ed35ed2cbc95397869597032d9fe8cf5f66ff5907f75",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/climb_it.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "fe6e9692a4dbe0161c31e364a91b6d872684ecfe0221a75733861b2dfeb9bbe0",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/crash_trexicoot.png",
+    "source_sha256": "472503363f272702974753cab7358214143614c28574259a66fefbbce747b5c8",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/crash_trexicoot.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "e8d2bed4ee34245bc40ce4cbd77ed560bad9949ffe407ad66a916cd3616416af",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/crash_trexicoot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e35c556abc5d11c38484b2d5a761c5915f57ef669d16199b058341d9942c7494",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/crash_trexicoot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "afac05ee3718c9b7c4a4b1290d75464de050f60e843eb1db127815dd5a892a46",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/crazy_coaster_3D.png",
+    "source_sha256": "f4cc02ed053f852124b88f0bb095ade2df889360f8ac014ca12633e510fb5745",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/crazy_coaster_3D.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a42394254318ded9103356fb12c5c700ecd175ac63e319b3c1cd46ddbf38e3b9",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/crazy_coaster_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4bd022dcac87720f0fb2404c42b7cfe763e1628bea7da6f56396b9356b276229",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/crazy_coaster_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "d1a23f03d9dd1667eab88c2e9d2ab4c34d94f246d3fd31009b25ad400bd186a9",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/curling.png",
+    "source_sha256": "485d7e75103b1cc2b34353a12afa4d135bafed6a6b35777b40205c29a48ff25b",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/curling.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a3acb017e7a92d794cbafa38c09e515a32c5141c379fb634abc25a9fc91ebdb4",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/curling.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "63ce4466d798ce0f5685c274fd1b637152abc59f81f5ebc9c36baa9b94f923cd",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/curling.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3a9899ec4e98d2fdb7c89a07bd80fb7a8c5ff0d71ad65f64dc11705ae2f8a248",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/daisy_land.png",
+    "source_sha256": "81937dd6915d1a774f3074d644dae52b2fe22cd5f9ce5c0e406845239c458250",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/daisy_land.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "1c672b1ddab1a93ed477d7239f01e50c4ad4bc6efa0bb4f01972b07a669d5e15",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/daisy_land.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "705b2914e6a74de4ad1ce918fc8ed29ee31bdef3924320de6620c2b7f076df92",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/daisy_land.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c2791d21e1f635dccced648d4487c33af88c2a95a5c7b71a185e0676a883eb2d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/defender.png",
+    "source_sha256": "48f1e6568cf573889d06ad83bf295a1e22a8386664a6b295cb1c0c5d8b375ee8",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/defender.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "3365ae6eecb67c0aaec080095d8b8b2c655e54a4c84a6409a3747e7471bf18f6",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/defender.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f35aa78ec4c9b382fd345d6e3bd115695ee1b8b7a23d6ca58ad362364d6bd46a",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/defender.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "d34d7cb43fe1daaa648a8f8e7f67ecc752922c9067eea6558466f0756af8d9bd",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/dino_runner.png",
+    "source_sha256": "bd695b760832099b566506e585afcb9b21dd27352b982a564be0b259ebcb7593",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/dino_runner.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "d4d0d7fcaf974d688c6369b0f46e8f0a465dfff1a456486fa1cb5a7c0f22786f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/dino_runner.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "88e0e11e919bd74ac0c5c578a5e28f1281dfd560c706d819f089a72245857334",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/dino_runner.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9e6edf3e27f004b69d409bd218965f4920160bf1ba89e87299993fbad3d8bd85",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/dktower.png",
+    "source_sha256": "d1aa54e2300f454d3002c1ffa36466d860c872eea10bb4fe70124f8274426bb4",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/dktower.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "af2156b60d1d020e2c7cce71e7fcd00a2a0b9a2755911bdf2675e294d233a8dc",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/dktower.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "0c1100d9a66f2c954b1319fd8b74cf8466399dcd745ae283ee65698a9a170006",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/dktower.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5fe39a73e8d8d31cd116d98952f69cf0e5c608b252152ca2d4f6677c08b6236d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/dktower2.png",
+    "source_sha256": "5d73bdd78a8102cbbb2511157a99211890fd97c5988b08265a5866b000886692",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/dktower2.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "7ddba6e822cb8a6b475d89178155608b03acd94001a513ac5f8e1b7a14ddd57f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/dktower2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "30a8d6de1841f8161009a8ccb448173e46f7d209d6302ce049c451d38dbf4bae",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/dktower2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5752465aef96140385ca0201497b4a1220ec78f38693e9cd7e9eceff7e0c53fb",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/donkey_kong.png",
+    "source_sha256": "9d2fed013a5467af626bf5f1eb99f6dba1fa5d26fb42cc76b81da8eac5a159b6",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/donkey_kong.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "467bfaad266be773c0010b5a8084a96c22609a0f9de7ce5aa15fe1e2b7388697",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/donkey_kong.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6339b84692d06760709ff27866294a1e179d6983b8d112d3b1cf7e537d7b9d7d",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/donkey_kong.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c5a259b614a9fd6019ffd1a6aaef88f305aefba69f79964d101a54ebaba48769",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/dont_fall.png",
+    "source_sha256": "39e862ce48469982a58fe5f7f16d63b6fbd5384d7f0ff16bde76144dc62f619c",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/dont_fall.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "8112621d8c0931c68286300b899b1e260d55782c1f81bdb2bac2b1a16c389a8a",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/dont_fall.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a593f10238ae85073cb2bbef519e41f99a1ad0c1fc5aa5ddc9ff383b2a05389b",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/dont_fall.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "12952e8b95126a765b2cb00d7eef0cad4face0cd83fb846294c9bd1f88493a09",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/doodle_jump.png",
+    "source_sha256": "004723cb7742b39b85d964a5e457419e952f7b3a0b5917ac314d5e94e867447c",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/doodle_jump.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "08a966586926d66efb860cea6e930ad24bd8bd8f71b5725167951bb607d2815a",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/doodle_jump.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b6b4653944348df45ca44f1a905e743f802b5fdaded86653a9d695f0e8230997",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/doodle_jump.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "136219eb9376c5d379285cd0ebc78bd659aa6470383862e7caa8710efcd5f306",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/eating_fish.png",
+    "source_sha256": "1c8ce93d8ba7545cc9cace7b438a9da23e140b8a999198a7831e0d95f74dad08",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/eating_fish.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "3c4b93709ce9bc98b0f4174df0eadb36926eb3ea29cc821928ad873363b1b91f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/eating_fish.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a3928b007066fe6d6a6cbdc7beb9bf1f025676f728e172425029bff0c0495c4b",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/eating_fish.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "06749b7314f7867e0a441a1086b3f55e419cc13f1070e21198f0981074396d95",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/fencing_simulator.png",
+    "source_sha256": "6a45787b800672106cf9f1550cf28c124dabcb0287714d45531cb03bd5a51821",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/fencing_simulator.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "2b8d82a969106dc21570da975d9f4f9ad22ce3812992df7a4e9eb423e5f0b3fc",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/fencing_simulator.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4a7811f91c376f404808ce4d7a8367dbd209951d0d90becd4088565989ee967e",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/fencing_simulator.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b8448746270fa85a2b006b2e99cd136022c54129a279766b6c5954d452fde779",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/flipper_pinball.png",
+    "source_sha256": "15d22b17ae803207a7f7a51b067c48b2e340ac8edb4a80c920d3c64ab16a4618",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/flipper_pinball.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "6a729a43b47e149622cf57b9197e329ac2905dd3e66fd69a6c5a516cda1350ba",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/flipper_pinball.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "7cbf06d461da4e3ac6739932d9964c9618e09879acc6de8f0a8b2b7f11fd1ddc",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/flipper_pinball.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9dfd5d8f2c82a4fd4a2bb90bcfd658cce05655d52b4891cabfa5f90201ba78c8",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/floor_is_lava.png",
+    "source_sha256": "759926e3383d46c5639efa231abba15cdf9d860012013850301306f2b1ac66a8",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/floor_is_lava.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "f399d00104a4514606aa620184646ba9e35a2037d60bffb163fe3a0c45e49fe8",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/floor_is_lava.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f4225ae70ff5b2a706adfa3ffe478a179f6133178485003f648abf8dc6aaf1b8",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/floor_is_lava.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "7ab7c3a861c94e18924a6ea18401a89be4f3c44783660c009d9418c4ef7f1c8e",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/frogger.png",
+    "source_sha256": "5771218b20d50dcb2b2d4c0b0c8af7c7cf5f22325a405c1c302ebc8c9f7d2ee3",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/frogger.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "dba48bde7aebd8f5c0a7209575af3a83fea7308d00e49ccf8604ea210787264d",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/frogger.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f91d842c277d84450dafb89936b30526a2a0f825b834c7b05bd6f9b394597096",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/frogger.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8d7f5bd3c23cc616cdbacdcd04b8c8f368f4728efae7c7519744da41543ae460",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/headsup.png",
+    "source_sha256": "bcf69d22eb847efc9ecc975ea0e7ee82c1309e66a7ffdf1b1b4ae6656606f984",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/headsup.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "06b26dbb48ea28a6e4db147e39e04b8c6e98486112c7b1ea183afea1bc767cf3",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/headsup.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c9613730b85904356e5c623d03e5f08ae0a6d4b13b690e4d9612fef592640f10",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/headsup.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ef677929c1906be55df6024a449762ff266d547f153c1be7e0796fd96d0318c3",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/hextrex.png",
+    "source_sha256": "62185ca047b02f9db60579ad0ee5d0ff638318611ab9e1d102d66fe6ff9ca69d",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/hextrex.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "364c119f105159090e3dff2ec2c4a8b9e4a14c6cd0dc5541c086ea2cd2ad152f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/hextrex.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c0c7c48d5568ea18477aee766516b39414fa2fc1792e38bfdf58717481c3243c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/hextrex.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b85d81281a7b46a146aa8b8e3fc6b698866599c07b78352a4dc33558b4f04b74",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/hole_run.png",
+    "source_sha256": "98505b7cddd73e4f4fcf4469efc0cf1e97281d594e06bdf3cd6f99a55ec64967",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/hole_run.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "b925e67110aae15591899a82779cc5d1d4db07a897cfe54190391589a78cf688",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/hole_run.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "798c93a8e678874042f3c1ab842a92dbfa9b6dd6a45953437774778a66168a4e",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/hole_run.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "bff2b20334e6994a1750044f53224e812beabc9f9707bcc7e466d2ff44580ebe",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/hover_race.png",
+    "source_sha256": "52754912bea962957d25edc8ca257afcb7cfac31db80200490a06b45f839a1e4",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/hover_race.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "74b9221f671a135c43efb1d94a0ca0640ee82c4b6aadea93ef14d87d6bed845e",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/hover_race.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "87aba6eae6e0e7445557f04c616e8f9665efc8b3d85e4fa237fa51c08347cced",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/hover_race.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "37bd31efbb208a1701905dd6d3ccd08aa039aa6ccc65059edfe3678995735191",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/hungry_python.png",
+    "source_sha256": "a6305cf4f2e960b5e4e1e3d9928d107c3bdb77c6c1d321b94c4d941027c50df0",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/hungry_python.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "5de9c9612283c36f3ee60d40374988816f1323f2770cc164eb579e38db23e968",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/hungry_python.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "aa6c7692d63bc4d5adcaf9c9321741dbf0d8ca2b525ee0882b824bc7f514ff0c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/hungry_python.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5bf83d78465f06e60120bf21477fc52bbc17dae4275a8d3a701db8e8aaf0cae5",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/hurdles.png",
+    "source_sha256": "75e22cbd125629a316cdffda22eb7d7f4c90bb3e07c2c3734a974f4c129afa22",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/hurdles.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "c46988c3841490c846bce64a549e9b6d44a44d22a4f924b902994467e08dc28f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/hurdles.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "56193d3c3ba4d61057bcd441577d42ce0f3489ddd0d8ab8613596b72be251f8a",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/hurdles.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e7eabf4f8763bf91553dd66542e602756aadf02d55d9ac910a0e00f0ac5a8262",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/hyper.png",
+    "source_sha256": "06f7f604ea564d6431f706d33879763da0e1efe23d09cfe86ef9059d1c8e6562",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/hyper.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "cf8dfdd54b0c8597e3d26f16f7229051a3ef6754c8a9b744a02b1dd6f7e61953",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/hyper.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6946a05da60be3fc2a081f9184d97b6715b22fb8fa781667e82a95b0c28a84b8",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/hyper.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3d6474cf663024375c5ce939221c3f2b2690f7c717eeeaec343168e85d811b31",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/keyboard_hero.png",
+    "source_sha256": "463ac78e5323779181952559fbc2689e10267c2058f0ddbc6d2b2ca5c2083504",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/keyboard_hero.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "3b5ada576988be659a1900fbd967fcac0f331f9cd016a3f8f3966f5a301efaa1",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/keyboard_hero.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8e7a031716992fc8a51ab567af40767e1269d475ec752a199679020d4d313458",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/keyboard_hero.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4d86ade366b3cd364f138fc30988add253e558f8193c17bd2cb563086fd5fb12",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/kingdom_of_heaven.png",
+    "source_sha256": "73d63f6edbfdc855d8f3b70cbf0ba02fa0ee2c2d5d26c830452ab001d8287445",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/kingdom_of_heaven.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "1d018e1965e03ab1e5b36e03017896f1984d413b38defb8a0172bf04b12c9827",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/kingdom_of_heaven.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "20fdd4c6bd21e12f8715b1237365e4182b2de0a888cd7951994c0c1a48b4cb57",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/kingdom_of_heaven.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "02b89f7f06e46ba604293aaa0eb7ba9e2dcf08494a7744b917edf2cc39f5197b",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/knight_rider.png",
+    "source_sha256": "b1c64ebee3236ce3f0bf72f1b1946c860c68cab9f8c36b5125f17908cac34917",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/knight_rider.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "c5c78b731a85693f87ee7999d3ce66b6f4813fae1b9f3f88a0dfdc9ce0c347c1",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/knight_rider.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3e670b4638106884133c96ad8e12f26f4ca1404a055b9ef1c69eea876227247c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/knight_rider.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c1e5e344782e0b7ae79a8150baca9ed79c128db1acd1d89e10800b6226b8a7ca",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/last_battle.png",
+    "source_sha256": "d86294d4099614b673bc6da4d88b48e25b556234513aea14fe2d1dc04ea75626",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/last_battle.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "ec73b002e3590e8d6422c61b463e56bd719c71da21346e70b9d3d5f818ee776a",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/last_battle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3cf3664b63f92da9da8f9534e1cb6b8ae945619eb8ef484beaee914a9c9ed74c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/last_battle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "75ed5d98e5be989f6b209f9b3a943bc9bb865f288ea604e748e5fc1109875762",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/lost_souls.png",
+    "source_sha256": "3c7054a451b6bb9d35f6cc24479d6a9203c36d4a64fc8ddf51d40e014f52b02d",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/lost_souls.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "6388a9ea432a391ef79a5ce137a84a965073fb0bacca2df1c3cbf3d7e1892ef8",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/lost_souls.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "15f2f4533efc1af61a4aa4d08c716d0ca6bfdd8fec03fda80a9942161a86b5d1",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/lost_souls.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "0a769c055f0f6cd747103036d8848c889fb0b0445d930c453254639ab7d7a4e8",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/mail_plane.png",
+    "source_sha256": "927254d895ac5db5908fed297959186f9f328165aa999496c90e34186706b9dc",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/mail_plane.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a4232db0b4c8349e9e9b12123a17aac549f5fda1e52f36eb525b3408e33efebc",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/mail_plane.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9613defcb00bf2e3186fa90ac1f4e7124159a2a37914bd315de97e38671a1800",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/mail_plane.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f65fc02951d06731579897d11c7e12ba794dec843469e111052a0bdd32a0dc0b",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/maze_of_treasures.png",
+    "source_sha256": "88720c8409eb89e605f5912489e264a8a252a75b042b7e81cf4fdc8f54ebeade",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/maze_of_treasures.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "5e46ced60a84e46ecb3b3c1082e555e5456336e09645a5afe2a85c05437409d7",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/maze_of_treasures.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "cda882a79fa027512e870f98bf7697437fa38a93494dce1333e046bef7c537c4",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/maze_of_treasures.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "319ff3d7715484701895e0b392a4b121481ac161e3c747a4359b65cebc23c984",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/melody_master.png",
+    "source_sha256": "c7866f8ee6ee5b127b3ca4e40f931ad161baaaa9f4cc7024683eb4384846daad",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/melody_master.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "fb1efe2b5648b7783118e24bfb122863dc02134bf60e2800818aaf8add27c25f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/melody_master.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e1cd90a41b9fd64c6a8e255a0f37f9b2cdbe095996f2507be2cb228daad5b8ac",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/melody_master.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a90093c5897328ead7c9cecc4d7a365412c4e1a2e0d8d613ceafeff386cf9edc",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/mine.png",
+    "source_sha256": "5b0e4215d7bf8d315106e46cf75b2a27544bcdb5605e51beebe104b9b78c5c2b",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/mine.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "8cf9c3df2db6f4a5b8ecd05242991f1430e2b6b85ada4baa05b35d367b0dbf4f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/mine.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "fab94065803278c9f77b9652cdb32c29e4763aa90d6ffe462f5db54bc27b00d7",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/mine.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "87edc14866f29662bff3960148db3ed7e2ba8481e1b07aacefbfb6778fe13e53",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/mine2.png",
+    "source_sha256": "c98556abac2e1d4dcbb34f5cc44488d4644716b1b10d20d30d7ae916cc4fdb86",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/mine2.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "e7ef045106d9b88d83fa3fbe3bd5a76943ce0c30e25e0d84413289042245e259",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/mine2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "37f73ba7957d4264fc1527f9b1588df21a3834d2ae544c707dec2a3e27aa15f5",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/mine2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "308d282037b7bc07c4b9a179efc757c34291f9c81027a2e717f8bf75ea31c80b",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/mine_storm_3D.png",
+    "source_sha256": "eadc0887351386454e0cc7040e2d4b7160d9f4447029785d1af5e93286bc7296",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/mine_storm_3D.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "bad74cf82cf126af2b34dfc199f9887ab64e14077525e9b38bbb219ec5a82158",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/mine_storm_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "85cbf385a2ee504a1d53461b15b18c8b6fb417ec374dea5730e3d564f4ff703c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/mine_storm_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c2ea93022f118d4767c9bc3e5cae69e02b6703028e4881ca34b53b524f2cadf6",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/moon lander.png",
+    "source_sha256": "c776a4fa901fb940dc8c1cbc138095b62bd107fae7dc865d646a5ef5adb1cd99",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/moon_lander.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "300631d26a83badd48d52a19a6e79c65f9816206728c3d335ae7ba1bb61df453",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/moon_lander.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f6e35535c1db5603d2dda11871f02b384ada203b81d76f0af8c3a1288c433fb2",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/moon_lander.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "76583e2eaf96d477df383dc1b20b5c82ca69b74d1667002ae0e85668d35a4d17",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/moon_shot.png",
+    "source_sha256": "3f2e685346ff4e764dae16860cef6d1face805e821355d94a07fdb897a01635a",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/moon_shot.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "852c1900c6fd6cb3f812c525e9407537605aff836f08144e40860eb0918c2387",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/moon_shot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "72f0e3550b2fa87d0d04dfce93fed58821f8d21c59fdc4e46d96f5fa101e700c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/moon_shot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e8433ad4e796ce5a903f2debb7a6bb710f4ee8bd8c3b3d6d3a2a65f933325f65",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/mrboston.png",
+    "source_sha256": "0af06ee5985a087ed52048f5f7688da2b43d990cbf796b70a21afa74c6a1f17e",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/mrboston.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "b59ca7237d0290bbcd5a20be374bb8d6d7162c97e12f93aed8c493cbd6e36901",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/mrboston.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "457168502389c079d20cb0f7f3265c979c9698102c88bc4f4d7289601616e019",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/mrboston.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f876419b99c22b420a94a12978ead3996bb41dde29dbc774bf28a88b8a9f6490",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/narrow_escape.png",
+    "source_sha256": "5284b51efe186105d5f887373fa067e2f6f1dacc7be9268c5e5ac263dc329a67",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/narrow_escape.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "44ddd06c752d56119ed334d9a1c211594a42df2fc196d317ef95cd9a6e9beb24",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/narrow_escape.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8529ccb5dc3ea1ffe551645ba30c7b71ecf6cfa7f9b4aa36e3d268bcbc419197",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/narrow_escape.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "90aa1fb6e6041df55d43a7652cff23752b5ecd9fb48af43d533287f13d20f128",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/narrow_escape_3D.png",
+    "source_sha256": "0e100595b6f7da0c5f7ffd713b1e750303472cf51631f01fd47ee1f4cf6d8dee",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/narrow_escape_3D.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "d0284ead4dc10b2ad3bbb9b4b1128a54cd35aed21760856f6b8ebc5e51ae60f2",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/narrow_escape_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4efc5e804d0266fc4b66f33ec16315e3c5876d40b36f98558c16f09f4214234d",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/narrow_escape_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3963e12a2ffe78d66d8c77ec40f722894b7e170a4ea76c2a540c879dfe97bd46",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/narzod.png",
+    "source_sha256": "6767e00343cd954d6bf0bc46ec4d54a52b0eb8da8da4a39f471a9a70463ada66",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/narzod.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "55caba8ac4ebc2e60711225a45f6db8d38c93dfea341c1879f17dca1380d7f2a",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/narzod.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8f7457c5719d8a57d91dfce10d0a2ed6a9a120635edf32be4aeee97b56c68e8b",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/narzod.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "95b6ca75ada8a4c64072ff0397aff1af7eec018819d741618aaa0f12899802e7",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/omega16k.png",
+    "source_sha256": "a29a3a4443a6498a71f3fb1d5b921fd6064f112387b7139b98cec2fac4e85e2f",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/omega16k.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "34adcc5f9f7c6224efde33678779214b7907fe039266c5b6c59b7d2cb0a6d31d",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/omega16k.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "abbe77302389e08b9ae1eb9fb7e4c1f4d39d153b3dd0e3ecaa77abacdbf976c1",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/omega16k.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a54d96ce6aec1e866c4581e58e03a25eed54a21b3eee6c622c465ee969edd6ff",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/pac_men.png",
+    "source_sha256": "7463407fa5c9a66835b651ee6cf03779351827259374b07002f9aaf63f31c1e8",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/pac_men.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "fe7980f019e34bd4819963305a10e74d73bafe20c742ea7a9e3ae8824b8ab509",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/pac_men.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "2453eee086c4a99f3a3f3a6887c16c8c178cf82a4706ee9e578632504c7b80c4",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/pac_men.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f1663ebaff832ae5d23578ac3131fc7226269af63eb154696a984c4c570768cc",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/patriot.png",
+    "source_sha256": "ca8a8f354bc4205c6dcfe7a07ce81e5a2b235bef75d02190b830e5df2c74cf4d",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/patriot.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "f649bedb915d4c39826ba95bb29a03cde8dcf60b59a06e60b011c6cb07033171",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/patriot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9ec16372ee88ae330ac80881e92867add6f97e87b5fad04281a3940edb4310d7",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/patriot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "260f773fce26cf4a88b60959fe5159fbf36ab5f0dbd0f13a8d33c8e145170c02",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/pipe_race.png",
+    "source_sha256": "8bfb38bb152a3924891925be1cdb5e7fad0e944c9d57f62296061771f27c5e0b",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/pipe_race.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "1d9cef9d71f86ce0c1f6a7f0f8ae0f1a87cb274179d749963a3319e59c273741",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/pipe_race.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4cfc74c32bdfe6c47231a445d33c0dfb72266932da10a991d40c8b6bb42d91dc",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/pipe_race.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c8cde9c320b12629ea39b92abea42e1491aba97907d132a0616466208cffe5c8",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/pirates.png",
+    "source_sha256": "258602c897751152df0ac9aec15a1885471ebd0c6613e9a4469d890c82e59f7b",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/pirates.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "ef808c81739403b64c08cd93ae954dc11aec0435c23e31b5fd094f8fd97076da",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/pirates.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "52b2698a456079be36d90c94181fa588496c754483ea583e2d1633a7ff573456",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/pirates.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "901f82ce56e25d963609d32569b5a0885d438dd78b24d9415431cb40b86c567d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/polar.png",
+    "source_sha256": "f0a78596976e1bbcab37e2cac2b8c7634818ffc69b9586c99b1f1cca935ffea7",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/polar.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "070083bb45eab8da5f53dcd50758dfa75cef0561e7fe09113a8359f280b099f5",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/polar.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "72e0431ef6d1032a8c0171af31b9f9e483f63876c6685f68064f7468fbbd039e",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/polar.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5707a8c3e3817ab71134b55a698e3f1ed5f7d18da00b8a61f23414b91123b701",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/pole.png",
+    "source_sha256": "0f001227afe8736c7763b0e3250f0a76b7158776f365261905f5e92682306498",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/pole.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "38ab121c6213ceb09e82234674fdfe9bdf578f2c18c4b4c486e6bee45b5ec9f5",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/pole.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3ffbf7599983649e49c3ae69c7ed10be535fc9eb5795a8b88f80d81ba0fadca8",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/pole.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "43e8355cd5aba2f300c946e68f4a5a50039ae7c6c97772bd32376564774cd912",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/pole_position_3D.png",
+    "source_sha256": "a776280967043b9624c1772fd79186291320bd9c1f2f1a6dda8fe9c7bb3aa783",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/pole_position_3D.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "201a1ee591a53cf019225ca358f581426e4a1baf3ff8b85c86e6f6234695f332",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/pole_position_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ddef79d6d961a75689ec495d670a0c54a8cf5b8c13005f799b3f11be937605a5",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/pole_position_3D.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9e8ef837e2ceff792e632ddb6146162a4b14f2c9e3a01796c41a226c47fb43c1",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/pong.png",
+    "source_sha256": "6fc0f2ba3a288b82ade6302d0f39072d6865708bea9aa2bd05b2b460ce7683e2",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/pong.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "953e937763d934f798140c5106d62b297770452ac1868f33840f9a7745806244",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/pong.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4a6fb5b43b68e0c3ee092c9c332dedfebe035120e578cce96e9809fc1785ad98",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/pong.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "57c489a5149e88499cd7378a93a5c7dd21e5f794b78222ebe7ceb8f9fc66220e",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/portal_fight.png",
+    "source_sha256": "2d524844fe654f7f6a40f12ad6e7b0e954dd12bed25e33f97101257272d98a35",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/portal_fight.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "d5c4b124a12738c740112cb91a2e2e3f46ca50801acc2a8c1bc590431614a4da",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/portal_fight.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "99633ebc7d633178e7805ffbeba3e63953b1e07f7ae580bd3ba3e2c383d5c817",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/portal_fight.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b7167412eae88f7a8612057f7ab265375006efacba1250d0a877fd7f811f2e71",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/protector.png",
+    "source_sha256": "a2af3afb7b821e769a7db99b56ca007a946d6c9f142d38cb862e3d9f9f6832d4",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/protector.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a89c1100d0603a9b560f475495dfd697936a8804e1c80efc6b6994f99ea2ca29",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/protector.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "aa8456d3c3528fab1eb10fe2abe75cb13bcbf815ac9e1235fccd62cbd73a313a",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/protector.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "522b25d3db9e752e71a6d41e2912929c4430a25419937a8ca02900df70d0749a",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/pyoro_chan.png",
+    "source_sha256": "0c87d4e2771d9e6430c8f2b3a7bb74d6c9d49908448dd7fb3a97f2a807b17bc7",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/pyoro_chan.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "9be99dd756aa8dcc2ea07ea945cf8a958e91a1303171aede2f00939c954531c9",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/pyoro_chan.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9e319f1530fd625a60c816461a28b32f514dccffb422362b17944c12033e488c",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/pyoro_chan.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3d69b021f7d98bd24acacd9a2cd137bf336ef0a4d97a89a9383a78ba04b8c86f",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/ripoff.png",
+    "source_sha256": "447cdd8e3bf9b059c9dd2de73e3160a2f993a53fd6b270ddb25871edcf37375e",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/ripoff.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "eedbb024bde07592f06c2d2d15a756b1ed0e2e3c45e840d1a3e36ab64e2b8d8b",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/ripoff.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a17d7ef86649ec3de82a7b8b558a9ae073d681bf4e66ae95fd9b13b4c4d3d111",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/ripoff.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "aeb2578486450828b252e5dab522849c4cbfd353afe2ec88c2c9f8edd050fda1",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/robhop.png",
+    "source_sha256": "bc3d584b075fe8fa8021593944e518c6bd1643977ddffdf6e074f5ef8dc534c0",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/robhop.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "62d12dcf4911498cd6498c98c7e43c087c706b2533dc08d7da95ea0f33dd7233",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/robhop.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e6aeab24ec572f3b9f6d9a69a6bb28e8f9fd4b2fb9b08abb2ec9f9309d786e41",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/robhop.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5823e6bb27a6784e171e83e23ddb2f6b45aa9d8c64f9bf726154a619692b85eb",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/rotor.png",
+    "source_sha256": "b2db0c41244785be7246be899c25549970a12ce7b20d3fb80e172340f1bd15c1",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/rotor.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "98ec35d3887b2c40363c4c035ed618a0ab9baf9de19b70a5f388a4ff8017edcd",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/rotor.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3717a072417f44bf605743f6af005de6b8decd9875b1f5ac2cd749bad37ed5cb",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/rotor.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "0527ef411c84b7e3e7aaf0ab717f2a3a546ff6f05645ec95a799016748dc1542",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/rush_defense.png",
+    "source_sha256": "ae988e447d9f1c79110888092b260ac1b8e9bdb273725cbdb594eb81dafacfb9",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/rush_defense.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "0b2b698b9cce3da5fc2d7d31db675572dbabfbc6e3634b28c26cfc755c583da5",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/rush_defense.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b8f6de171b3441ead3f16dfa73fa5e4bd1a1da3642f06d2d5501444cda9fe420",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/rush_defense.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "639712753c1649815e18d7c1bd2230c6d684623563d9fd7aa526d1b69eda47c2",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/scramble.png",
+    "source_sha256": "f8ef93f75d067160a67913fce4915a484bf198e8fdc51aab80c246944baaa874",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/scramble.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "5bd95d7937f2e8b34f8457ed1db4c68486b06aef78d132517018fb2ef4aff214",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/scramble.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "109f0d775b74868b4c9d2aa630770d1a38b8d7b29b43b7b62ad3cf154169bab1",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/scramble.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "20375a036c9a662981a7f23dd9bda6dafdc2347e9e079d72f33a9188559f391d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/shark_attack.png",
+    "source_sha256": "542afcdbaff5a01163a47967f88208b3da50e17cc4d9786605149a84e7b75193",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/shark_attack.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "7258af7a00fb1f4a58dd35f3f28564b7844340221d55ecd101e47c57ae137399",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/shark_attack.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "42f011de0eba0d342616c4f8e3435e6d3a9e16a1aeffc821e88a27a999bec018",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/shark_attack.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "79d10e740c7fb4247d2fe44fb9055b37631d4af28c4a0913e9a0a7be8921fc64",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/silver_surfer.png",
+    "source_sha256": "e427fc38decb57c82cc5094e7026a523e288d050a8bbe9ed673e59a2376cc50a",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/silver_surfer.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a0ecde28cbabbebf32e1b95f718eac000d2250016d945b8cb08d75768306c449",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/silver_surfer.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1f76b5d8e6b24ea4736653fb39e230893672cc3fba64d866e5a4b322d2fcc700",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/silver_surfer.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6b1ab9b2b94901419ce0146959c8e4356b4b6510aafac09ee6cc2c9da1cb577d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/ski.png",
+    "source_sha256": "7a7237284d712fedfcc62be171b8a41332119eba7e193e689e7a4a4f657b6b5c",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/ski.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "adb1f5441e6daa0ccc5360e65403a9014c99079d3be5779cef2e29614c66b3a7",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/ski.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8e31d7f1264daff36fd4d2bbb7e3b709bf4952983ecf72c1140efded3328b8dc",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/ski.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "11adcf0aaf6436a270802718cc687cd9677ac89f9fdb10e96511b7615841e885",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/solar.png",
+    "source_sha256": "20d96af6445db8319bae328400c83b57a583f8255df5102f887a9cc512075736",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/solar.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a53c6642e7047f415535c8b70576d9e968b4559badb862dabf681cbd1bdb532a",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/solar.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1d0447d18f89edae8b21f03584187386e424dbff56e51f6782a9873fa9a64faf",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/solar.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1eb35bc05d8292de3c282e64e60abd166e3dd15008d88146c49bd41d33431263",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/space.png",
+    "source_sha256": "27cb675ccedeee03fc190f152c911a1dbdcb398fe5ea92158cb0aaee5f40e84a",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/space.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "ec43d8d6592d073231ef262ce2e654f51d5c12db381f20ae53c157279ec748a7",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/space.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8670fbf9e6fde92874e746594b90b1ef236d2ea34dab6913d041b7e7daf41594",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/space.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "0815113d7590e7bbf8ab58f6135b220a31f495b7cadf471df1bb0c4520fa1f65",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/space_assault.png",
+    "source_sha256": "b522aa88095b619a500009367b510ce515c38c76af5b89a0d3fe5bb059c11a2a",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/space_assault.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "1f85f691c6630b81a91614d9e49b547054e0e5d69a42eed367d81d26641c42f1",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/space_assault.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ed809229b7717fa4fad6e604e162b370dcc3c8215da306d4d4d4e367159f378d",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/space_assault.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b5607fbeda6883a048ebea59ad78a35476533f22d1858b5914e7b1ef9bdbfa82",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/space_defender.png",
+    "source_sha256": "1abe35256a63399ae00f6940e00c46c397225323c1ca73a98fd23834ab53d309",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/space_defender.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "58a239c0e0155bdf1a54254624be3d370154204330a7f5e9543800d65de81aa0",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/space_defender.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6f1228501b08850c1cca7e9d54eef68b5c6ad92045b5de7a35f7bcbee0737058",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/space_defender.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "0a938dc2b8a54daabe2f54bd5fcb576066491b4b357a70eff8ce950115f013b7",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/space_patrol.png",
+    "source_sha256": "4a0c91e15ef6f124be60347413a54d5a5a6b1a44f6bdba82caec969301031931",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/space_patrol.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "7990f8b5a371aa80297fd1f98abb5facc0f21a1bb2d197ff9ca799c7506d09ee",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/space_patrol.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6da1ee885616eee8a418e639d9d1c5908998bbbe10bf3341a36701ac2c6bec03",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/space_patrol.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ecb940722890714616d3722212d603468d7b3d328bf5436372b84fdde4dca127",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/spaceball.png",
+    "source_sha256": "acc034eaed760479624360d3d0455931e51c9ec220fa3855a766d5f53c5ec292",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/spaceball.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "1795ab4a883aaaa479164b41dc6dc6bd54fccc36989f300d50e6b40970424009",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/spaceball.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "af77f0941b666ab873e6a1401433eb4268f9b6d2c569ec8442082f8d9a058808",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/spaceball.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "0177f234e15e5f4198bd38d957b21432903e4a9f1539d05c672ea1dff61bc4e0",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/spaceship_centauri.png",
+    "source_sha256": "e9e3001a21a5043be2ea0f18bfc40191de0a71b8f151539fa26a84963ac0a182",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/spaceship_centauri.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "ee4f50744f4b026ce05704fab5ec98b365c77260b0d4c43025d50fe08ac76b3e",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/spaceship_centauri.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "16f5f42d5c71e420a6cc8ec955c9a2bb7dc506dff4f774e724207b1835833a91",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/spaceship_centauri.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f71a58ecffbf8da9f8ec350bbb94313d23fe6df7a66cc682b042659204da068d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/spike.png",
+    "source_sha256": "6a1595ca6d0dabba111a92ea37345808ceb7e7c0fd86d360d22b3f5cf2a58a16",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/spike.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "012744276a82851fec5c8b1164dc7b92d8ccc18a9c47fef28f8c4a46013cccf5",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/spike.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c430f93cdac1113e626a16f87338d288ee5eb94009cbd3e6a46cba0e850851b8",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/spike.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "4801efe6909d1ff2b5e62ccc24640fd62ca57e4c6c327a7d8956154f58ac5875",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/spikeh.png",
+    "source_sha256": "3add6916883c6c6d2401381c8d2ce2aac045966017f7843407b22ad684252a18",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/spikeh.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "49af3c41f6f6867633f9afb530c41d09d16a619231da587ef77329fbd0ab20a5",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/spikeh.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ddadff3e2d55bf6fa6941cf2c39a36329d676c806d2a27f7101eb2e28024494a",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/spikeh.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "beb5bdaac49717ac8f4b2dd9bfe2f34c6db67e873d9d815cd894ce75fbb4a98d",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/spikew.png",
+    "source_sha256": "91a6a9aff0831f5a9bd1182e4af178dd1d833accdafaac1fe57f63661e40dd83",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/spikew.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "cffa64f4031dedefad980e88f1708382bea3d3b9d4b47c639a0f1821e2bfc640",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/spikew.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c060712138b5a29dbc1715c8464cd395207db04ab2d1a8cec280f340df4de920",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/spikew.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ebc5eaeafb0d54ea4389a7f877e9d145bd01a0c14619355aba094ef95ac4a8ec",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/spinball.png",
+    "source_sha256": "b14ad2ea750613eed925b795eb925138661285aec5f43ee67cb6c10100bf708b",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/spinball.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "67a81edf59418b9080b2a19c7e6c3acbb592293020f7e10db5ac28bd6bcc44c5",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/spinball.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "267e236571e7cac5f304b294ac44cefbbd11002e1a7d9942a12e671ce2debd5e",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/spinball.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e6ca64fe1c12658200b04dab8e0379c9e84612d9c377b98d3cf0a60c13f758ef",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/split_personality.png",
+    "source_sha256": "78be5a4eada30da73c2a7adba4fdfb44d70564beefc67bc1aa5d863985ceae28",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/split_personality.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "a255864bcde5cf35e524323c63e815c9f0df4b7d019a0be210c73df3c76f88dc",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/split_personality.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c0d58525787f109c9de7479d6dc36b3f0f5278d710f30a163c39805188f7c955",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/split_personality.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "96d4f01472a8fec82f4161f103c4f1ad6a5893288fff8066f0dcc9ab889c2795",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/star_fuel.png",
+    "source_sha256": "ff499ff8f444056213a0b3bef5533fb96d1320dd667925ecbb4d6ef769262ab3",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/star_fuel.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "50baa97bfdff3d6a7a816a4ce100a519baaca69dac141a1bd6338dfb2cdb034f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/star_fuel.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "26dbe2464dfb1511b9db72757e79f81fdbfd6d0635bb8278986479b13afa7bfc",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/star_fuel.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c5f46a1be674f5e941fdd5ada1f0e0b713999225ce5b2875dde157b43dbc17f4",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/star_war.png",
+    "source_sha256": "8af8f500017c46f5a93778556ffc804cbb67ccbbe719a8fcbcaf0f9d03cf14fa",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/star_war.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "936cec8dfbcc5fbe3263748933b684c6eb23bf3bf6f77be5ca337ba0359350fe",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/star_war.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "046ffe9ca28b9c0e807860f931e04578ee63b37cdaedf46d2c90fdc44c1fadc8",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/star_war.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "1baec43cf354c0bfe7d459e102fdf7ae56f5c6a423902adb90765ecf937ab2e6",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/starhawk.png",
+    "source_sha256": "6dc7cffbee8a0f1bcf1f75bc1c31f68a9ca083da5e0cdc431a8a0b4584bde643",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/starhawk.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "999d49575311b2fe8bd436c513d285141c6e17057848ed24c3263636b22bf2d3",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/starhawk.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9a4be2ef3dc60aba477c24c0effc51313afe640e2c07d97bc172b1693e211b63",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/starhawk.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "84f7c6ca312ac4a3d794da6a5316926655b160f902a31faad1c77772e2a4f108",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/starship.png",
+    "source_sha256": "126df514012209da1d5a9a56e7c1146e297468fb29b8965d59737b06ced33883",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/starship.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "c872bf614e49dab09380a899721a811841929792c9c9467752b43e334e297473",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/starship.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "ee9778f7046008ac92a14e4b928a4c42ca840bce792517db10ff093339f59d29",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/starship.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5d4622f906e9c59eaaefe14c54be8f646c6dbdcea4087718a7fbcea2a95625eb",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/startrek.png",
+    "source_sha256": "22b9117713f8764dcbdedfdbeb02c174d8043466bec37f42c943555e19834d70",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/startrek.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "77b14a3f6ad88277b2d7eeb206be2a724b6a39807bf6bdd0f5aa994d3990fad9",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/startrek.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "f3334d3476bbc53d24ec58b1eccf533c82dc915a0179b85d6ee719519661ceb6",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/startrek.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9cb3b79beab1a947d792d476c382104bc21b3f9f1fa3637d28f01e81f234cc45",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/stunt-cycle.png",
+    "source_sha256": "180ba0c77616155f748052b0d1a3d0bf53daec3e39c41d47341a17114b9165db",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/stunt-cycle.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "767b789296273355be4adfa82f0d5091e0e5af891d3ee0a06a4fafaf1e578581",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/stunt-cycle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "718e8c8f3c00bf97b39c66b9228178cb0ff5a8b2bfce21e137ba09b9a8964283",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/stunt-cycle.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6b11d64be8595053ea99fda09485c41b6832441a2e533d2000db59763af51de7",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/sweep.png",
+    "source_sha256": "13a2474935bd1abdbb32cbee989c26148162aa6a0b4abceaf78c6d9be28dc432",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/sweep.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "fa04d3efaf360229677a209b2b1ae826959bdebd12d0cc02cd595233a1e2a211",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/sweep.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "35dc1d2c9437e9d1446668ba7ff4e3643158099ef46b236ad40b52ca97acf516",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/sweep.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9c702e370677200bc155a3e150ac8f19fc4dce3f2f7befcc3b3ba1d757201e09",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/thirsty_astronaut.png",
+    "source_sha256": "8c937b53d506d3321a81846eef7642542102645aac16b76214738667073c6d6f",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/thirsty_astronaut.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "ca0a07801d08b542c98b2abad38f6404ce06054183cc766f39b4e61b769250c3",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/thirsty_astronaut.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "69fa6dc340ee871b480f87e8627bd8f31a64d0072ca6c8944c0de2001a172ae1",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/thirsty_astronaut.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8aac377718857cb8ee6d92352c8a00d52aaaf16da140fb687a3bffca992f328a",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/thrust.png",
+    "source_sha256": "b5ee6bba5e07572067327291ac5e1cdec613b6756baf5afe40b9b2d688974cd0",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/thrust.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "90656d1cef451ca4520ef72f7ebf9aa05516711a8f54c61ffe56c047e4b010f5",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/thrust.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "15a382fa1c682dd26d63566649d14668189a832d8a0c72b81e7c9b91904689f2",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/thrust.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e2e9c5bd60c1c1e134c30dc06aabbf6b3da5227310b30384c0499ac0dbb1f35f",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/tour_de_france.png",
+    "source_sha256": "b0b2a545fe8814d7ec5b1db8024506c6f9a2b7535bbd72305f08004e79c59412",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/tour_de_france.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "09deaf982c4794964ccafe9214c5644ed6a75e7fd54ad01da218be6c8409c109",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/tour_de_france.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c832e95644929903c2c2c2a840392bc8058b11ed91e3ef8d30175ed7a44dd778",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/tour_de_france.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9b203f9fa6025570bdeffe0a31791bb2721dc3c1f2414fbdb88dbcd086cb3b36",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/treasure_diver.png",
+    "source_sha256": "76d998de0b27f1066d7344ca1e874a16a86eec27cedcbe3bf02ed5d98ab3addd",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/treasure_diver.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "f4deb2f4f966a994019fd60ed74939733da41df5a190154712a36a86fc282a8b",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/treasure_diver.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b86ad841a3951cc1d611c50ef4585f59307f5799e5c2121cda3dfc9e2e7a5c2e",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/treasure_diver.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "6e6391f85bfe42794a1710fb048d96eceb5ab16600a6ededcb6b7d57432eb1c6",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/unknown.png",
+    "source_sha256": "8dacf29d2ef8513f78651b7ae1dfb42ebbcbdb453c355f95e26f986673190d02",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/unknown.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "e172939629edc0b98fd0803672105193b09bd0af55c2179cea1d56c4b0d78e2a",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/unknown.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a699afaea08b91fa877383afd698e6498e06901476f95d8b0e2a28e953f91f23",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/unknown.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "a393e4299ecae176dc3c3017108d67c3e14ad713f2f6cb0a4a0ceb506396f3c6",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/vec_man.png",
+    "source_sha256": "caf2cd4d89fd595f74253102c8aed34851acc36c95ddd940b0613a6a7a814255",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/vec_man.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "c5733f9d88091d2dd4ef10fc3f25cdef7163df3bc390356da6b86912a65d1153",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/vec_man.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "92e6d1135ff39c8276b94ffb6929a5fabd24f2919c7dd000e75a0f9eaec4703d",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/vec_man.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "e0160461a7c6f99f0a140b12b5788c458b95939c988dbd7c233b5e7b9e8fda4a",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/vectorpatrol.png",
+    "source_sha256": "73fb9fb4467fafdc49ec2480ab2fac286b045aede94af48b4fce8b713d292bc0",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/vectorpatrol.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "0bd2dd21fce9f1e537e2aa32ef7d81bc9ec7b2ccb994e983b680977f358a9074",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/vectorpatrol.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "3250601a5c5fa6d53bdbbbbd7a577936dde00f8859245ed58e3bb43307b92e41",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/vectorpatrol.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "208b310f4ff549a824370cc317b2811bb7efd9e685e3ac188d224f93b7306f92",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/vectorpilot.png",
+    "source_sha256": "b5d6e199771cea9fdbdd3bd3fa9783cfb748bcc2acfa7c1e88fe539f946dcc85",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/vectorpilot.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "211d723e0095f07521e96bcfc5674d0f869ba049145070a29589d3ba7085d38c",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/vectorpilot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "fac931000de3edf92604f3ca7ed6b62867e86194cf612ba0836f8577acbdc7e9",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/vectorpilot.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "b3b883848bcc93cff7f49d3e52bcc728fc9bf4e2c65a49259c1ba02d07766db2",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/vectorpilot2.png",
+    "source_sha256": "a5748244e656ecef130381d8376e8ca473d9fc3b458c50ce4cda1c386c44a76f",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/vectorpilot2.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "6371757a00b4579777542beae249f956923698f7c6f0e0ca72888aed9ac4ccc8",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/vectorpilot2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "158338cc203b3eaf2ab065fe476f880cc39fa20f9f4345a5a3041cb02ce99cf3",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/vectorpilot2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8ddba3634eca504b8855206885caed331c491d0d0fa6efa9cd2de12b940f9061",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/vectrexians.png",
+    "source_sha256": "d75bd13405e51429e9d0abf6f8401601f160ed715c36567203503dd5694212b1",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/vectrexians.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "f2b713054c5e21d84fcc33a1b1746c44787447b9e890b556f2981a3ee0eb11df",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/vectrexians.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "034f361e478ae673b7747978d1dda2ce434be15f44b903b060803afd18b6f750",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/vectrexians.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "41113cc343492d10d5ad0571f653db24f1fc181ce2f49b7bd52ae707bfdc88b6",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/vectroid.png",
+    "source_sha256": "655e738cb69521fe9071bfd7511b7fd31bcf97d8c612dcafbcee0ee163bd2466",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/vectroid.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "c07579efc18a5f07447d51e54a4aa8a387e9c5c321c94bf81703e759a859328f",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/vectroid.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8cb88de3c4a00aa0d1df1c590aac16317b3d13ff369b1a626489a38abee061a6",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/vectroid.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "67063d85dc627783fdcb4835c5f2c3a863b5894a15e68110a7a9d100835c451e",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/vsbsshot2.png",
+    "source_sha256": "4fa2846734a028f5a07f346a0b6ce0857a53b2203f3e26eb665c0b3bf69454c0",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/vsbsshot2.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "fa2f573d26dc7eb320a88d1152ce4884efc85bcf0faad55550ddc7f0b6d784b7",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/vsbsshot2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "58e91f3777a7deb0e7bee1ec07986ebfcfb83b50a4c7997cf886c2b5b5507aaa",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/vsbsshot2.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "c2004662dffa262f2c86bf8a8785ff6b10b26f668af9f5527ee7758c7100ec3f",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/webwarp.png",
+    "source_sha256": "2965f6907cae77362c366688ea8035caaaadbb989a97844086692d882b11aa12",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/webwarp.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "529ac5e37aa5091185d99086611f5d83fdb13e488d5500232190b52b5ebdc4bc",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/webwarp.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "aff23e8d2b6ac263056e56461dfb4729baac347c08f46929f9ba16af40b83fa5",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/webwarp.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "d3d7a0e45018d2956ba1b8c66a7fb678f9dbe8bf88c4b9df0d1f804244276f85",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/wormhole.png",
+    "source_sha256": "49cfe8f4aba5f84c16b58d02bae09232b3ac927a146de75ab221fc89d233ec7f",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/wormhole.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "f11cc87cd4906f01594122e2f3bb6922789b63bdbb55dcceb2ecea058ade87df",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/wormhole.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8dd581326cd3f9f6471568a1522f2c1a7d599a547637eac037a91dfe2ad04e38",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/wormhole.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "8385d2925331eba7c2485e602f7115f568f35485e07070663a3b36e897f78d7c",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/yarg.png",
+    "source_sha256": "ef474d67432de202d3b124c4667df35d30434c17b580e40fd3182389a0866576",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/yarg.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "b72d04801ba9832751724740bfad62ed2623bd4ee5d10e41351ec0d540daac99",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/yarg.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "9967ee8d9311b48fb9b8c96cda97304a0b06cea8df499b8e06d9ae53f1591835",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/yarg.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "7798c1a74fa92647e0b1888b9d003ff9bc71d93057bc9bd7993b992011f50b5b",
+        "mode": "RGBA"
+      }
+    }
+  },
+  {
+    "source": "/home/alans/mister/Vectrex_MiSTer/overlay_work_videodr0me/source_review/overlay_pack_846x1080/yasi.png",
+    "source_sha256": "d6ed12f9c50e651834ec05461701a6a8edc66ba5b4b2a02d92390d406ff95313",
+    "source_size": [
+      846,
+      1080
+    ],
+    "canvas_policy": "contain-centered-transparent",
+    "outputs": {
+      "portrait": {
+        "path": "overlay_work_videodr0me/tate_pngs/portrait/yasi.png",
+        "size": [
+          810,
+          1080
+        ],
+        "sha256": "617fa72876ac6bcddfd71be3c5327b691eb6df4f0381236c1c9bce79b0486a15",
+        "mode": "RGBA"
+      },
+      "90cw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90cw/yasi.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "71f7d20577a95f8c4f4e47c45be38b1d5291709a836e1b7dadfb7d5efe11a35b",
+        "mode": "RGBA"
+      },
+      "90ccw": {
+        "path": "overlay_work_videodr0me/tate_pngs/90ccw/yasi.png",
+        "size": [
+          1080,
+          810
+        ],
+        "sha256": "5ed04f2928dd9dd8357512bd5373d0f8d125358fb66622676c437238361962bb",
+        "mode": "RGBA"
+      }
+    }
+  }
+]
