@@ -21,6 +21,7 @@ from pathlib import Path
 from PIL import Image
 
 import build_vart
+import rgba_ops
 
 
 FULL_RASTER = (1360, 1080)
@@ -36,7 +37,7 @@ def upscaled_tate(source: Path, clockwise: bool) -> Image.Image:
         angle = Image.Transpose.ROTATE_270 if clockwise else Image.Transpose.ROTATE_90
         turned = image.convert("RGBA").transpose(angle)
     height = round(turned.height * TATE_SCALE)
-    scaled = turned.resize((FULL_RASTER[0], height), Image.Resampling.HAMMING)
+    scaled = rgba_ops.resize_rgba(turned, (FULL_RASTER[0], height))
     canvas = Image.new("RGBA", FULL_RASTER, (0, 0, 0, 0))
     canvas.alpha_composite(scaled, (0, (FULL_RASTER[1] - height) // 2))
     return canvas
@@ -47,7 +48,7 @@ def from_native(source: Path, workdir: Path) -> dict[str, bytes]:
     clockwise = {}
     for label, (raster, _, _) in build_vart.RASTERS.items():
         tate = upscaled_tate(source, clockwise=True)
-        clockwise[label] = tate.resize(raster, Image.Resampling.HAMMING)
+        clockwise[label] = rgba_ops.resize_rgba(tate, raster)
     # encode_orientations derives CCW from CW with an exact 180-degree turn.
     return build_vart.encode_orientations(normal, clockwise, workdir)
 

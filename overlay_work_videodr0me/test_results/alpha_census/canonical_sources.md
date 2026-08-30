@@ -6,9 +6,7 @@
 
 | Verdict | Images | Meaning |
 |---|---:|---|
-| clean | 23 | no near-opaque body pixels; the blocking areas are exactly 255 |
-| minor | 8 | under 0.1% of the plane is near-opaque body |
-| defect | 3 | 0.1% or more of the plane is near-opaque body |
+| clean | 34 | no near-opaque body pixels; the blocking areas are exactly 255 |
 
 2 of 34 images never reach alpha 0, so no part of the plane is fully clear. That is not a defect by itself, but the crop cannot be found by looking for a transparent hole:
 
@@ -21,8 +19,7 @@ The modal alpha of every body pixel above 199 — the level this artwork treats 
 
 | Alpha | Images |
 |---:|---:|
-| 255 | 33 |
-| 238 | 1 |
+| 255 | 34 |
 
 ## Alpha quantization of the sources
 
@@ -31,24 +28,6 @@ The modal alpha of every body pixel above 199 — the level this artwork treats 
 | 8bit | 30 |
 | 4bit_x17 | 3 |
 | 4bit_other | 1 |
-
-## Near-opaque bodies, worst first
-
-Leak is the fraction of a full-brightness vector that passes through the offending pixels, by the compositor's own arithmetic.
-
-| Image | Plane | Body px | % of plane | Modal alpha | Mean leak | Max leak |
-|---|---|---:|---:|---:|---:|---:|
-| Vector Blade.png |  | 59005 | 15.1762% | 238 | 19.87% | 100.0% |
-| Rip Off.png |  | 3655 | 0.4% | 249 | 96.39% | 96.47% |
-| Patriots.png |  | 937 | 0.1026% | 253 | 99.5% | 100.0% |
-| Wormhole.png |  | 131 | 0.0143% | 253 | 100.0% | 100.0% |
-| Spike Hoppin'.png |  | 126 | 0.0138% | 248 | 95.93% | 100.0% |
-| Armor Attack.png |  | 42 | 0.0046% | 254 | 2.39% | 13.33% |
-| Protector.png |  | 13 | 0.0014% | 254 | 41.78% | 95.69% |
-| Star Trek.png |  | 10 | 0.0011% | 254 | 54.71% | 78.43% |
-| Bedlam.png |  | 1 | 0.0001% | 245 | 89.41% | 89.41% |
-| Cosmic Chasm.png |  | 1 | 0.0001% | 215 | 45.88% | 45.88% |
-| Spike.png |  | 1 | 0.0001% | 249 | 91.76% | 91.76% |
 
 ## Translucent bodies
 

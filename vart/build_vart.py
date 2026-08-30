@@ -31,8 +31,10 @@ import sys
 import tempfile
 from pathlib import Path
 
+import numpy as np
 from PIL import Image
 
+import rgba_ops
 import vart_encoder as vart
 
 
@@ -62,19 +64,19 @@ MAX_COLORS = 255
 
 
 def quantize_rgba(image: Image.Image, colors: int = MAX_COLORS) -> Image.Image:
-    """Quantize RGBA while preserving intentional alpha boundaries.
+    """Quantize RGBA while holding the opaque control boundary exact.
 
-    Pillow's RGBA octree quantizer can average opaque (255) and nearly opaque
-    (254) pixels into a palette entry at 254. The RTL uses the opaque value as
-    a meaningful control boundary, so normalize the near-opaque range first.
-    Lower alpha values remain unchanged.
+    Two things push a blocker off 255. The artwork may arrive near-opaque, and
+    Pillow's octree quantizer averages opaque and near-opaque pixels into a
+    palette entry below 255. So the solid bodies are snapped first, and the
+    contract is then enforced again on the quantized result by lifting the
+    palette entries responsible -- checking the output rather than trusting the
+    input is the only way to know the boundary survived. Rims and genuine tint
+    are untouched throughout.
     """
-    rgba = image.convert("RGBA")
-    alpha = rgba.getchannel("A").point(lambda value: 255 if value >= 254 else value)
-    rgba.putalpha(alpha)
-    quantized = rgba.quantize(
-        colors=colors, method=Image.Quantize.FASTOCTREE
-    )
+    rgba, _ = rgba_ops.snap_solid_body(image.convert("RGBA"))
+    quantized = rgba.quantize(colors=colors, method=Image.Quantize.FASTOCTREE)
+
     mapped = quantized.convert("RGBA")
     table = bytearray([255] * 256)
     seen = set()
@@ -82,6 +84,17 @@ def quantize_rgba(image: Image.Image, colors: int = MAX_COLORS) -> Image.Image:
         if index not in seen:
             table[index] = 255 if pixel[3] >= 254 else pixel[3]
             seen.add(index)
+
+    width, height = rgba.size
+    indices = np.frombuffer(quantized.tobytes(), dtype=np.uint8).reshape(height, width)
+    for _ in range(4):
+        effective = np.frombuffer(bytes(table), dtype=np.uint8)[indices]
+        offending = rgba_ops.solid_body(effective)
+        if not offending.any():
+            break
+        for index in np.unique(indices[offending]):
+            table[int(index)] = rgba_ops.OPAQUE
+
     quantized.info["transparency"] = bytes(table)
     return quantized
 
@@ -175,9 +188,7 @@ def place_frame(
     frame: tuple[int, int, int, int],
 ) -> tuple[Image.Image, Image.Image]:
     x, y, width, height = frame
-    fitted = content.convert("RGBA")
-    if fitted.size != (width, height):
-        fitted = fitted.resize((width, height), Image.Resampling.HAMMING)
+    fitted = rgba_ops.resize_rgba(content, (width, height))
     canvas = transparent_canvas(raster)
     canvas.alpha_composite(fitted, (x, y))
     return canvas, fitted
@@ -205,7 +216,7 @@ def legacy_normal_content(
     x, y, width, height = frame
     if source.size == raster:
         return source.crop((x, y, x + width, y + height))
-    return source.resize((width, height), Image.Resampling.HAMMING)
+    return rgba_ops.resize_rgba(source, (width, height))
 
 
 def migrate_images(container: bytes) -> tuple[dict[str, Image.Image], dict[str, Image.Image]]:
@@ -237,17 +248,29 @@ def migrate_images(container: bytes) -> tuple[dict[str, Image.Image], dict[str, 
     return normal, clockwise
 
 
-def portrait_fallback(source: Path) -> tuple[dict[str, Image.Image], dict[str, Image.Image]]:
-    with Image.open(source) as image:
-        portrait = image.convert("RGBA").copy()
+def frame_orientations(
+    portrait: Image.Image,
+) -> tuple[dict[str, Image.Image], dict[str, Image.Image]]:
+    """Frame one full-resolution portrait into every plane of both orientations.
 
+    Each plane is reduced once, straight from the source. Deriving the turned
+    planes from the already-framed normal ones cost a second reduction at every
+    size below 1080p -- at 240p the rotated artwork was downscaled to 405x240
+    and then stretched back up to 720x240.
+    """
+    turned = portrait.transpose(Image.Transpose.ROTATE_270)
     normal: dict[str, Image.Image] = {}
     clockwise: dict[str, Image.Image] = {}
     for label, (raster, normal_frame, turned_frame) in RASTERS.items():
-        normal[label], content = place_frame(portrait, raster, normal_frame)
-        turned = content.transpose(Image.Transpose.ROTATE_270)
+        normal[label], _ = place_frame(portrait, raster, normal_frame)
         clockwise[label], _ = place_frame(turned, raster, turned_frame)
     return normal, clockwise
+
+
+def portrait_fallback(source: Path) -> tuple[dict[str, Image.Image], dict[str, Image.Image]]:
+    with Image.open(source) as image:
+        portrait = image.convert("RGBA").copy()
+    return frame_orientations(portrait)
 
 
 def build_from_portrait(source: Path, workdir: Path) -> dict[str, bytes]:

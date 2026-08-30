@@ -12,6 +12,11 @@ The output extension is .art because MiSTer CONF_STR extensions are three
 characters; the container inside is VART regardless. Legacy .ovr overlays are
 a different format and deliberately do not share the extension.
 
+Superseded by vart/build_vart.py, which packs the full-raster planes both
+orientations need. This one emits the older portrait-only geometry, so it no
+longer defaults to artwork/generated -- mixing the two formats in the shipping
+directory would leave titles without a rotated plane.
+
 Usage:
     build_vart.py overlays/'Mine Storm_Small.png' [more.png ...] [-o outdir]
     build_vart.py --all                # every PNG in overlays/
@@ -31,16 +36,21 @@ from PIL import Image
 
 import vart_encoder as vart
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "vart"))
+import rgba_ops
+
 # One plane per renderer raster; see vectrex_video.sv's mode table.
 PLANE_SIZES = [(810, 1080), (540, 720), (360, 480), (180, 240)]
 MAX_COLORS = 255
 
 
 def quantize_rgba(image: Image.Image, colors: int = MAX_COLORS) -> Image.Image:
-    """Quantize RGBA while keeping the opaque control boundary exact."""
-    image = image.convert("RGBA")
-    alpha = image.getchannel("A").point(lambda value: 255 if value >= 254 else value)
-    image.putalpha(alpha)
+    """Quantize RGBA while keeping the opaque control boundary exact.
+
+    The snap rule lives in vart/rgba_ops.py so both builders enforce one
+    contract: a near-opaque body becomes exactly 255, rims stay as authored.
+    """
+    image, _ = rgba_ops.snap_solid_body(image.convert("RGBA"))
     quantized = image.quantize(colors=colors, method=Image.Quantize.FASTOCTREE)
     mapped = quantized.convert("RGBA")
     table = bytearray([255] * 256)
@@ -79,7 +89,7 @@ def main() -> int:
     parser.add_argument("--all", action="store_true",
                         help="convert every PNG in overlays/")
     parser.add_argument("-o", "--outdir", type=Path,
-                        default=Path("artwork/generated"))
+                        default=Path("artwork/legacy_portrait"))
     args = parser.parse_args()
 
     repo = Path(__file__).resolve().parents[2]

@@ -23,6 +23,7 @@ import tempfile
 from pathlib import Path
 
 import build_vart
+import rgba_ops
 from PIL import Image
 
 
@@ -40,7 +41,7 @@ def tate_full_raster(source: Path) -> Image.Image:
     with Image.open(source) as image:
         turned = image.convert("RGBA").transpose(Image.Transpose.ROTATE_270)
     height = round(turned.height * TATE_SCALE)
-    scaled = turned.resize((FULL_RASTER[0], height), Image.Resampling.HAMMING)
+    scaled = rgba_ops.resize_rgba(turned, (FULL_RASTER[0], height))
     canvas = Image.new("RGBA", FULL_RASTER, (0, 0, 0, 0))
     canvas.alpha_composite(scaled, (0, (FULL_RASTER[1] - height) // 2))
     return canvas
@@ -51,7 +52,7 @@ def tate_orientations(source: Path) -> tuple[dict[str, Image.Image], dict[str, I
     normal, _ = build_vart.portrait_fallback(source)
     tate = tate_full_raster(source)
     clockwise = {
-        label: tate.resize(raster, Image.Resampling.HAMMING)
+        label: rgba_ops.resize_rgba(tate, raster)
         for label, (raster, _, _) in build_vart.RASTERS.items()
     }
     return normal, clockwise

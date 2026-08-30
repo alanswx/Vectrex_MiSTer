@@ -78,18 +78,27 @@ rotated path is worse than the portrait path at every size:
     90CW       652   243    138     235       36
     90CCW      652   243    138     235       36
 
-Worse, 36 files — 18 titles in both rotations — ship a 720x480 and a 720x240
-plane whose alpha is uniformly 255. Verified directly on
-`starcastle_90CW.art`: the artwork is present, 255 distinct colours, but the
-alpha channel has been flattened, so in TATE at those two resolutions the
-overlay covers the whole screen and only the 0.4% blocker leak gets through.
-The portrait planes of the same titles are correct. Affected: Armor Attack,
-Clean Sweep, Cosmic Chasm, Frogs'n'Fly, Hyper Chase, Karl Quappe, Mine Storm,
-Mine Storm 2, Solar Quest, Space War, Space Wars, Star Castle, Stunt Man
-Stories 2, Thrust, Vecman 1 and 2, Vector Patrol and Web Wars.
+A whole-plane test also flagged 36 files — 18 titles in both rotations — whose
+720x480 and 720x240 planes are uniformly alpha 255. Tracing that back changed
+the diagnosis: the pipeline did not flatten anything. The artwork of those 18
+titles is a fully opaque scan with no alpha cut at all, and the pipeline
+carried it through faithfully. Their portrait planes only looked correct
+because the full raster keeps a transparent margin either side of the 810x1080
+artwork frame; crop to the frame and every one of them is solid 255. The
+overlay blocks the play area in every orientation. The rotated 480p and 240p
+planes are simply where the artwork fills the whole raster, so a whole-plane
+test could finally see it.
 
-This is why step 2 comes before any artwork repair: most of what the pack looks
-guilty of, we did to it on the way out.
+Affected: Armor Attack, Clean Sweep, Cosmic Chasm, Frogs'n'Fly, Hyper Chase,
+Karl Quappe, Mine Storm, Mine Storm 2, Solar Quest, Space War, Space Wars,
+Star Castle, Stunt Man Stories 2, Thrust, Vecman 1 and 2, Vector Patrol and
+Web Wars. Fifteen have a transmissive copy of the same title elsewhere in the
+tree — this is the `mine` good, `minestorm` bad split `ALPHA_AUDIT.md` already
+recorded, and it turns out to run through eighteen titles rather than one.
+Frogs'n'Fly and Karl Quappe have no transmissive source anywhere.
+
+Step 2 still comes before artwork repair, because the resampling damage is
+real and it is ours: 43% of shipping planes clean against 90% of sources.
 
 ## Decision
 
@@ -105,23 +114,63 @@ at 250 the filter already passes under 2%, so snapping costs nothing visible
 and touches only pixels that were meant to be solid. 127 is not in that
 category.
 
+## Status, 2026-08-30
+
+Steps 1, 2, 3 and 5 are done; the pack has been rebuilt and the sources
+repaired.
+
+    sources    before  118/123 solid at 255, 12 defects, 13 minor
+               after   122/124 clean, plus Berzerk and Narzod, which have
+                       one alpha value and no transparency at all
+
+    planes     before  841 clean, 421 minor, 622 defect, 72 with no alpha
+               after   1948 clean, 8 with no alpha -- the 480p and 240p
+                       rotated planes of Frogs'n'Fly and Karl Quappe, the
+                       two titles with no transmissive source anywhere
+
+What changed, in `vart/rgba_ops.py` and its callers:
+
+- Resampling is premultiplied and in linear light. Straight-alpha resampling
+  in sRGB mixed colour across every alpha edge as though the transparent side
+  had one.
+- Each plane is reduced once, from the source. The rotated 240p plane used to
+  be downscaled to 405x240 and then stretched back up to 720x240.
+- `quantize_rgba` snaps solid bodies before quantizing and then re-checks the
+  quantized result, lifting the palette entries responsible. Checking the
+  output is the only way to know the boundary survived FASTOCTREE.
+- `vart/repair_sources.py` applied the same rule to the sources: 94 images,
+  700,341 pixels. Vector Blade was 18% of its own image and is visually
+  identical afterwards.
+- `tools/overlays/build_vart.py` emits the superseded portrait-only geometry
+  but defaulted its output to `artwork/generated`. It now shares the snap rule
+  and writes to `artwork/legacy_portrait` instead.
+
+`vart/proofsheet.py` renders the review sheets, running the compositor's
+integer pipeline op for op so the beam columns show what the FPGA shows.
+Sheets and an HTML index are in `test_results/proofsheets/`.
+
+One point of language, because it changes what the contract means. Alpha here
+is filter strength, not opacity: at 255 the beam still arrives, tinted to the
+artwork's own colour, so a pale region at 255 passes light and only a dark one
+blocks. That is why raising Pipe Race's 214 body to 255 across 85% of its
+plane is safe -- its artwork is pale, and the beam still gets through.
+
 ## Plan
 
 1. Census. Done. `vart/alpha_census.py`, evidence in
    `test_results/alpha_census/`. Rerun it after every pipeline or artwork
    change; it is the gate for the rest.
 
-2. Fix the pipeline before touching artwork. First find where the rotated
-   480p and 240p path flattens alpha to 255 for those 18 titles; that is a
-   plain bug, not a tuning question. Then resample premultiplied and in linear
-   light rather than on straight alpha in sRGB, and downsample the blocker mask
-   separately with area coverage so a hard boundary stays hard. Generalize the
-   254 snap in `vart/build_vart.py` to snap the body of a large near-opaque
-   region while leaving rims alone. Re-encode, then re-census; the shipping
-   clean rate should approach the sources' 90%.
+2. Fix the pipeline before touching artwork. Done. Premultiplied linear-light
+   resampling, one reduction per plane, and a snap that is verified on the
+   quantized output rather than assumed from the input. A separate coverage
+   downsample of the blocker mask turned out to be unnecessary: premultiplied
+   resampling plus the body snap already holds the boundary.
 
-3. Enforce the contract in the builder. Any eroded body of 200 to 254 fails
-   the build unless the title is on an explicit exception list.
+3. Enforce the contract in the builder. Done, by correction rather than by
+   refusal: the builder raises an offending body to 255 and reports how many
+   pixels it had to move, so a regression shows up in the build log and in the
+   census rather than blocking a rebuild.
 
 4. Emit opaque maps for the TATE crop. Per title and plane, a three-class map
    (clear, translucent, blocker) plus JSON with the blocker bounding box and
@@ -129,7 +178,10 @@ category.
    computed rather than probed. Ten of the 90 legacy images never reach alpha
    0, so the crop cannot be found by looking for a transparent hole.
 
-5. Hand-repair what survives. Expect the twelve above, not the canonical forty.
+5. Hand-repair what survives. Done for alpha; `repair_sources.py` covered all
+   94 affected images. What is left is not an alpha problem: Frogs'n'Fly and
+   Karl Quappe need transmissive artwork that does not exist in the tree, and
+   Berzerk and Narzod are single-value 255 scans.
 
 6. Gate it. Add the contract check to the sweep, plus a two-point visual test
    at 100% and 30% ambient over a bright vector field, where a leak is obvious.

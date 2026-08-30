@@ -133,8 +133,10 @@ def census_image(image: Image.Image, erosion: int) -> dict:
         row[f"{name}_body_px"] = body_counts[name]
 
     # The defect the opaque-brightness option trips over: a solid-looking area
-    # whose alpha is close to, but not, 255.
-    unsafe = erode((alpha >= NEAR_MIN) & (alpha <= SNAPPED), erosion)
+    # whose alpha is close to, but not, 255. The erosion runs over everything
+    # meant as solid, 255 included, so the boundary between a near-opaque patch
+    # and a true blocker counts as interior rather than as an antialias rim.
+    unsafe = erode(alpha >= NEAR_MIN, erosion) & (alpha < OPAQUE)
     unsafe_px = int(unsafe.sum())
     row["unsafe_body_px"] = unsafe_px
     row["unsafe_body_pct"] = round(100.0 * unsafe_px / total, 4)

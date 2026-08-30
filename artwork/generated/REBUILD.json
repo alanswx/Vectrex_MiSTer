@@ -1,0 +1,1805 @@
+{
+  "titles": 163,
+  "failures": 0,
+  "re_sourced": 18,
+  "still_opaque": [
+    "Frogsnfly01",
+    "Karl_Quappe01"
+  ],
+  "contract_violations": {},
+  "results": [
+    {
+      "name": "2D_Narrow_Escape_Hack",
+      "source": "self",
+      "packages": {
+        "2D_Narrow_Escape_Hack.art": 109144,
+        "2D_Narrow_Escape_Hack_90CW.art": 116136,
+        "2D_Narrow_Escape_Hack_90CCW.art": 116096
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "3D_Crazy_Coaster",
+      "source": "self",
+      "packages": {
+        "3D_Crazy_Coaster.art": 81576,
+        "3D_Crazy_Coaster_90CW.art": 84936,
+        "3D_Crazy_Coaster_90CCW.art": 85016
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "3D_Mine_Storm",
+      "source": "self",
+      "packages": {
+        "3D_Mine_Storm.art": 76944,
+        "3D_Mine_Storm_90CW.art": 79968,
+        "3D_Mine_Storm_90CCW.art": 80072
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "3D_Narrow_Escape",
+      "source": "self",
+      "packages": {
+        "3D_Narrow_Escape.art": 79176,
+        "3D_Narrow_Escape_90CW.art": 82064,
+        "3D_Narrow_Escape_90CCW.art": 82136
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "3D_Pole_Position",
+      "source": "self",
+      "packages": {
+        "3D_Pole_Position.art": 76296,
+        "3D_Pole_Position_90CW.art": 79272,
+        "3D_Pole_Position_90CCW.art": 79280
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "agt",
+      "source": "self",
+      "packages": {
+        "agt.art": 113608,
+        "agt_90CW.art": 117832,
+        "agt_90CCW.art": 118128
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "agt2",
+      "source": "self",
+      "packages": {
+        "agt2.art": 112376,
+        "agt2_90CW.art": 116952,
+        "agt2_90CCW.art": 117304
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "anim_action",
+      "source": "self",
+      "packages": {
+        "anim_action.art": 76552,
+        "anim_action_90CW.art": 79248,
+        "anim_action_90CCW.art": 79032
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "armor",
+      "source": "self",
+      "packages": {
+        "armor.art": 455816,
+        "armor_90CW.art": 510248,
+        "armor_90CCW.art": 510152
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "armorattack",
+      "source": "canonical:Armor Attack.png",
+      "packages": {
+        "armorattack.art": 460032,
+        "armorattack_90CW.art": 518200,
+        "armorattack_90CCW.art": 518128
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "art_master",
+      "source": "self",
+      "packages": {
+        "art_master.art": 74576,
+        "art_master_90CW.art": 77240,
+        "art_master_90CCW.art": 77240
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "asteroid_cowboy",
+      "source": "self",
+      "packages": {
+        "asteroid_cowboy.art": 80448,
+        "asteroid_cowboy_90CW.art": 83552,
+        "asteroid_cowboy_90CCW.art": 83472
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "asteroids",
+      "source": "self",
+      "packages": {
+        "asteroids.art": 87016,
+        "asteroids_90CW.art": 91056,
+        "asteroids_90CCW.art": 90936
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "baseloot",
+      "source": "self",
+      "packages": {
+        "baseloot.art": 203280,
+        "baseloot_90CW.art": 229464,
+        "baseloot_90CCW.art": 229400
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "bedlam",
+      "source": "self",
+      "packages": {
+        "bedlam.art": 226328,
+        "bedlam_90CW.art": 245136,
+        "bedlam_90CCW.art": 245080
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "berzerk",
+      "source": "self",
+      "packages": {
+        "berzerk.art": 133112,
+        "berzerk_90CW.art": 144984,
+        "berzerk_90CCW.art": 145192
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "blitz",
+      "source": "self",
+      "packages": {
+        "blitz.art": 113096,
+        "blitz_90CW.art": 123456,
+        "blitz_90CCW.art": 123248
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "block_bomb",
+      "source": "self",
+      "packages": {
+        "block_bomb.art": 97376,
+        "block_bomb_90CW.art": 103992,
+        "block_bomb_90CCW.art": 104056
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "blox",
+      "source": "self",
+      "packages": {
+        "blox.art": 66832,
+        "blox_90CW.art": 68416,
+        "blox_90CCW.art": 68448
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "brick_crushers",
+      "source": "self",
+      "packages": {
+        "brick_crushers.art": 223592,
+        "brick_crushers_90CW.art": 248752,
+        "brick_crushers_90CCW.art": 248416
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "castle",
+      "source": "self",
+      "packages": {
+        "castle.art": 336992,
+        "castle_90CW.art": 376592,
+        "castle_90CCW.art": 376352
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "castle_defender",
+      "source": "self",
+      "packages": {
+        "castle_defender.art": 79296,
+        "castle_defender_90CW.art": 81904,
+        "castle_defender_90CCW.art": 82176
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "castle_vs_castle",
+      "source": "self",
+      "packages": {
+        "castle_vs_castle.art": 86624,
+        "castle_vs_castle_90CW.art": 91736,
+        "castle_vs_castle_90CCW.art": 91696
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "chasm",
+      "source": "self",
+      "packages": {
+        "chasm.art": 187928,
+        "chasm_90CW.art": 205032,
+        "chasm_90CCW.art": 204416
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "cleansweep",
+      "source": "canonical:Clean Sweep.png",
+      "packages": {
+        "cleansweep.art": 168552,
+        "cleansweep_90CW.art": 187360,
+        "cleansweep_90CCW.art": 187448
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "climb_it",
+      "source": "self",
+      "packages": {
+        "climb_it.art": 144104,
+        "climb_it_90CW.art": 154344,
+        "climb_it_90CCW.art": 154152
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "cosmicchasm",
+      "source": "canonical:Cosmic Chasm.png",
+      "packages": {
+        "cosmicchasm.art": 188608,
+        "cosmicchasm_90CW.art": 205928,
+        "cosmicchasm_90CCW.art": 205448
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "crash_trexicoot",
+      "source": "self",
+      "packages": {
+        "crash_trexicoot.art": 266704,
+        "crash_trexicoot_90CW.art": 317712,
+        "crash_trexicoot_90CCW.art": 317888
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "crazy_coaster_3D",
+      "source": "self",
+      "packages": {
+        "crazy_coaster_3D.art": 81576,
+        "crazy_coaster_3D_90CW.art": 84936,
+        "crazy_coaster_3D_90CCW.art": 85016
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Cube_Quest",
+      "source": "self",
+      "packages": {
+        "Cube_Quest.art": 166184,
+        "Cube_Quest_90CW.art": 190400,
+        "Cube_Quest_90CCW.art": 190576
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "curling",
+      "source": "self",
+      "packages": {
+        "curling.art": 82184,
+        "curling_90CW.art": 84848,
+        "curling_90CCW.art": 84744
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "daisy_land",
+      "source": "self",
+      "packages": {
+        "daisy_land.art": 83624,
+        "daisy_land_90CW.art": 90464,
+        "daisy_land_90CCW.art": 90384
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Dark_Tower_Proto",
+      "source": "self",
+      "packages": {
+        "Dark_Tower_Proto.art": 152984,
+        "Dark_Tower_Proto_90CW.art": 161920,
+        "Dark_Tower_Proto_90CCW.art": 161848
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "defender",
+      "source": "self",
+      "packages": {
+        "defender.art": 173376,
+        "defender_90CW.art": 190384,
+        "defender_90CCW.art": 190064
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "dino_runner",
+      "source": "self",
+      "packages": {
+        "dino_runner.art": 78056,
+        "dino_runner_90CW.art": 80832,
+        "dino_runner_90CCW.art": 80952
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "dktower",
+      "source": "self",
+      "packages": {
+        "dktower.art": 152896,
+        "dktower_90CW.art": 161720,
+        "dktower_90CCW.art": 161616
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "dktower2",
+      "source": "self",
+      "packages": {
+        "dktower2.art": 170488,
+        "dktower2_90CW.art": 183032,
+        "dktower2_90CCW.art": 183120
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "donkey_kong",
+      "source": "self",
+      "packages": {
+        "donkey_kong.art": 73224,
+        "donkey_kong_90CW.art": 75432,
+        "donkey_kong_90CCW.art": 75376
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "dont_fall",
+      "source": "self",
+      "packages": {
+        "dont_fall.art": 74576,
+        "dont_fall_90CW.art": 78760,
+        "dont_fall_90CCW.art": 78656
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "doodle_jump",
+      "source": "self",
+      "packages": {
+        "doodle_jump.art": 103720,
+        "doodle_jump_90CW.art": 108984,
+        "doodle_jump_90CCW.art": 109008
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "eating_fish",
+      "source": "self",
+      "packages": {
+        "eating_fish.art": 77808,
+        "eating_fish_90CW.art": 80360,
+        "eating_fish_90CCW.art": 80416
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "fencing_simulator",
+      "source": "self",
+      "packages": {
+        "fencing_simulator.art": 90544,
+        "fencing_simulator_90CW.art": 96752,
+        "fencing_simulator_90CCW.art": 96808
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "flipper_pinball",
+      "source": "self",
+      "packages": {
+        "flipper_pinball.art": 157992,
+        "flipper_pinball_90CW.art": 171728,
+        "flipper_pinball_90CCW.art": 171448
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "floor_is_lava",
+      "source": "self",
+      "packages": {
+        "floor_is_lava.art": 232208,
+        "floor_is_lava_90CW.art": 264192,
+        "floor_is_lava_90CCW.art": 264384
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Frogger",
+      "source": "self",
+      "packages": {
+        "Frogger.art": 197408,
+        "Frogger_90CW.art": 217232,
+        "Frogger_90CCW.art": 217576
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Frogsnfly01",
+      "source": "self (opaque, no transmissive source found)",
+      "packages": {
+        "Frogsnfly01.art": 201016,
+        "Frogsnfly01_90CW.art": 223128,
+        "Frogsnfly01_90CCW.art": 222984
+      },
+      "violations": 0,
+      "opaque_planes": 4
+    },
+    {
+      "name": "headsup",
+      "source": "self",
+      "packages": {
+        "headsup.art": 109552,
+        "headsup_90CW.art": 118432,
+        "headsup_90CCW.art": 118592
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "hextrex",
+      "source": "self",
+      "packages": {
+        "hextrex.art": 85128,
+        "hextrex_90CW.art": 86488,
+        "hextrex_90CCW.art": 86384
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "hole_run",
+      "source": "self",
+      "packages": {
+        "hole_run.art": 129104,
+        "hole_run_90CW.art": 139824,
+        "hole_run_90CCW.art": 139920
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "hover_race",
+      "source": "self",
+      "packages": {
+        "hover_race.art": 80568,
+        "hover_race_90CW.art": 83768,
+        "hover_race_90CCW.art": 83864
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "hungry_python",
+      "source": "self",
+      "packages": {
+        "hungry_python.art": 149496,
+        "hungry_python_90CW.art": 160112,
+        "hungry_python_90CCW.art": 160008
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "hurdles",
+      "source": "self",
+      "packages": {
+        "hurdles.art": 146480,
+        "hurdles_90CW.art": 159672,
+        "hurdles_90CCW.art": 159712
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "hyper",
+      "source": "self",
+      "packages": {
+        "hyper.art": 101360,
+        "hyper_90CW.art": 106704,
+        "hyper_90CCW.art": 106672
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "hyperchase",
+      "source": "canonical:Hyper Chase.png",
+      "packages": {
+        "hyperchase.art": 99832,
+        "hyperchase_90CW.art": 104264,
+        "hyperchase_90CCW.art": 104232
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Karl_Quappe01",
+      "source": "self (opaque, no transmissive source found)",
+      "packages": {
+        "Karl_Quappe01.art": 340392,
+        "Karl_Quappe01_90CW.art": 366576,
+        "Karl_Quappe01_90CCW.art": 366336
+      },
+      "violations": 0,
+      "opaque_planes": 4
+    },
+    {
+      "name": "keyboard_hero",
+      "source": "self",
+      "packages": {
+        "keyboard_hero.art": 105336,
+        "keyboard_hero_90CW.art": 106192,
+        "keyboard_hero_90CCW.art": 106304
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "kingdom_of_heaven",
+      "source": "self",
+      "packages": {
+        "kingdom_of_heaven.art": 83960,
+        "kingdom_of_heaven_90CW.art": 86744,
+        "kingdom_of_heaven_90CCW.art": 86880
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "knight_rider",
+      "source": "self",
+      "packages": {
+        "knight_rider.art": 215136,
+        "knight_rider_90CW.art": 240032,
+        "knight_rider_90CCW.art": 240080
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "laser_wars",
+      "source": "self",
+      "packages": {
+        "laser_wars.art": 62872,
+        "laser_wars_90CW.art": 64184,
+        "laser_wars_90CCW.art": 64184
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "last_battle",
+      "source": "self",
+      "packages": {
+        "last_battle.art": 87408,
+        "last_battle_90CW.art": 92320,
+        "last_battle_90CCW.art": 92144
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "lost_souls",
+      "source": "self",
+      "packages": {
+        "lost_souls.art": 141872,
+        "lost_souls_90CW.art": 158232,
+        "lost_souls_90CCW.art": 158240
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "mail_plane",
+      "source": "self",
+      "packages": {
+        "mail_plane.art": 77696,
+        "mail_plane_90CW.art": 80720,
+        "mail_plane_90CCW.art": 80656
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "maze_of_treasures",
+      "source": "self",
+      "packages": {
+        "maze_of_treasures.art": 71200,
+        "maze_of_treasures_90CW.art": 73816,
+        "maze_of_treasures_90CCW.art": 73960
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "melody_master",
+      "source": "self",
+      "packages": {
+        "melody_master.art": 79368,
+        "melody_master_90CW.art": 83112,
+        "melody_master_90CCW.art": 83104
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "mine",
+      "source": "self",
+      "packages": {
+        "mine.art": 106400,
+        "mine_90CW.art": 115152,
+        "mine_90CCW.art": 114952
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "mine2",
+      "source": "self",
+      "packages": {
+        "mine2.art": 106472,
+        "mine2_90CW.art": 115344,
+        "mine2_90CCW.art": 115040
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "mine_storm_3D",
+      "source": "self",
+      "packages": {
+        "mine_storm_3D.art": 76944,
+        "mine_storm_3D_90CW.art": 79968,
+        "mine_storm_3D_90CCW.art": 80072
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "minefans",
+      "source": "self",
+      "packages": {
+        "minefans.art": 582160,
+        "minefans_90CW.art": 615968,
+        "minefans_90CCW.art": 615672
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "minestorm",
+      "source": "canonical:Mine Storm.png",
+      "packages": {
+        "minestorm.art": 103744,
+        "minestorm_90CW.art": 109664,
+        "minestorm_90CCW.art": 109560
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "minestorm2",
+      "source": "canonical:Mine Storm.png",
+      "packages": {
+        "minestorm2.art": 103744,
+        "minestorm2_90CW.art": 109664,
+        "minestorm2_90CCW.art": 109560
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "moon_lander",
+      "source": "self",
+      "packages": {
+        "moon_lander.art": 271776,
+        "moon_lander_90CW.art": 296096,
+        "moon_lander_90CCW.art": 296880
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Moon_Lander_Demo_by_Clay_Cowgill__1997___PD_",
+      "source": "self",
+      "packages": {
+        "Moon_Lander_Demo_by_Clay_Cowgill__1997___PD_.art": 305704,
+        "Moon_Lander_Demo_by_Clay_Cowgill__1997___PD__90CW.art": 349136,
+        "Moon_Lander_Demo_by_Clay_Cowgill__1997___PD__90CCW.art": 349152
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "moon_shot",
+      "source": "self",
+      "packages": {
+        "moon_shot.art": 98920,
+        "moon_shot_90CW.art": 103176,
+        "moon_shot_90CCW.art": 103232
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Mr_Boston_Clean_Sweep",
+      "source": "self",
+      "packages": {
+        "Mr_Boston_Clean_Sweep.art": 150000,
+        "Mr_Boston_Clean_Sweep_90CW.art": 167616,
+        "Mr_Boston_Clean_Sweep_90CCW.art": 167408
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "mrboston",
+      "source": "self",
+      "packages": {
+        "mrboston.art": 175528,
+        "mrboston_90CW.art": 193720,
+        "mrboston_90CCW.art": 193376
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "narrow_escape",
+      "source": "self",
+      "packages": {
+        "narrow_escape.art": 113784,
+        "narrow_escape_90CW.art": 120320,
+        "narrow_escape_90CCW.art": 120176
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "narrow_escape_3D",
+      "source": "self",
+      "packages": {
+        "narrow_escape_3D.art": 79176,
+        "narrow_escape_3D_90CW.art": 82064,
+        "narrow_escape_3D_90CCW.art": 82136
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "narzod",
+      "source": "self",
+      "packages": {
+        "narzod.art": 133144,
+        "narzod_90CW.art": 147840,
+        "narzod_90CCW.art": 147752
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "omega16k",
+      "source": "self",
+      "packages": {
+        "omega16k.art": 578840,
+        "omega16k_90CW.art": 645880,
+        "omega16k_90CCW.art": 645464
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Omega_Chase__Final_Version___1998___PD_",
+      "source": "self",
+      "packages": {
+        "Omega_Chase__Final_Version___1998___PD_.art": 113816,
+        "Omega_Chase__Final_Version___1998___PD__90CW.art": 121976,
+        "Omega_Chase__Final_Version___1998___PD__90CCW.art": 122176
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "oscilloscope",
+      "source": "self",
+      "packages": {
+        "oscilloscope.art": 70232,
+        "oscilloscope_90CW.art": 77368,
+        "oscilloscope_90CCW.art": 77280
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pac_men",
+      "source": "self",
+      "packages": {
+        "pac_men.art": 115352,
+        "pac_men_90CW.art": 121880,
+        "pac_men_90CCW.art": 121528
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "patriot",
+      "source": "self",
+      "packages": {
+        "patriot.art": 135528,
+        "patriot_90CW.art": 145840,
+        "patriot_90CCW.art": 145800
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pipe_race",
+      "source": "self",
+      "packages": {
+        "pipe_race.art": 105888,
+        "pipe_race_90CW.art": 110600,
+        "pipe_race_90CCW.art": 110696
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pirates",
+      "source": "self",
+      "packages": {
+        "pirates.art": 102264,
+        "pirates_90CW.art": 108568,
+        "pirates_90CCW.art": 108424
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "polar",
+      "source": "self",
+      "packages": {
+        "polar.art": 101504,
+        "polar_90CW.art": 111048,
+        "polar_90CCW.art": 110920
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pole",
+      "source": "self",
+      "packages": {
+        "pole.art": 110808,
+        "pole_90CW.art": 117128,
+        "pole_90CCW.art": 116936
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pole_position_3D",
+      "source": "self",
+      "packages": {
+        "pole_position_3D.art": 76296,
+        "pole_position_3D_90CW.art": 79272,
+        "pole_position_3D_90CCW.art": 79280
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pong",
+      "source": "self",
+      "packages": {
+        "pong.art": 119200,
+        "pong_90CW.art": 128664,
+        "pong_90CCW.art": 128448
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pongovl",
+      "source": "self",
+      "packages": {
+        "pongovl.art": 120000,
+        "pongovl_90CW.art": 129136,
+        "pongovl_90CCW.art": 129128
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "portal_fight",
+      "source": "self",
+      "packages": {
+        "portal_fight.art": 76496,
+        "portal_fight_90CW.art": 78984,
+        "portal_fight_90CCW.art": 79240
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "protector",
+      "source": "self",
+      "packages": {
+        "protector.art": 166696,
+        "protector_90CW.art": 178080,
+        "protector_90CCW.art": 177912
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "pyoro_chan",
+      "source": "self",
+      "packages": {
+        "pyoro_chan.art": 103656,
+        "pyoro_chan_90CW.art": 107704,
+        "pyoro_chan_90CCW.art": 107656
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "ripoff",
+      "source": "self",
+      "packages": {
+        "ripoff.art": 110960,
+        "ripoff_90CW.art": 119848,
+        "ripoff_90CCW.art": 119656
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "robhop",
+      "source": "self",
+      "packages": {
+        "robhop.art": 148632,
+        "robhop_90CW.art": 161768,
+        "robhop_90CCW.art": 161992
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "rotor",
+      "source": "self",
+      "packages": {
+        "rotor.art": 107088,
+        "rotor_90CW.art": 113696,
+        "rotor_90CCW.art": 113784
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "rush_defense",
+      "source": "self",
+      "packages": {
+        "rush_defense.art": 77648,
+        "rush_defense_90CW.art": 81352,
+        "rush_defense_90CCW.art": 81272
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "scramble",
+      "source": "self",
+      "packages": {
+        "scramble.art": 115080,
+        "scramble_90CW.art": 121528,
+        "scramble_90CCW.art": 121392
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "shark_attack",
+      "source": "self",
+      "packages": {
+        "shark_attack.art": 82368,
+        "shark_attack_90CW.art": 85808,
+        "shark_attack_90CCW.art": 85952
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "silver_surfer",
+      "source": "self",
+      "packages": {
+        "silver_surfer.art": 110960,
+        "silver_surfer_90CW.art": 118472,
+        "silver_surfer_90CCW.art": 118352
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "ski",
+      "source": "self",
+      "packages": {
+        "ski.art": 174120,
+        "ski_90CW.art": 188784,
+        "ski_90CCW.art": 188704
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "solar",
+      "source": "self",
+      "packages": {
+        "solar.art": 107496,
+        "solar_90CW.art": 116328,
+        "solar_90CCW.art": 116088
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "solarquest",
+      "source": "canonical:Solar Quest.png",
+      "packages": {
+        "solarquest.art": 106040,
+        "solarquest_90CW.art": 113568,
+        "solarquest_90CCW.art": 113696
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "space",
+      "source": "self",
+      "packages": {
+        "space.art": 106880,
+        "space_90CW.art": 112168,
+        "space_90CCW.art": 112400
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "space_assault",
+      "source": "self",
+      "packages": {
+        "space_assault.art": 84792,
+        "space_assault_90CW.art": 88472,
+        "space_assault_90CCW.art": 88552
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "space_defender",
+      "source": "self",
+      "packages": {
+        "space_defender.art": 140424,
+        "space_defender_90CW.art": 153152,
+        "space_defender_90CCW.art": 153408
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "space_patrol",
+      "source": "self",
+      "packages": {
+        "space_patrol.art": 90424,
+        "space_patrol_90CW.art": 95776,
+        "space_patrol_90CCW.art": 95840
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spaceball",
+      "source": "self",
+      "packages": {
+        "spaceball.art": 85824,
+        "spaceball_90CW.art": 90000,
+        "spaceball_90CCW.art": 89920
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "SpaceBW",
+      "source": "self",
+      "packages": {
+        "SpaceBW.art": 84840,
+        "SpaceBW_90CW.art": 93024,
+        "SpaceBW_90CCW.art": 93032
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "SpaceRace",
+      "source": "self",
+      "packages": {
+        "SpaceRace.art": 83824,
+        "SpaceRace_90CW.art": 91608,
+        "SpaceRace_90CCW.art": 91592
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spaceship_centauri",
+      "source": "self",
+      "packages": {
+        "spaceship_centauri.art": 164888,
+        "spaceship_centauri_90CW.art": 175168,
+        "spaceship_centauri_90CCW.art": 175408
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spacewar",
+      "source": "canonical:Space Wars.png",
+      "packages": {
+        "spacewar.art": 100400,
+        "spacewar_90CW.art": 104272,
+        "spacewar_90CCW.art": 104072
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spacewars",
+      "source": "canonical:Space Wars.png",
+      "packages": {
+        "spacewars.art": 100400,
+        "spacewars_90CW.art": 104272,
+        "spacewars_90CCW.art": 104072
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spike",
+      "source": "self",
+      "packages": {
+        "spike.art": 112208,
+        "spike_90CW.art": 120568,
+        "spike_90CCW.art": 120624
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Spike_Hoppin'_by_John_Dondzila__1997___PD_",
+      "source": "self",
+      "packages": {
+        "Spike_Hoppin'_by_John_Dondzila__1997___PD_.art": 93872,
+        "Spike_Hoppin'_by_John_Dondzila__1997___PD__90CW.art": 99152,
+        "Spike_Hoppin'_by_John_Dondzila__1997___PD__90CCW.art": 99208
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spikeh",
+      "source": "self",
+      "packages": {
+        "spikeh.art": 373144,
+        "spikeh_90CW.art": 434416,
+        "spikeh_90CCW.art": 434416
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spikew",
+      "source": "self",
+      "packages": {
+        "spikew.art": 134064,
+        "spikew_90CW.art": 142616,
+        "spikew_90CCW.art": 142640
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "spinball",
+      "source": "self",
+      "packages": {
+        "spinball.art": 154040,
+        "spinball_90CW.art": 168832,
+        "spinball_90CCW.art": 168904
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "split_personality",
+      "source": "self",
+      "packages": {
+        "split_personality.art": 113360,
+        "split_personality_90CW.art": 119864,
+        "split_personality_90CCW.art": 119936
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "star_fuel",
+      "source": "self",
+      "packages": {
+        "star_fuel.art": 91472,
+        "star_fuel_90CW.art": 97320,
+        "star_fuel_90CCW.art": 97248
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "star_war",
+      "source": "self",
+      "packages": {
+        "star_war.art": 128040,
+        "star_war_90CW.art": 137656,
+        "star_war_90CCW.art": 137592
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "starcastle",
+      "source": "canonical:Star Castle.png",
+      "packages": {
+        "starcastle.art": 271352,
+        "starcastle_90CW.art": 304440,
+        "starcastle_90CCW.art": 304272
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "starhawk",
+      "source": "self",
+      "packages": {
+        "starhawk.art": 91264,
+        "starhawk_90CW.art": 95448,
+        "starhawk_90CCW.art": 95256
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "starship",
+      "source": "self",
+      "packages": {
+        "starship.art": 98016,
+        "starship_90CW.art": 105320,
+        "starship_90CCW.art": 104944
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "startrek",
+      "source": "self",
+      "packages": {
+        "startrek.art": 111144,
+        "startrek_90CW.art": 118944,
+        "startrek_90CCW.art": 118808
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "stunt-cycle",
+      "source": "self",
+      "packages": {
+        "stunt-cycle.art": 91032,
+        "stunt-cycle_90CW.art": 93256,
+        "stunt-cycle_90CCW.art": 93240
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "stunt-cycle-overlay-ver1-01-fw",
+      "source": "self",
+      "packages": {
+        "stunt-cycle-overlay-ver1-01-fw.art": 91304,
+        "stunt-cycle-overlay-ver1-01-fw_90CW.art": 92360,
+        "stunt-cycle-overlay-ver1-01-fw_90CCW.art": 92392
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "stunt_man_stories_1",
+      "source": "self",
+      "packages": {
+        "stunt_man_stories_1.art": 208360,
+        "stunt_man_stories_1_90CW.art": 231496,
+        "stunt_man_stories_1_90CCW.art": 231304
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "stunt_man_stories_2",
+      "source": "overlays:Stunt_Man_Stories_Small.png",
+      "packages": {
+        "stunt_man_stories_2.art": 199392,
+        "stunt_man_stories_2_90CW.art": 219704,
+        "stunt_man_stories_2_90CCW.art": 219608
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "sweep",
+      "source": "self",
+      "packages": {
+        "sweep.art": 170336,
+        "sweep_90CW.art": 189000,
+        "sweep_90CCW.art": 188760
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Test-Overlay02",
+      "source": "self",
+      "packages": {
+        "Test-Overlay02.art": 71384,
+        "Test-Overlay02_90CW.art": 74584,
+        "Test-Overlay02_90CCW.art": 74592
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "The_Count",
+      "source": "self",
+      "packages": {
+        "The_Count.art": 108200,
+        "The_Count_90CW.art": 114480,
+        "The_Count_90CCW.art": 114376
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "thirsty_astronaut",
+      "source": "self",
+      "packages": {
+        "thirsty_astronaut.art": 84960,
+        "thirsty_astronaut_90CW.art": 88584,
+        "thirsty_astronaut_90CCW.art": 88536
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "thrust",
+      "source": "self",
+      "packages": {
+        "thrust.art": 98976,
+        "thrust_90CW.art": 104176,
+        "thrust_90CCW.art": 104176
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "thrustoverlay_200dpi",
+      "source": "pack846:thrust.png",
+      "packages": {
+        "thrustoverlay_200dpi.art": 98264,
+        "thrustoverlay_200dpi_90CW.art": 104096,
+        "thrustoverlay_200dpi_90CCW.art": 104176
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "TouchMe",
+      "source": "self",
+      "packages": {
+        "TouchMe.art": 104048,
+        "TouchMe_90CW.art": 111648,
+        "TouchMe_90CCW.art": 111640
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "tour_de_france",
+      "source": "self",
+      "packages": {
+        "tour_de_france.art": 85040,
+        "tour_de_france_90CW.art": 89144,
+        "tour_de_france_90CCW.art": 89288
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Tour_De_France_Proto",
+      "source": "self",
+      "packages": {
+        "Tour_De_France_Proto.art": 84952,
+        "Tour_De_France_Proto_90CW.art": 88856,
+        "Tour_De_France_Proto_90CCW.art": 89016
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "traffic_race",
+      "source": "self",
+      "packages": {
+        "traffic_race.art": 92504,
+        "traffic_race_90CW.art": 95304,
+        "traffic_race_90CCW.art": 95264
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "treasure_diver",
+      "source": "self",
+      "packages": {
+        "treasure_diver.art": 287384,
+        "treasure_diver_90CW.art": 311584,
+        "treasure_diver_90CCW.art": 311472
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "unknown",
+      "source": "self",
+      "packages": {
+        "unknown.art": 182376,
+        "unknown_90CW.art": 207584,
+        "unknown_90CCW.art": 206504
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Vaders",
+      "source": "self",
+      "packages": {
+        "Vaders.art": 72112,
+        "Vaders_90CW.art": 74608,
+        "Vaders_90CCW.art": 74744
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "VEC-VectorPatrol",
+      "source": "self",
+      "packages": {
+        "VEC-VectorPatrol.art": 244048,
+        "VEC-VectorPatrol_90CW.art": 278104,
+        "VEC-VectorPatrol_90CCW.art": 277936
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "VEC-VectorPilot",
+      "source": "self",
+      "packages": {
+        "VEC-VectorPilot.art": 202152,
+        "VEC-VectorPilot_90CW.art": 217216,
+        "VEC-VectorPilot_90CCW.art": 216936
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "VEC-Vectrexians",
+      "source": "self",
+      "packages": {
+        "VEC-Vectrexians.art": 178352,
+        "VEC-Vectrexians_90CW.art": 195880,
+        "VEC-Vectrexians_90CCW.art": 196016
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "vec_man",
+      "source": "self",
+      "packages": {
+        "vec_man.art": 102352,
+        "vec_man_90CW.art": 108216,
+        "vec_man_90CCW.art": 108080
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Vecman01",
+      "source": "pack846:vec_man.png",
+      "packages": {
+        "Vecman01.art": 100520,
+        "Vecman01_90CW.art": 105872,
+        "Vecman01_90CCW.art": 105744
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Vecman02",
+      "source": "pack846:vec_man.png",
+      "packages": {
+        "Vecman02.art": 100520,
+        "Vecman02_90CW.art": 105872,
+        "Vecman02_90CCW.art": 105744
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Vector_Patrol01",
+      "source": "canonical:Vector Patrol.png",
+      "packages": {
+        "Vector_Patrol01.art": 189288,
+        "Vector_Patrol01_90CW.art": 209568,
+        "Vector_Patrol01_90CCW.art": 209512
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "vectorpatrol",
+      "source": "self",
+      "packages": {
+        "vectorpatrol.art": 194688,
+        "vectorpatrol_90CW.art": 215584,
+        "vectorpatrol_90CCW.art": 215456
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "vectorpilot",
+      "source": "self",
+      "packages": {
+        "vectorpilot.art": 157888,
+        "vectorpilot_90CW.art": 167816,
+        "vectorpilot_90CCW.art": 167776
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "vectorpilot2",
+      "source": "self",
+      "packages": {
+        "vectorpilot2.art": 154696,
+        "vectorpilot2_90CW.art": 162376,
+        "vectorpilot2_90CCW.art": 162376
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Vectrex_Pong__1998___PD_",
+      "source": "self",
+      "packages": {
+        "Vectrex_Pong__1998___PD_.art": 106816,
+        "Vectrex_Pong__1998___PD__90CW.art": 114352,
+        "Vectrex_Pong__1998___PD__90CCW.art": 114096
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "vectrexians",
+      "source": "self",
+      "packages": {
+        "vectrexians.art": 218584,
+        "vectrexians_90CW.art": 244080,
+        "vectrexians_90CCW.art": 243968
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "vectroid",
+      "source": "self",
+      "packages": {
+        "vectroid.art": 151432,
+        "vectroid_90CW.art": 175752,
+        "vectroid_90CCW.art": 175984
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "vsbsshot2",
+      "source": "self",
+      "packages": {
+        "vsbsshot2.art": 135872,
+        "vsbsshot2_90CW.art": 142592,
+        "vsbsshot2_90CCW.art": 142856
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "Vyrzon_Asteroid_Belt",
+      "source": "self",
+      "packages": {
+        "Vyrzon_Asteroid_Belt.art": 92624,
+        "Vyrzon_Asteroid_Belt_90CW.art": 100616,
+        "Vyrzon_Asteroid_Belt_90CCW.art": 100624
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "webwarp",
+      "source": "self",
+      "packages": {
+        "webwarp.art": 250728,
+        "webwarp_90CW.art": 257568,
+        "webwarp_90CCW.art": 257552
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "webwars",
+      "source": "canonical:Web Wars.png",
+      "packages": {
+        "webwars.art": 253680,
+        "webwars_90CW.art": 253256,
+        "webwars_90CCW.art": 253408
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "wormhole",
+      "source": "self",
+      "packages": {
+        "wormhole.art": 215096,
+        "wormhole_90CW.art": 235176,
+        "wormhole_90CCW.art": 234984
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "yarg",
+      "source": "self",
+      "packages": {
+        "yarg.art": 117720,
+        "yarg_90CW.art": 123896,
+        "yarg_90CCW.art": 124032
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "yasi",
+      "source": "self",
+      "packages": {
+        "yasi.art": 328848,
+        "yasi_90CW.art": 373880,
+        "yasi_90CCW.art": 373824
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    },
+    {
+      "name": "yasi-jac",
+      "source": "self",
+      "packages": {
+        "yasi-jac.art": 318976,
+        "yasi-jac_90CW.art": 361880,
+        "yasi-jac_90CCW.art": 361776
+      },
+      "violations": 0,
+      "opaque_planes": 0
+    }
+  ]
+}

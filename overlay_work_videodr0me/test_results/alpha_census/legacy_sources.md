@@ -6,9 +6,7 @@
 
 | Verdict | Images | Meaning |
 |---|---:|---|
-| clean | 74 | no near-opaque body pixels; the blocking areas are exactly 255 |
-| minor | 5 | under 0.1% of the plane is near-opaque body |
-| defect | 9 | 0.1% or more of the plane is near-opaque body |
+| clean | 88 | no near-opaque body pixels; the blocking areas are exactly 255 |
 | opaque_only | 2 | one alpha value, 255; blocks the whole screen |
 
 10 of 90 images never reach alpha 0, so no part of the plane is fully clear. That is not a defect by itself, but the crop cannot be found by looking for a transparent hole:
@@ -30,10 +28,7 @@ The modal alpha of every body pixel above 199 — the level this artwork treats 
 
 | Alpha | Images |
 |---:|---:|
-| 255 | 85 |
-| 217 | 2 |
-| 210 | 1 |
-| 214 | 1 |
+| 255 | 89 |
 
 ## Alpha quantization of the sources
 
@@ -41,27 +36,6 @@ The modal alpha of every body pixel above 199 — the level this artwork treats 
 |---|---:|
 | 8bit | 87 |
 | binary | 3 |
-
-## Near-opaque bodies, worst first
-
-Leak is the fraction of a full-brightness vector that passes through the offending pixels, by the compositor's own arithmetic.
-
-| Image | Plane | Body px | % of plane | Modal alpha | Mean leak | Max leak |
-|---|---|---:|---:|---:|---:|---:|
-| Pipe_Race_Small.png |  | 331134 | 85.1682% | 214 | 82.79% | 94.12% |
-| Lost_Souls_Small.png |  | 104909 | 26.9828% | 217 | 79.43% | 81.57% |
-| Doodle_Jump_Small.png |  | 45733 | 11.7626% | 217 | 57.16% | 94.12% |
-| Floor_Is_Lava_Small.png |  | 37142 | 9.553% | 254 | 43.49% | 100.0% |
-| Curling_Small.png |  | 34332 | 8.8302% | 210 | 86.7% | 88.24% |
-| Treasure_Diver_Small.png |  | 17025 | 4.3789% | 242 | 59.65% | 100.0% |
-| All Good Things_Small.png |  | 3184 | 0.8189% | 252 | 97.39% | 100.0% |
-| Brick_Crushers_Small.png |  | 1223 | 0.3146% | 233 | 71.82% | 98.04% |
-| Star_War_Small.png |  | 418 | 0.1075% | 253 | 81.58% | 99.22% |
-| RobHop_Small.png |  | 302 | 0.0777% | 252 | 76.06% | 100.0% |
-| Stunt_Man_Stories_Small.png |  | 15 | 0.0039% | 254 | 93.15% | 100.0% |
-| Omega Chase_Small.png |  | 4 | 0.001% | 254 | 100.0% | 100.0% |
-| Spaceship_Centauri_Small.png |  | 4 | 0.001% | 230 | 9.9% | 10.2% |
-| Space_Patrol_Small.png |  | 2 | 0.0005% | 252 | 1.96% | 1.96% |
 
 ## Translucent bodies
 
