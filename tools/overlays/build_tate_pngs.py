@@ -28,7 +28,7 @@ ROTATED = (1080, 810)
 def contain(source: Image.Image, size: tuple[int, int]) -> Image.Image:
     """Scale into size, preserving aspect ratio, on a transparent canvas."""
     source = source.convert("RGBA")
-    source.thumbnail(size, Image.Resampling.LANCZOS)
+    source.thumbnail(size, Image.Resampling.HAMMING)
     canvas = Image.new("RGBA", size, (0, 0, 0, 0))
     left = (size[0] - source.width) // 2
     top = (size[1] - source.height) // 2

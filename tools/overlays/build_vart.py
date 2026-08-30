@@ -37,10 +37,20 @@ MAX_COLORS = 255
 
 
 def quantize_rgba(image: Image.Image, colors: int = MAX_COLORS) -> Image.Image:
-    """Quantize RGBA to a P-mode image whose palette keeps alpha (tRNS)."""
-    if image.mode != "RGBA":
-        image = image.convert("RGBA")
-    return image.quantize(colors=colors, method=Image.Quantize.FASTOCTREE)
+    """Quantize RGBA while keeping the opaque control boundary exact."""
+    image = image.convert("RGBA")
+    alpha = image.getchannel("A").point(lambda value: 255 if value >= 254 else value)
+    image.putalpha(alpha)
+    quantized = image.quantize(colors=colors, method=Image.Quantize.FASTOCTREE)
+    mapped = quantized.convert("RGBA")
+    table = bytearray([255] * 256)
+    seen = set()
+    for index, pixel in zip(quantized.tobytes(), mapped.getdata()):
+        if index not in seen:
+            table[index] = 255 if pixel[3] >= 254 else pixel[3]
+            seen.add(index)
+    quantized.info["transparency"] = bytes(table)
+    return quantized
 
 
 def encode_overlay(source: Path, workdir: Path) -> bytes:
@@ -50,7 +60,7 @@ def encode_overlay(source: Path, workdir: Path) -> bytes:
         for width, height in PLANE_SIZES:
             resampled = (
                 im if im.size == (width, height)
-                else im.resize((width, height), Image.LANCZOS)
+                else im.resize((width, height), Image.Resampling.HAMMING)
             )
             indexed = quantize_rgba(resampled)
             plane_png = workdir / f"plane_{width}x{height}.png"

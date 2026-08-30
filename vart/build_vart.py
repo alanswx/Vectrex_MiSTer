@@ -62,10 +62,28 @@ MAX_COLORS = 255
 
 
 def quantize_rgba(image: Image.Image, colors: int = MAX_COLORS) -> Image.Image:
-    """Quantize RGBA while preserving per-palette-entry alpha."""
-    return image.convert("RGBA").quantize(
+    """Quantize RGBA while preserving intentional alpha boundaries.
+
+    Pillow's RGBA octree quantizer can average opaque (255) and nearly opaque
+    (254) pixels into a palette entry at 254. The RTL uses the opaque value as
+    a meaningful control boundary, so normalize the near-opaque range first.
+    Lower alpha values remain unchanged.
+    """
+    rgba = image.convert("RGBA")
+    alpha = rgba.getchannel("A").point(lambda value: 255 if value >= 254 else value)
+    rgba.putalpha(alpha)
+    quantized = rgba.quantize(
         colors=colors, method=Image.Quantize.FASTOCTREE
     )
+    mapped = quantized.convert("RGBA")
+    table = bytearray([255] * 256)
+    seen = set()
+    for index, pixel in zip(quantized.tobytes(), mapped.getdata()):
+        if index not in seen:
+            table[index] = 255 if pixel[3] >= 254 else pixel[3]
+            seen.add(index)
+    quantized.info["transparency"] = bytes(table)
+    return quantized
 
 
 def load_exact_set(directory: Path) -> dict[str, Image.Image]:
@@ -159,7 +177,7 @@ def place_frame(
     x, y, width, height = frame
     fitted = content.convert("RGBA")
     if fitted.size != (width, height):
-        fitted = fitted.resize((width, height), Image.Resampling.LANCZOS)
+        fitted = fitted.resize((width, height), Image.Resampling.HAMMING)
     canvas = transparent_canvas(raster)
     canvas.alpha_composite(fitted, (x, y))
     return canvas, fitted
@@ -187,7 +205,7 @@ def legacy_normal_content(
     x, y, width, height = frame
     if source.size == raster:
         return source.crop((x, y, x + width, y + height))
-    return source.resize((width, height), Image.Resampling.LANCZOS)
+    return source.resize((width, height), Image.Resampling.HAMMING)
 
 
 def migrate_images(container: bytes) -> tuple[dict[str, Image.Image], dict[str, Image.Image]]:

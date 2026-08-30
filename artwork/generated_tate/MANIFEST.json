@@ -10,9 +10,9 @@
       "source_sha256": "842dcf0cf4bb90f5fab9d92e2810b8ac96c196852029d4a16dc27788746475ff",
       "name": "agt",
       "packages": {
-        "agt.art": 115072,
-        "agt_90CW.art": 136808,
-        "agt_90CCW.art": 137016
+        "agt.art": 113392,
+        "agt_90CW.art": 136096,
+        "agt_90CCW.art": 136080
       }
     },
     {
@@ -20,9 +20,9 @@
       "source_sha256": "aa2b51d10dbc490b98d834513af37586c7e20f1969392f4f15c04a1f7cc75202",
       "name": "agt2",
       "packages": {
-        "agt2.art": 115248,
-        "agt2_90CW.art": 136576,
-        "agt2_90CCW.art": 136584
+        "agt2.art": 112248,
+        "agt2_90CW.art": 133856,
+        "agt2_90CCW.art": 133768
       }
     },
     {
@@ -30,9 +30,9 @@
       "source_sha256": "d41eed94b5dc9d184617642a44a965e04ab639fb25486222e026b30120b332c7",
       "name": "anim_action",
       "packages": {
-        "anim_action.art": 77872,
-        "anim_action_90CW.art": 87480,
-        "anim_action_90CCW.art": 87432
+        "anim_action.art": 75328,
+        "anim_action_90CW.art": 82848,
+        "anim_action_90CCW.art": 82696
       }
     },
     {
@@ -40,9 +40,9 @@
       "source_sha256": "a20d9caa70b78a4a3f44bf747250ff2c42488a10fa63392322e53045f9500b04",
       "name": "armor",
       "packages": {
-        "armor.art": 451576,
-        "armor_90CW.art": 655512,
-        "armor_90CCW.art": 655304
+        "armor.art": 458928,
+        "armor_90CW.art": 681352,
+        "armor_90CCW.art": 680832
       }
     },
     {
@@ -50,9 +50,9 @@
       "source_sha256": "6c3f67760cb11aed97622cff249b135d08a34071c375af347e7fa29d5e235c92",
       "name": "art_master",
       "packages": {
-        "art_master.art": 75440,
-        "art_master_90CW.art": 84872,
-        "art_master_90CCW.art": 84952
+        "art_master.art": 74000,
+        "art_master_90CW.art": 82000,
+        "art_master_90CCW.art": 81936
       }
     },
     {
@@ -60,9 +60,9 @@
       "source_sha256": "a371ecafe24258766c5f200739098192572e68df51ff959f8c4848c40d92df5a",
       "name": "asteroid_cowboy",
       "packages": {
-        "asteroid_cowboy.art": 81368,
-        "asteroid_cowboy_90CW.art": 92664,
-        "asteroid_cowboy_90CCW.art": 92584
+        "asteroid_cowboy.art": 76552,
+        "asteroid_cowboy_90CW.art": 86728,
+        "asteroid_cowboy_90CCW.art": 86592
       }
     },
     {
@@ -70,9 +70,9 @@
       "source_sha256": "8e154187a4af7b665d98eb742feafd25a7f5917383c85d933823e15e9cf0b9dd",
       "name": "asteroids",
       "packages": {
-        "asteroids.art": 87456,
-        "asteroids_90CW.art": 100312,
-        "asteroids_90CCW.art": 100000
+        "asteroids.art": 84224,
+        "asteroids_90CW.art": 96968,
+        "asteroids_90CCW.art": 96816
       }
     },
     {
@@ -80,9 +80,9 @@
       "source_sha256": "d4a47552eafbd4d4b265e2c85adafb30aa59b7b52062067cb166a1d195a4f27b",
       "name": "bedlam",
       "packages": {
-        "bedlam.art": 237600,
-        "bedlam_90CW.art": 314592,
-        "bedlam_90CCW.art": 314672
+        "bedlam.art": 227856,
+        "bedlam_90CW.art": 308856,
+        "bedlam_90CCW.art": 308928
       }
     },
     {
@@ -90,9 +90,9 @@
       "source_sha256": "b9a564835e16f1c6f23578f4a384aafb070de821f97997a7082e710f0998f3b5",
       "name": "berzerk",
       "packages": {
-        "berzerk.art": 137976,
-        "berzerk_90CW.art": 180592,
-        "berzerk_90CCW.art": 180544
+        "berzerk.art": 126992,
+        "berzerk_90CW.art": 159912,
+        "berzerk_90CCW.art": 159848
       }
     },
     {
@@ -100,9 +100,9 @@
       "source_sha256": "802e10a795e77f37b1df4ea51c8087cfedd6d8436450843674ae140bf250131f",
       "name": "blitz",
       "packages": {
-        "blitz.art": 116528,
-        "blitz_90CW.art": 151104,
-        "blitz_90CCW.art": 150952
+        "blitz.art": 111056,
+        "blitz_90CW.art": 140536,
+        "blitz_90CCW.art": 140336
       }
     },
     {
@@ -110,9 +110,9 @@
       "source_sha256": "c521fc8966b6459c6606d974f0c18cc662e62f87235233986d65e432aaf779a2",
       "name": "block_bomb",
       "packages": {
-        "block_bomb.art": 97968,
-        "block_bomb_90CW.art": 117416,
-        "block_bomb_90CCW.art": 117336
+        "block_bomb.art": 97040,
+        "block_bomb_90CW.art": 117008,
+        "block_bomb_90CCW.art": 116960
       }
     },
     {
@@ -120,9 +120,9 @@
       "source_sha256": "40063eef535b51184b4dfea61e1eb968a442cc3a572eb02cb1d31c91a74557ce",
       "name": "blox",
       "packages": {
-        "blox.art": 68064,
-        "blox_90CW.art": 74504,
-        "blox_90CCW.art": 74648
+        "blox.art": 66928,
+        "blox_90CW.art": 71800,
+        "blox_90CCW.art": 71944
       }
     },
     {
@@ -130,9 +130,9 @@
       "source_sha256": "7212d8d3f6d14bbe20fb02be47ce153f6b750df95a8971a8304ea694b6f0ccf4",
       "name": "brick_crushers",
       "packages": {
-        "brick_crushers.art": 226896,
-        "brick_crushers_90CW.art": 299400,
-        "brick_crushers_90CCW.art": 299096
+        "brick_crushers.art": 222232,
+        "brick_crushers_90CW.art": 285456,
+        "brick_crushers_90CCW.art": 285328
       }
     },
     {
@@ -140,9 +140,9 @@
       "source_sha256": "06afbb925e0196280236ab4d1bffa61b1c4525d951d9d4ecdabd7b1c55ff46fe",
       "name": "castle",
       "packages": {
-        "castle.art": 342632,
-        "castle_90CW.art": 509000,
-        "castle_90CCW.art": 508920
+        "castle.art": 332912,
+        "castle_90CW.art": 486048,
+        "castle_90CCW.art": 485816
       }
     },
     {
@@ -150,9 +150,9 @@
       "source_sha256": "015d814063f8d6365d5c1434776f0e6bfede094831d5f9f57f2f85fc304da217",
       "name": "castle_defender",
       "packages": {
-        "castle_defender.art": 79904,
+        "castle_defender.art": 78192,
         "castle_defender_90CW.art": 88872,
-        "castle_defender_90CCW.art": 88976
+        "castle_defender_90CCW.art": 88944
       }
     },
     {
@@ -160,9 +160,9 @@
       "source_sha256": "69bfaba1ba353bed3f204f9782bb62638300dc7d239a50459d090469cf22b7b0",
       "name": "castle_vs_castle",
       "packages": {
-        "castle_vs_castle.art": 89544,
-        "castle_vs_castle_90CW.art": 105568,
-        "castle_vs_castle_90CCW.art": 105368
+        "castle_vs_castle.art": 86120,
+        "castle_vs_castle_90CW.art": 100912,
+        "castle_vs_castle_90CCW.art": 100808
       }
     },
     {
@@ -170,9 +170,9 @@
       "source_sha256": "311110db500beedfdb830d87158bba4eb49a54247f2634cb8755f50e77e0784d",
       "name": "chasm",
       "packages": {
-        "chasm.art": 187848,
-        "chasm_90CW.art": 252288,
-        "chasm_90CCW.art": 251600
+        "chasm.art": 185880,
+        "chasm_90CW.art": 250096,
+        "chasm_90CCW.art": 249384
       }
     },
     {
@@ -180,9 +180,9 @@
       "source_sha256": "c68acfe71102262b3bbbae33b27843691a1157cba85f2d45145af80d1c2534ae",
       "name": "climb_it",
       "packages": {
-        "climb_it.art": 147696,
-        "climb_it_90CW.art": 190328,
-        "climb_it_90CCW.art": 190360
+        "climb_it.art": 142704,
+        "climb_it_90CW.art": 182064,
+        "climb_it_90CCW.art": 182136
       }
     },
     {
@@ -190,9 +190,9 @@
       "source_sha256": "472503363f272702974753cab7358214143614c28574259a66fefbbce747b5c8",
       "name": "crash_trexicoot",
       "packages": {
-        "crash_trexicoot.art": 274336,
-        "crash_trexicoot_90CW.art": 384824,
-        "crash_trexicoot_90CCW.art": 384720
+        "crash_trexicoot.art": 266016,
+        "crash_trexicoot_90CW.art": 365312,
+        "crash_trexicoot_90CCW.art": 365056
       }
     },
     {
@@ -200,9 +200,9 @@
       "source_sha256": "f4cc02ed053f852124b88f0bb095ade2df889360f8ac014ca12633e510fb5745",
       "name": "crazy_coaster_3D",
       "packages": {
-        "crazy_coaster_3D.art": 82688,
-        "crazy_coaster_3D_90CW.art": 97016,
-        "crazy_coaster_3D_90CCW.art": 97120
+        "crazy_coaster_3D.art": 80256,
+        "crazy_coaster_3D_90CW.art": 91744,
+        "crazy_coaster_3D_90CCW.art": 91784
       }
     },
     {
@@ -210,9 +210,9 @@
       "source_sha256": "485d7e75103b1cc2b34353a12afa4d135bafed6a6b35777b40205c29a48ff25b",
       "name": "curling",
       "packages": {
-        "curling.art": 76280,
-        "curling_90CW.art": 87184,
-        "curling_90CCW.art": 87240
+        "curling.art": 72744,
+        "curling_90CW.art": 82744,
+        "curling_90CCW.art": 82696
       }
     },
     {
@@ -220,9 +220,9 @@
       "source_sha256": "81937dd6915d1a774f3074d644dae52b2fe22cd5f9ce5c0e406845239c458250",
       "name": "daisy_land",
       "packages": {
-        "daisy_land.art": 89304,
-        "daisy_land_90CW.art": 105280,
-        "daisy_land_90CCW.art": 105440
+        "daisy_land.art": 81128,
+        "daisy_land_90CW.art": 99216,
+        "daisy_land_90CCW.art": 99024
       }
     },
     {
@@ -230,9 +230,9 @@
       "source_sha256": "48f1e6568cf573889d06ad83bf295a1e22a8386664a6b295cb1c0c5d8b375ee8",
       "name": "defender",
       "packages": {
-        "defender.art": 175816,
-        "defender_90CW.art": 231096,
-        "defender_90CCW.art": 231368
+        "defender.art": 172520,
+        "defender_90CW.art": 225048,
+        "defender_90CCW.art": 224880
       }
     },
     {
@@ -240,9 +240,9 @@
       "source_sha256": "bd695b760832099b566506e585afcb9b21dd27352b982a564be0b259ebcb7593",
       "name": "dino_runner",
       "packages": {
-        "dino_runner.art": 80368,
-        "dino_runner_90CW.art": 90312,
-        "dino_runner_90CCW.art": 90272
+        "dino_runner.art": 77560,
+        "dino_runner_90CW.art": 86640,
+        "dino_runner_90CCW.art": 86744
       }
     },
     {
@@ -250,9 +250,9 @@
       "source_sha256": "d1aa54e2300f454d3002c1ffa36466d860c872eea10bb4fe70124f8274426bb4",
       "name": "dktower",
       "packages": {
-        "dktower.art": 161712,
-        "dktower_90CW.art": 209232,
-        "dktower_90CCW.art": 208880
+        "dktower.art": 148880,
+        "dktower_90CW.art": 188784,
+        "dktower_90CCW.art": 189112
       }
     },
     {
@@ -260,9 +260,9 @@
       "source_sha256": "5d73bdd78a8102cbbb2511157a99211890fd97c5988b08265a5866b000886692",
       "name": "dktower2",
       "packages": {
-        "dktower2.art": 179592,
-        "dktower2_90CW.art": 238032,
-        "dktower2_90CCW.art": 237888
+        "dktower2.art": 166072,
+        "dktower2_90CW.art": 217560,
+        "dktower2_90CCW.art": 217760
       }
     },
     {
@@ -270,9 +270,9 @@
       "source_sha256": "9d2fed013a5467af626bf5f1eb99f6dba1fa5d26fb42cc76b81da8eac5a159b6",
       "name": "donkey_kong",
       "packages": {
-        "donkey_kong.art": 73672,
-        "donkey_kong_90CW.art": 80728,
-        "donkey_kong_90CCW.art": 80816
+        "donkey_kong.art": 73360,
+        "donkey_kong_90CW.art": 80520,
+        "donkey_kong_90CCW.art": 80528
       }
     },
     {
@@ -280,9 +280,9 @@
       "source_sha256": "39e862ce48469982a58fe5f7f16d63b6fbd5384d7f0ff16bde76144dc62f619c",
       "name": "dont_fall",
       "packages": {
-        "dont_fall.art": 78280,
-        "dont_fall_90CW.art": 88280,
-        "dont_fall_90CCW.art": 88072
+        "dont_fall.art": 70432,
+        "dont_fall_90CW.art": 84080,
+        "dont_fall_90CCW.art": 84208
       }
     },
     {
@@ -290,9 +290,9 @@
       "source_sha256": "004723cb7742b39b85d964a5e457419e952f7b3a0b5917ac314d5e94e867447c",
       "name": "doodle_jump",
       "packages": {
-        "doodle_jump.art": 106704,
-        "doodle_jump_90CW.art": 128192,
-        "doodle_jump_90CCW.art": 128272
+        "doodle_jump.art": 102392,
+        "doodle_jump_90CW.art": 122848,
+        "doodle_jump_90CCW.art": 122544
       }
     },
     {
@@ -300,9 +300,9 @@
       "source_sha256": "1c8ce93d8ba7545cc9cace7b438a9da23e140b8a999198a7831e0d95f74dad08",
       "name": "eating_fish",
       "packages": {
-        "eating_fish.art": 79104,
-        "eating_fish_90CW.art": 88768,
-        "eating_fish_90CCW.art": 88656
+        "eating_fish.art": 78016,
+        "eating_fish_90CW.art": 88200,
+        "eating_fish_90CCW.art": 88064
       }
     },
     {
@@ -310,9 +310,9 @@
       "source_sha256": "6a45787b800672106cf9f1550cf28c124dabcb0287714d45531cb03bd5a51821",
       "name": "fencing_simulator",
       "packages": {
-        "fencing_simulator.art": 93048,
-        "fencing_simulator_90CW.art": 112360,
-        "fencing_simulator_90CCW.art": 112608
+        "fencing_simulator.art": 89624,
+        "fencing_simulator_90CW.art": 107232,
+        "fencing_simulator_90CCW.art": 107344
       }
     },
     {
@@ -320,9 +320,9 @@
       "source_sha256": "15d22b17ae803207a7f7a51b067c48b2e340ac8edb4a80c920d3c64ab16a4618",
       "name": "flipper_pinball",
       "packages": {
-        "flipper_pinball.art": 158888,
-        "flipper_pinball_90CW.art": 206696,
-        "flipper_pinball_90CCW.art": 206736
+        "flipper_pinball.art": 159976,
+        "flipper_pinball_90CW.art": 211840,
+        "flipper_pinball_90CCW.art": 211816
       }
     },
     {
@@ -330,9 +330,9 @@
       "source_sha256": "759926e3383d46c5639efa231abba15cdf9d860012013850301306f2b1ac66a8",
       "name": "floor_is_lava",
       "packages": {
-        "floor_is_lava.art": 220496,
-        "floor_is_lava_90CW.art": 306856,
-        "floor_is_lava_90CCW.art": 306456
+        "floor_is_lava.art": 214432,
+        "floor_is_lava_90CW.art": 286528,
+        "floor_is_lava_90CCW.art": 286208
       }
     },
     {
@@ -340,9 +340,9 @@
       "source_sha256": "5771218b20d50dcb2b2d4c0b0c8af7c7cf5f22325a405c1c302ebc8c9f7d2ee3",
       "name": "frogger",
       "packages": {
-        "frogger.art": 394600,
-        "frogger_90CW.art": 574768,
-        "frogger_90CCW.art": 574872
+        "frogger.art": 384672,
+        "frogger_90CW.art": 545296,
+        "frogger_90CCW.art": 545456
       }
     },
     {
@@ -350,9 +350,9 @@
       "source_sha256": "bcf69d22eb847efc9ecc975ea0e7ee82c1309e66a7ffdf1b1b4ae6656606f984",
       "name": "headsup",
       "packages": {
-        "headsup.art": 112168,
-        "headsup_90CW.art": 142216,
-        "headsup_90CCW.art": 142128
+        "headsup.art": 108248,
+        "headsup_90CW.art": 135256,
+        "headsup_90CCW.art": 135032
       }
     },
     {
@@ -360,9 +360,9 @@
       "source_sha256": "62185ca047b02f9db60579ad0ee5d0ff638318611ab9e1d102d66fe6ff9ca69d",
       "name": "hextrex",
       "packages": {
-        "hextrex.art": 84624,
-        "hextrex_90CW.art": 94208,
-        "hextrex_90CCW.art": 94400
+        "hextrex.art": 84776,
+        "hextrex_90CW.art": 95520,
+        "hextrex_90CCW.art": 95640
       }
     },
     {
@@ -370,9 +370,9 @@
       "source_sha256": "98505b7cddd73e4f4fcf4469efc0cf1e97281d594e06bdf3cd6f99a55ec64967",
       "name": "hole_run",
       "packages": {
-        "hole_run.art": 131648,
-        "hole_run_90CW.art": 166712,
-        "hole_run_90CCW.art": 166848
+        "hole_run.art": 129048,
+        "hole_run_90CW.art": 161696,
+        "hole_run_90CCW.art": 161872
       }
     },
     {
@@ -380,9 +380,9 @@
       "source_sha256": "52754912bea962957d25edc8ca257afcb7cfac31db80200490a06b45f839a1e4",
       "name": "hover_race",
       "packages": {
-        "hover_race.art": 82464,
-        "hover_race_90CW.art": 94664,
-        "hover_race_90CCW.art": 94464
+        "hover_race.art": 82144,
+        "hover_race_90CW.art": 94456,
+        "hover_race_90CCW.art": 94144
       }
     },
     {
@@ -390,9 +390,9 @@
       "source_sha256": "a6305cf4f2e960b5e4e1e3d9928d107c3bdb77c6c1d321b94c4d941027c50df0",
       "name": "hungry_python",
       "packages": {
-        "hungry_python.art": 148560,
-        "hungry_python_90CW.art": 185904,
-        "hungry_python_90CCW.art": 185728
+        "hungry_python.art": 146256,
+        "hungry_python_90CW.art": 185312,
+        "hungry_python_90CCW.art": 185128
       }
     },
     {
@@ -400,9 +400,9 @@
       "source_sha256": "75e22cbd125629a316cdffda22eb7d7f4c90bb3e07c2c3734a974f4c129afa22",
       "name": "hurdles",
       "packages": {
-        "hurdles.art": 149368,
-        "hurdles_90CW.art": 197728,
-        "hurdles_90CCW.art": 197584
+        "hurdles.art": 145904,
+        "hurdles_90CW.art": 193416,
+        "hurdles_90CCW.art": 193528
       }
     },
     {
@@ -410,9 +410,9 @@
       "source_sha256": "06f7f604ea564d6431f706d33879763da0e1efe23d09cfe86ef9059d1c8e6562",
       "name": "hyper",
       "packages": {
-        "hyper.art": 106376,
-        "hyper_90CW.art": 129360,
-        "hyper_90CCW.art": 129352
+        "hyper.art": 99744,
+        "hyper_90CW.art": 118312,
+        "hyper_90CCW.art": 118144
       }
     },
     {
@@ -420,9 +420,9 @@
       "source_sha256": "463ac78e5323779181952559fbc2689e10267c2058f0ddbc6d2b2ca5c2083504",
       "name": "keyboard_hero",
       "packages": {
-        "keyboard_hero.art": 108344,
-        "keyboard_hero_90CW.art": 124632,
-        "keyboard_hero_90CCW.art": 124520
+        "keyboard_hero.art": 101408,
+        "keyboard_hero_90CW.art": 116864,
+        "keyboard_hero_90CCW.art": 116688
       }
     },
     {
@@ -430,9 +430,9 @@
       "source_sha256": "73d63f6edbfdc855d8f3b70cbf0ba02fa0ee2c2d5d26c830452ab001d8287445",
       "name": "kingdom_of_heaven",
       "packages": {
-        "kingdom_of_heaven.art": 85856,
-        "kingdom_of_heaven_90CW.art": 98104,
-        "kingdom_of_heaven_90CCW.art": 98000
+        "kingdom_of_heaven.art": 80024,
+        "kingdom_of_heaven_90CW.art": 89840,
+        "kingdom_of_heaven_90CCW.art": 90008
       }
     },
     {
@@ -440,9 +440,9 @@
       "source_sha256": "b1c64ebee3236ce3f0bf72f1b1946c860c68cab9f8c36b5125f17908cac34917",
       "name": "knight_rider",
       "packages": {
-        "knight_rider.art": 217824,
-        "knight_rider_90CW.art": 284864,
-        "knight_rider_90CCW.art": 284648
+        "knight_rider.art": 209608,
+        "knight_rider_90CW.art": 269688,
+        "knight_rider_90CCW.art": 269856
       }
     },
     {
@@ -450,9 +450,9 @@
       "source_sha256": "d86294d4099614b673bc6da4d88b48e25b556234513aea14fe2d1dc04ea75626",
       "name": "last_battle",
       "packages": {
-        "last_battle.art": 89704,
-        "last_battle_90CW.art": 105552,
-        "last_battle_90CCW.art": 105624
+        "last_battle.art": 87760,
+        "last_battle_90CW.art": 102976,
+        "last_battle_90CCW.art": 102864
       }
     },
     {
@@ -460,9 +460,9 @@
       "source_sha256": "3c7054a451b6bb9d35f6cc24479d6a9203c36d4a64fc8ddf51d40e014f52b02d",
       "name": "lost_souls",
       "packages": {
-        "lost_souls.art": 142520,
-        "lost_souls_90CW.art": 189096,
-        "lost_souls_90CCW.art": 189016
+        "lost_souls.art": 132200,
+        "lost_souls_90CW.art": 175960,
+        "lost_souls_90CCW.art": 175888
       }
     },
     {
@@ -470,9 +470,9 @@
       "source_sha256": "927254d895ac5db5908fed297959186f9f328165aa999496c90e34186706b9dc",
       "name": "mail_plane",
       "packages": {
-        "mail_plane.art": 78232,
-        "mail_plane_90CW.art": 89088,
-        "mail_plane_90CCW.art": 89336
+        "mail_plane.art": 76904,
+        "mail_plane_90CW.art": 86656,
+        "mail_plane_90CCW.art": 86480
       }
     },
     {
@@ -480,9 +480,9 @@
       "source_sha256": "88720c8409eb89e605f5912489e264a8a252a75b042b7e81cf4fdc8f54ebeade",
       "name": "maze_of_treasures",
       "packages": {
-        "maze_of_treasures.art": 72696,
-        "maze_of_treasures_90CW.art": 80712,
-        "maze_of_treasures_90CCW.art": 80904
+        "maze_of_treasures.art": 71144,
+        "maze_of_treasures_90CW.art": 78240,
+        "maze_of_treasures_90CCW.art": 78392
       }
     },
     {
@@ -490,9 +490,9 @@
       "source_sha256": "c7866f8ee6ee5b127b3ca4e40f931ad161baaaa9f4cc7024683eb4384846daad",
       "name": "melody_master",
       "packages": {
-        "melody_master.art": 81384,
-        "melody_master_90CW.art": 93560,
-        "melody_master_90CCW.art": 93592
+        "melody_master.art": 78664,
+        "melody_master_90CW.art": 89640,
+        "melody_master_90CCW.art": 89544
       }
     },
     {
@@ -500,9 +500,9 @@
       "source_sha256": "5b0e4215d7bf8d315106e46cf75b2a27544bcdb5605e51beebe104b9b78c5c2b",
       "name": "mine",
       "packages": {
-        "mine.art": 120896,
-        "mine_90CW.art": 156280,
-        "mine_90CCW.art": 156272
+        "mine.art": 103616,
+        "mine_90CW.art": 126104,
+        "mine_90CCW.art": 125792
       }
     },
     {
@@ -510,9 +510,9 @@
       "source_sha256": "c98556abac2e1d4dcbb34f5cc44488d4644716b1b10d20d30d7ae916cc4fdb86",
       "name": "mine2",
       "packages": {
-        "mine2.art": 121048,
-        "mine2_90CW.art": 156752,
-        "mine2_90CCW.art": 156672
+        "mine2.art": 103696,
+        "mine2_90CW.art": 126240,
+        "mine2_90CCW.art": 125928
       }
     },
     {
@@ -520,9 +520,9 @@
       "source_sha256": "eadc0887351386454e0cc7040e2d4b7160d9f4447029785d1af5e93286bc7296",
       "name": "mine_storm_3D",
       "packages": {
-        "mine_storm_3D.art": 77912,
-        "mine_storm_3D_90CW.art": 89008,
-        "mine_storm_3D_90CCW.art": 89104
+        "mine_storm_3D.art": 75656,
+        "mine_storm_3D_90CW.art": 84768,
+        "mine_storm_3D_90CCW.art": 84856
       }
     },
     {
@@ -530,9 +530,9 @@
       "source_sha256": "c776a4fa901fb940dc8c1cbc138095b62bd107fae7dc865d646a5ef5adb1cd99",
       "name": "moon_lander",
       "packages": {
-        "moon_lander.art": 258632,
-        "moon_lander_90CW.art": 373336,
-        "moon_lander_90CCW.art": 373776
+        "moon_lander.art": 253392,
+        "moon_lander_90CW.art": 344656,
+        "moon_lander_90CCW.art": 345192
       }
     },
     {
@@ -540,9 +540,9 @@
       "source_sha256": "3f2e685346ff4e764dae16860cef6d1face805e821355d94a07fdb897a01635a",
       "name": "moon_shot",
       "packages": {
-        "moon_shot.art": 103472,
-        "moon_shot_90CW.art": 122336,
-        "moon_shot_90CCW.art": 122456
+        "moon_shot.art": 98568,
+        "moon_shot_90CW.art": 116120,
+        "moon_shot_90CCW.art": 115816
       }
     },
     {
@@ -550,9 +550,9 @@
       "source_sha256": "0af06ee5985a087ed52048f5f7688da2b43d990cbf796b70a21afa74c6a1f17e",
       "name": "mrboston",
       "packages": {
-        "mrboston.art": 177424,
-        "mrboston_90CW.art": 247432,
-        "mrboston_90CCW.art": 246872
+        "mrboston.art": 172944,
+        "mrboston_90CW.art": 236928,
+        "mrboston_90CCW.art": 236640
       }
     },
     {
@@ -560,9 +560,9 @@
       "source_sha256": "5284b51efe186105d5f887373fa067e2f6f1dacc7be9268c5e5ac263dc329a67",
       "name": "narrow_escape",
       "packages": {
-        "narrow_escape.art": 112856,
-        "narrow_escape_90CW.art": 134904,
-        "narrow_escape_90CCW.art": 134704
+        "narrow_escape.art": 113520,
+        "narrow_escape_90CW.art": 136616,
+        "narrow_escape_90CCW.art": 136480
       }
     },
     {
@@ -570,9 +570,9 @@
       "source_sha256": "0e100595b6f7da0c5f7ffd713b1e750303472cf51631f01fd47ee1f4cf6d8dee",
       "name": "narrow_escape_3D",
       "packages": {
-        "narrow_escape_3D.art": 80592,
-        "narrow_escape_3D_90CW.art": 92584,
-        "narrow_escape_3D_90CCW.art": 92632
+        "narrow_escape_3D.art": 77880,
+        "narrow_escape_3D_90CW.art": 87856,
+        "narrow_escape_3D_90CCW.art": 87808
       }
     },
     {
@@ -580,9 +580,9 @@
       "source_sha256": "6767e00343cd954d6bf0bc46ec4d54a52b0eb8da8da4a39f471a9a70463ada66",
       "name": "narzod",
       "packages": {
-        "narzod.art": 135680,
-        "narzod_90CW.art": 178584,
-        "narzod_90CCW.art": 178768
+        "narzod.art": 131112,
+        "narzod_90CW.art": 173080,
+        "narzod_90CCW.art": 173128
       }
     },
     {
@@ -590,9 +590,9 @@
       "source_sha256": "a29a3a4443a6498a71f3fb1d5b921fd6064f112387b7139b98cec2fac4e85e2f",
       "name": "omega16k",
       "packages": {
-        "omega16k.art": 592624,
-        "omega16k_90CW.art": 847480,
-        "omega16k_90CCW.art": 847368
+        "omega16k.art": 581552,
+        "omega16k_90CW.art": 830760,
+        "omega16k_90CCW.art": 830528
       }
     },
     {
@@ -600,9 +600,9 @@
       "source_sha256": "7463407fa5c9a66835b651ee6cf03779351827259374b07002f9aaf63f31c1e8",
       "name": "pac_men",
       "packages": {
-        "pac_men.art": 117904,
-        "pac_men_90CW.art": 144064,
-        "pac_men_90CCW.art": 143656
+        "pac_men.art": 112304,
+        "pac_men_90CW.art": 135688,
+        "pac_men_90CCW.art": 135632
       }
     },
     {
@@ -610,9 +610,9 @@
       "source_sha256": "ca8a8f354bc4205c6dcfe7a07ce81e5a2b235bef75d02190b830e5df2c74cf4d",
       "name": "patriot",
       "packages": {
-        "patriot.art": 143064,
-        "patriot_90CW.art": 187288,
-        "patriot_90CCW.art": 187312
+        "patriot.art": 136112,
+        "patriot_90CW.art": 174288,
+        "patriot_90CCW.art": 174328
       }
     },
     {
@@ -620,9 +620,9 @@
       "source_sha256": "8bfb38bb152a3924891925be1cdb5e7fad0e944c9d57f62296061771f27c5e0b",
       "name": "pipe_race",
       "packages": {
-        "pipe_race.art": 106552,
-        "pipe_race_90CW.art": 120504,
-        "pipe_race_90CCW.art": 120528
+        "pipe_race.art": 105160,
+        "pipe_race_90CW.art": 118232,
+        "pipe_race_90CCW.art": 118032
       }
     },
     {
@@ -630,9 +630,9 @@
       "source_sha256": "258602c897751152df0ac9aec15a1885471ebd0c6613e9a4469d890c82e59f7b",
       "name": "pirates",
       "packages": {
-        "pirates.art": 106032,
-        "pirates_90CW.art": 128768,
-        "pirates_90CCW.art": 128624
+        "pirates.art": 100928,
+        "pirates_90CW.art": 120760,
+        "pirates_90CCW.art": 120608
       }
     },
     {
@@ -640,9 +640,9 @@
       "source_sha256": "f0a78596976e1bbcab37e2cac2b8c7634818ffc69b9586c99b1f1cca935ffea7",
       "name": "polar",
       "packages": {
-        "polar.art": 104736,
-        "polar_90CW.art": 132104,
-        "polar_90CCW.art": 132048
+        "polar.art": 100600,
+        "polar_90CW.art": 126080,
+        "polar_90CCW.art": 126112
       }
     },
     {
@@ -650,9 +650,9 @@
       "source_sha256": "0f001227afe8736c7763b0e3250f0a76b7158776f365261905f5e92682306498",
       "name": "pole",
       "packages": {
-        "pole.art": 113144,
-        "pole_90CW.art": 138352,
-        "pole_90CCW.art": 137928
+        "pole.art": 109784,
+        "pole_90CW.art": 133720,
+        "pole_90CCW.art": 133664
       }
     },
     {
@@ -660,9 +660,9 @@
       "source_sha256": "a776280967043b9624c1772fd79186291320bd9c1f2f1a6dda8fe9c7bb3aa783",
       "name": "pole_position_3D",
       "packages": {
-        "pole_position_3D.art": 77744,
-        "pole_position_3D_90CW.art": 88688,
-        "pole_position_3D_90CCW.art": 88680
+        "pole_position_3D.art": 75272,
+        "pole_position_3D_90CW.art": 84248,
+        "pole_position_3D_90CCW.art": 84120
       }
     },
     {
@@ -670,9 +670,9 @@
       "source_sha256": "6fc0f2ba3a288b82ade6302d0f39072d6865708bea9aa2bd05b2b460ce7683e2",
       "name": "pong",
       "packages": {
-        "pong.art": 120288,
-        "pong_90CW.art": 155440,
-        "pong_90CCW.art": 155128
+        "pong.art": 118368,
+        "pong_90CW.art": 151096,
+        "pong_90CCW.art": 150840
       }
     },
     {
@@ -680,9 +680,9 @@
       "source_sha256": "2d524844fe654f7f6a40f12ad6e7b0e954dd12bed25e33f97101257272d98a35",
       "name": "portal_fight",
       "packages": {
-        "portal_fight.art": 76704,
-        "portal_fight_90CW.art": 85032,
-        "portal_fight_90CCW.art": 85160
+        "portal_fight.art": 75152,
+        "portal_fight_90CW.art": 83440,
+        "portal_fight_90CCW.art": 83552
       }
     },
     {
@@ -690,9 +690,9 @@
       "source_sha256": "a2af3afb7b821e769a7db99b56ca007a946d6c9f142d38cb862e3d9f9f6832d4",
       "name": "protector",
       "packages": {
-        "protector.art": 168768,
-        "protector_90CW.art": 213480,
-        "protector_90CCW.art": 213272
+        "protector.art": 166304,
+        "protector_90CW.art": 210784,
+        "protector_90CCW.art": 210752
       }
     },
     {
@@ -700,9 +700,9 @@
       "source_sha256": "0c87d4e2771d9e6430c8f2b3a7bb74d6c9d49908448dd7fb3a97f2a807b17bc7",
       "name": "pyoro_chan",
       "packages": {
-        "pyoro_chan.art": 105400,
-        "pyoro_chan_90CW.art": 124040,
-        "pyoro_chan_90CCW.art": 123528
+        "pyoro_chan.art": 101232,
+        "pyoro_chan_90CW.art": 119184,
+        "pyoro_chan_90CCW.art": 119008
       }
     },
     {
@@ -710,9 +710,9 @@
       "source_sha256": "447cdd8e3bf9b059c9dd2de73e3160a2f993a53fd6b270ddb25871edcf37375e",
       "name": "ripoff",
       "packages": {
-        "ripoff.art": 114472,
-        "ripoff_90CW.art": 143536,
-        "ripoff_90CCW.art": 143160
+        "ripoff.art": 109040,
+        "ripoff_90CW.art": 137000,
+        "ripoff_90CCW.art": 136688
       }
     },
     {
@@ -720,9 +720,9 @@
       "source_sha256": "bc3d584b075fe8fa8021593944e518c6bd1643977ddffdf6e074f5ef8dc534c0",
       "name": "robhop",
       "packages": {
-        "robhop.art": 150976,
-        "robhop_90CW.art": 196744,
-        "robhop_90CCW.art": 196952
+        "robhop.art": 148520,
+        "robhop_90CW.art": 192456,
+        "robhop_90CCW.art": 192704
       }
     },
     {
@@ -730,9 +730,9 @@
       "source_sha256": "b2db0c41244785be7246be899c25549970a12ce7b20d3fb80e172340f1bd15c1",
       "name": "rotor",
       "packages": {
-        "rotor.art": 111232,
-        "rotor_90CW.art": 137552,
-        "rotor_90CCW.art": 137320
+        "rotor.art": 105184,
+        "rotor_90CW.art": 128608,
+        "rotor_90CCW.art": 128376
       }
     },
     {
@@ -740,9 +740,9 @@
       "source_sha256": "ae988e447d9f1c79110888092b260ac1b8e9bdb273725cbdb594eb81dafacfb9",
       "name": "rush_defense",
       "packages": {
-        "rush_defense.art": 78728,
-        "rush_defense_90CW.art": 88320,
-        "rush_defense_90CCW.art": 88392
+        "rush_defense.art": 77616,
+        "rush_defense_90CW.art": 87568,
+        "rush_defense_90CCW.art": 87576
       }
     },
     {
@@ -750,9 +750,9 @@
       "source_sha256": "f8ef93f75d067160a67913fce4915a484bf198e8fdc51aab80c246944baaa874",
       "name": "scramble",
       "packages": {
-        "scramble.art": 118872,
-        "scramble_90CW.art": 148104,
-        "scramble_90CCW.art": 147904
+        "scramble.art": 114296,
+        "scramble_90CW.art": 141032,
+        "scramble_90CCW.art": 141104
       }
     },
     {
@@ -760,9 +760,9 @@
       "source_sha256": "542afcdbaff5a01163a47967f88208b3da50e17cc4d9786605149a84e7b75193",
       "name": "shark_attack",
       "packages": {
-        "shark_attack.art": 84440,
-        "shark_attack_90CW.art": 95696,
-        "shark_attack_90CCW.art": 95824
+        "shark_attack.art": 74504,
+        "shark_attack_90CW.art": 87384,
+        "shark_attack_90CCW.art": 87240
       }
     },
     {
@@ -770,9 +770,9 @@
       "source_sha256": "e427fc38decb57c82cc5094e7026a523e288d050a8bbe9ed673e59a2376cc50a",
       "name": "silver_surfer",
       "packages": {
-        "silver_surfer.art": 111976,
-        "silver_surfer_90CW.art": 137384,
-        "silver_surfer_90CCW.art": 137456
+        "silver_surfer.art": 109312,
+        "silver_surfer_90CW.art": 135288,
+        "silver_surfer_90CCW.art": 135192
       }
     },
     {
@@ -780,9 +780,9 @@
       "source_sha256": "7a7237284d712fedfcc62be171b8a41332119eba7e193e689e7a4a4f657b6b5c",
       "name": "ski",
       "packages": {
-        "ski.art": 177152,
-        "ski_90CW.art": 237048,
-        "ski_90CCW.art": 237472
+        "ski.art": 172912,
+        "ski_90CW.art": 230672,
+        "ski_90CCW.art": 230960
       }
     },
     {
@@ -790,9 +790,9 @@
       "source_sha256": "20d96af6445db8319bae328400c83b57a583f8255df5102f887a9cc512075736",
       "name": "solar",
       "packages": {
-        "solar.art": 112072,
-        "solar_90CW.art": 141328,
-        "solar_90CCW.art": 141504
+        "solar.art": 104752,
+        "solar_90CW.art": 129216,
+        "solar_90CCW.art": 129344
       }
     },
     {
@@ -800,9 +800,9 @@
       "source_sha256": "27cb675ccedeee03fc190f152c911a1dbdcb398fe5ea92158cb0aaee5f40e84a",
       "name": "space",
       "packages": {
-        "space.art": 110312,
-        "space_90CW.art": 134680,
-        "space_90CCW.art": 134488
+        "space.art": 105440,
+        "space_90CW.art": 125904,
+        "space_90CCW.art": 125584
       }
     },
     {
@@ -810,9 +810,9 @@
       "source_sha256": "b522aa88095b619a500009367b510ce515c38c76af5b89a0d3fe5bb059c11a2a",
       "name": "space_assault",
       "packages": {
-        "space_assault.art": 86824,
-        "space_assault_90CW.art": 99768,
-        "space_assault_90CCW.art": 99736
+        "space_assault.art": 85808,
+        "space_assault_90CW.art": 100192,
+        "space_assault_90CCW.art": 100272
       }
     },
     {
@@ -820,9 +820,9 @@
       "source_sha256": "1abe35256a63399ae00f6940e00c46c397225323c1ca73a98fd23834ab53d309",
       "name": "space_defender",
       "packages": {
-        "space_defender.art": 142904,
-        "space_defender_90CW.art": 186040,
-        "space_defender_90CCW.art": 186024
+        "space_defender.art": 139296,
+        "space_defender_90CW.art": 179288,
+        "space_defender_90CCW.art": 179584
       }
     },
     {
@@ -830,9 +830,9 @@
       "source_sha256": "4a0c91e15ef6f124be60347413a54d5a5a6b1a44f6bdba82caec969301031931",
       "name": "space_patrol",
       "packages": {
-        "space_patrol.art": 90800,
-        "space_patrol_90CW.art": 106496,
-        "space_patrol_90CCW.art": 106200
+        "space_patrol.art": 87640,
+        "space_patrol_90CW.art": 103360,
+        "space_patrol_90CCW.art": 103408
       }
     },
     {
@@ -840,9 +840,9 @@
       "source_sha256": "acc034eaed760479624360d3d0455931e51c9ec220fa3855a766d5f53c5ec292",
       "name": "spaceball",
       "packages": {
-        "spaceball.art": 85976,
-        "spaceball_90CW.art": 101120,
-        "spaceball_90CCW.art": 101032
+        "spaceball.art": 82768,
+        "spaceball_90CW.art": 95968,
+        "spaceball_90CCW.art": 95760
       }
     },
     {
@@ -850,9 +850,9 @@
       "source_sha256": "e9e3001a21a5043be2ea0f18bfc40191de0a71b8f151539fa26a84963ac0a182",
       "name": "spaceship_centauri",
       "packages": {
-        "spaceship_centauri.art": 160760,
-        "spaceship_centauri_90CW.art": 205624,
-        "spaceship_centauri_90CCW.art": 205648
+        "spaceship_centauri.art": 157392,
+        "spaceship_centauri_90CW.art": 194448,
+        "spaceship_centauri_90CCW.art": 194712
       }
     },
     {
@@ -860,9 +860,9 @@
       "source_sha256": "6a1595ca6d0dabba111a92ea37345808ceb7e7c0fd86d360d22b3f5cf2a58a16",
       "name": "spike",
       "packages": {
-        "spike.art": 115168,
-        "spike_90CW.art": 145712,
-        "spike_90CCW.art": 145792
+        "spike.art": 109528,
+        "spike_90CW.art": 135488,
+        "spike_90CCW.art": 135520
       }
     },
     {
@@ -870,9 +870,9 @@
       "source_sha256": "3add6916883c6c6d2401381c8d2ce2aac045966017f7843407b22ad684252a18",
       "name": "spikeh",
       "packages": {
-        "spikeh.art": 386200,
-        "spikeh_90CW.art": 546352,
-        "spikeh_90CCW.art": 546128
+        "spikeh.art": 381800,
+        "spikeh_90CW.art": 512672,
+        "spikeh_90CCW.art": 512640
       }
     },
     {
@@ -880,9 +880,9 @@
       "source_sha256": "91a6a9aff0831f5a9bd1182e4af178dd1d833accdafaac1fe57f63661e40dd83",
       "name": "spikew",
       "packages": {
-        "spikew.art": 135560,
-        "spikew_90CW.art": 170768,
-        "spikew_90CCW.art": 170776
+        "spikew.art": 132160,
+        "spikew_90CW.art": 166832,
+        "spikew_90CCW.art": 166456
       }
     },
     {
@@ -890,9 +890,9 @@
       "source_sha256": "b14ad2ea750613eed925b795eb925138661285aec5f43ee67cb6c10100bf708b",
       "name": "spinball",
       "packages": {
-        "spinball.art": 154424,
-        "spinball_90CW.art": 204096,
-        "spinball_90CCW.art": 203784
+        "spinball.art": 152616,
+        "spinball_90CW.art": 202920,
+        "spinball_90CCW.art": 202928
       }
     },
     {
@@ -900,9 +900,9 @@
       "source_sha256": "78be5a4eada30da73c2a7adba4fdfb44d70564beefc67bc1aa5d863985ceae28",
       "name": "split_personality",
       "packages": {
-        "split_personality.art": 114520,
-        "split_personality_90CW.art": 139440,
-        "split_personality_90CCW.art": 139584
+        "split_personality.art": 110880,
+        "split_personality_90CW.art": 134392,
+        "split_personality_90CCW.art": 134160
       }
     },
     {
@@ -910,9 +910,9 @@
       "source_sha256": "ff499ff8f444056213a0b3bef5533fb96d1320dd667925ecbb4d6ef769262ab3",
       "name": "star_fuel",
       "packages": {
-        "star_fuel.art": 91072,
-        "star_fuel_90CW.art": 107848,
-        "star_fuel_90CCW.art": 107784
+        "star_fuel.art": 88288,
+        "star_fuel_90CW.art": 103000,
+        "star_fuel_90CCW.art": 102912
       }
     },
     {
@@ -920,9 +920,9 @@
       "source_sha256": "8af8f500017c46f5a93778556ffc804cbb67ccbbe719a8fcbcaf0f9d03cf14fa",
       "name": "star_war",
       "packages": {
-        "star_war.art": 130368,
-        "star_war_90CW.art": 170048,
-        "star_war_90CCW.art": 170032
+        "star_war.art": 125568,
+        "star_war_90CW.art": 161240,
+        "star_war_90CCW.art": 160912
       }
     },
     {
@@ -930,9 +930,9 @@
       "source_sha256": "6dc7cffbee8a0f1bcf1f75bc1c31f68a9ca083da5e0cdc431a8a0b4584bde643",
       "name": "starhawk",
       "packages": {
-        "starhawk.art": 92040,
-        "starhawk_90CW.art": 108088,
-        "starhawk_90CCW.art": 107912
+        "starhawk.art": 90112,
+        "starhawk_90CW.art": 105544,
+        "starhawk_90CCW.art": 105664
       }
     },
     {
@@ -940,9 +940,9 @@
       "source_sha256": "126df514012209da1d5a9a56e7c1146e297468fb29b8965d59737b06ced33883",
       "name": "starship",
       "packages": {
-        "starship.art": 102240,
-        "starship_90CW.art": 125048,
-        "starship_90CCW.art": 124680
+        "starship.art": 94696,
+        "starship_90CW.art": 112992,
+        "starship_90CCW.art": 112648
       }
     },
     {
@@ -950,9 +950,9 @@
       "source_sha256": "22b9117713f8764dcbdedfdbeb02c174d8043466bec37f42c943555e19834d70",
       "name": "startrek",
       "packages": {
-        "startrek.art": 113928,
-        "startrek_90CW.art": 139728,
-        "startrek_90CCW.art": 139672
+        "startrek.art": 109064,
+        "startrek_90CW.art": 135896,
+        "startrek_90CCW.art": 135600
       }
     },
     {
@@ -960,9 +960,9 @@
       "source_sha256": "180ba0c77616155f748052b0d1a3d0bf53daec3e39c41d47341a17114b9165db",
       "name": "stunt-cycle",
       "packages": {
-        "stunt-cycle.art": 92544,
-        "stunt-cycle_90CW.art": 106016,
-        "stunt-cycle_90CCW.art": 106056
+        "stunt-cycle.art": 90288,
+        "stunt-cycle_90CW.art": 103136,
+        "stunt-cycle_90CCW.art": 103272
       }
     },
     {
@@ -970,9 +970,9 @@
       "source_sha256": "13a2474935bd1abdbb32cbee989c26148162aa6a0b4abceaf78c6d9be28dc432",
       "name": "sweep",
       "packages": {
-        "sweep.art": 171608,
-        "sweep_90CW.art": 241272,
-        "sweep_90CCW.art": 241016
+        "sweep.art": 168080,
+        "sweep_90CW.art": 230992,
+        "sweep_90CCW.art": 230584
       }
     },
     {
@@ -980,9 +980,9 @@
       "source_sha256": "8c937b53d506d3321a81846eef7642542102645aac16b76214738667073c6d6f",
       "name": "thirsty_astronaut",
       "packages": {
-        "thirsty_astronaut.art": 86344,
-        "thirsty_astronaut_90CW.art": 98712,
-        "thirsty_astronaut_90CCW.art": 98336
+        "thirsty_astronaut.art": 84440,
+        "thirsty_astronaut_90CW.art": 97248,
+        "thirsty_astronaut_90CCW.art": 96640
       }
     },
     {
@@ -990,9 +990,9 @@
       "source_sha256": "b5ee6bba5e07572067327291ac5e1cdec613b6756baf5afe40b9b2d688974cd0",
       "name": "thrust",
       "packages": {
-        "thrust.art": 102856,
-        "thrust_90CW.art": 120984,
-        "thrust_90CCW.art": 121112
+        "thrust.art": 98168,
+        "thrust_90CW.art": 118088,
+        "thrust_90CCW.art": 118408
       }
     },
     {
@@ -1000,9 +1000,9 @@
       "source_sha256": "b0b2a545fe8814d7ec5b1db8024506c6f9a2b7535bbd72305f08004e79c59412",
       "name": "tour_de_france",
       "packages": {
-        "tour_de_france.art": 86856,
-        "tour_de_france_90CW.art": 103528,
-        "tour_de_france_90CCW.art": 103568
+        "tour_de_france.art": 83552,
+        "tour_de_france_90CW.art": 97616,
+        "tour_de_france_90CCW.art": 97696
       }
     },
     {
@@ -1010,9 +1010,9 @@
       "source_sha256": "76d998de0b27f1066d7344ca1e874a16a86eec27cedcbe3bf02ed5d98ab3addd",
       "name": "treasure_diver",
       "packages": {
-        "treasure_diver.art": 277544,
-        "treasure_diver_90CW.art": 381072,
-        "treasure_diver_90CCW.art": 381296
+        "treasure_diver.art": 271912,
+        "treasure_diver_90CW.art": 370432,
+        "treasure_diver_90CCW.art": 370584
       }
     },
     {
@@ -1020,9 +1020,9 @@
       "source_sha256": "8dacf29d2ef8513f78651b7ae1dfb42ebbcbdb453c355f95e26f986673190d02",
       "name": "unknown",
       "packages": {
-        "unknown.art": 186896,
-        "unknown_90CW.art": 240880,
-        "unknown_90CCW.art": 240208
+        "unknown.art": 183400,
+        "unknown_90CW.art": 227456,
+        "unknown_90CCW.art": 226616
       }
     },
     {
@@ -1030,9 +1030,9 @@
       "source_sha256": "caf2cd4d89fd595f74253102c8aed34851acc36c95ddd940b0613a6a7a814255",
       "name": "vec_man",
       "packages": {
-        "vec_man.art": 107248,
-        "vec_man_90CW.art": 130352,
-        "vec_man_90CCW.art": 130400
+        "vec_man.art": 100800,
+        "vec_man_90CW.art": 122600,
+        "vec_man_90CCW.art": 122768
       }
     },
     {
@@ -1040,9 +1040,9 @@
       "source_sha256": "73fb9fb4467fafdc49ec2480ab2fac286b045aede94af48b4fce8b713d292bc0",
       "name": "vectorpatrol",
       "packages": {
-        "vectorpatrol.art": 201616,
-        "vectorpatrol_90CW.art": 263168,
-        "vectorpatrol_90CCW.art": 262752
+        "vectorpatrol.art": 196752,
+        "vectorpatrol_90CW.art": 247672,
+        "vectorpatrol_90CCW.art": 247472
       }
     },
     {
@@ -1050,9 +1050,9 @@
       "source_sha256": "b5d6e199771cea9fdbdd3bd3fa9783cfb748bcc2acfa7c1e88fe539f946dcc85",
       "name": "vectorpilot",
       "packages": {
-        "vectorpilot.art": 164784,
-        "vectorpilot_90CW.art": 211208,
-        "vectorpilot_90CCW.art": 210976
+        "vectorpilot.art": 155304,
+        "vectorpilot_90CW.art": 198064,
+        "vectorpilot_90CCW.art": 198056
       }
     },
     {
@@ -1060,9 +1060,9 @@
       "source_sha256": "a5748244e656ecef130381d8376e8ca473d9fc3b458c50ce4cda1c386c44a76f",
       "name": "vectorpilot2",
       "packages": {
-        "vectorpilot2.art": 159280,
-        "vectorpilot2_90CW.art": 201608,
-        "vectorpilot2_90CCW.art": 201336
+        "vectorpilot2.art": 153376,
+        "vectorpilot2_90CW.art": 192776,
+        "vectorpilot2_90CCW.art": 192648
       }
     },
     {
@@ -1070,9 +1070,9 @@
       "source_sha256": "d75bd13405e51429e9d0abf6f8401601f160ed715c36567203503dd5694212b1",
       "name": "vectrexians",
       "packages": {
-        "vectrexians.art": 243752,
-        "vectrexians_90CW.art": 325288,
-        "vectrexians_90CCW.art": 325240
+        "vectrexians.art": 241544,
+        "vectrexians_90CW.art": 301560,
+        "vectrexians_90CCW.art": 301848
       }
     },
     {
@@ -1080,9 +1080,9 @@
       "source_sha256": "655e738cb69521fe9071bfd7511b7fd31bcf97d8c612dcafbcee0ee163bd2466",
       "name": "vectroid",
       "packages": {
-        "vectroid.art": 155272,
-        "vectroid_90CW.art": 216936,
-        "vectroid_90CCW.art": 216952
+        "vectroid.art": 150880,
+        "vectroid_90CW.art": 206712,
+        "vectroid_90CCW.art": 206840
       }
     },
     {
@@ -1090,9 +1090,9 @@
       "source_sha256": "4fa2846734a028f5a07f346a0b6ce0857a53b2203f3e26eb665c0b3bf69454c0",
       "name": "vsbsshot2",
       "packages": {
-        "vsbsshot2.art": 142344,
-        "vsbsshot2_90CW.art": 176920,
-        "vsbsshot2_90CCW.art": 176912
+        "vsbsshot2.art": 133960,
+        "vsbsshot2_90CW.art": 163272,
+        "vsbsshot2_90CCW.art": 163784
       }
     },
     {
@@ -1100,9 +1100,9 @@
       "source_sha256": "2965f6907cae77362c366688ea8035caaaadbb989a97844086692d882b11aa12",
       "name": "webwarp",
       "packages": {
-        "webwarp.art": 242160,
-        "webwarp_90CW.art": 296640,
-        "webwarp_90CCW.art": 296336
+        "webwarp.art": 242512,
+        "webwarp_90CW.art": 301360,
+        "webwarp_90CCW.art": 301064
       }
     },
     {
@@ -1110,9 +1110,9 @@
       "source_sha256": "49cfe8f4aba5f84c16b58d02bae09232b3ac927a146de75ab221fc89d233ec7f",
       "name": "wormhole",
       "packages": {
-        "wormhole.art": 211344,
-        "wormhole_90CW.art": 278416,
-        "wormhole_90CCW.art": 278448
+        "wormhole.art": 215016,
+        "wormhole_90CW.art": 285000,
+        "wormhole_90CCW.art": 284920
       }
     },
     {
@@ -1120,9 +1120,9 @@
       "source_sha256": "ef474d67432de202d3b124c4667df35d30434c17b580e40fd3182389a0866576",
       "name": "yarg",
       "packages": {
-        "yarg.art": 118888,
-        "yarg_90CW.art": 145328,
-        "yarg_90CCW.art": 145504
+        "yarg.art": 113736,
+        "yarg_90CW.art": 138224,
+        "yarg_90CCW.art": 138176
       }
     },
     {
@@ -1130,9 +1130,9 @@
       "source_sha256": "d6ed12f9c50e651834ec05461701a6a8edc66ba5b4b2a02d92390d406ff95313",
       "name": "yasi",
       "packages": {
-        "yasi.art": 338568,
-        "yasi_90CW.art": 495072,
-        "yasi_90CCW.art": 494824
+        "yasi.art": 326520,
+        "yasi_90CW.art": 477872,
+        "yasi_90CCW.art": 478016
       }
     }
   ]
