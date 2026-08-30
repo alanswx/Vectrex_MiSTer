@@ -59,3 +59,9 @@ tc_sweep_*
 hdmi_*
 wobble_baseline_*
 sim/build-analog/
+
+# Overlay alpha census: keep the reports and the per-image tables (the *.csv
+# rule above targets Quartus output, not research data); the histogram JSON is
+# large and regenerable with vart/alpha_census.py.
+!overlay_work_videodr0me/**/*.csv
+overlay_work_videodr0me/test_results/alpha_census/*.json
