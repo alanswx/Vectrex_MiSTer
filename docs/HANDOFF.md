@@ -118,6 +118,68 @@ optional offline
 segments; production rasterization already consumes per-tick coordinates and
 has no segment-queue bottleneck.
 
+## Overlay artwork, branch `overlay-research-progress` (2026-08-30)
+
+Durable detail is in `overlay_work_videodr0me/ALPHA_PLAN.md`. Short version:
+
+The alpha work is finished and the pack cannot load. `vfb_overlay.sv` whitelists
+810x1080, 540x720, 360x480, 180x240 and their rotations (`valid_dimensions`,
+lines 112-119). `artwork/generated/` ships 1360x1080, 916x720, 720x480 and
+720x240, which are not on that list, and `valid_dimensions` gates
+`package_valid`, so nothing is drawn at all. That is the failure
+`rtl/videodr0me_fb/PROVENANCE.md` records fixing on 2026-08-06, reintroduced by
+the VART converter added on 2026-08-29. `TATE_STATUS.md` already named the
+underlying question: videodr0me's requested approximately 1360x1080 artwork
+canvas against the core's actual 1080x810 rotated plane.
+
+Both packs are built and committed rather than one being chosen:
+`artwork/generated/` in the converter's full-raster geometry, and
+`artwork/generated_native/` in the geometry the core accepts. 163 titles, 489
+packages each, no contract violations in either.
+
+Alpha itself is done. The pack's opacity standard is 255 and 118 of the 123
+sources with a solid area already used it. The pipeline was the larger
+offender: premultiplied linear-light resampling, one reduction per plane, and a
+snap verified on the quantized output took shipping planes from 841 clean of
+1956 to 1948. Sources were repaired in place, 94 images and 700,341 pixels. No
+threshold is needed in the core, and `alpha > 127` would have been actively
+wrong: 100 of 124 images carry a playfield gel clustered at alpha 50/51 and
+again at 128.
+
+Five titles are opaque because Sly DC drew them without an alpha cut and
+published them labelled "no transparency": Frogs'n'Fly, Karl Quappe, Vecman 1
+and 2, Vector Patrol. There is no better version to find.
+`vart/rebuild_pack.py` keeps their own artwork and reports them.
+
+Tools, all under `vart/`: `alpha_census.py` measures, `rgba_ops.py` holds the
+resampling and the contract, `rebuild_pack.py` rebuilds a pack in either
+geometry, `repair_sources.py` fixes source PNGs, `opaque_maps.py` emits the
+crop geometry, `proofsheet.py` renders review sheets through the compositor's
+own integer pipeline. Evidence is in `overlay_work_videodr0me/test_results/`
+under `alpha_census/`, `opaque_maps_raster/`, `opaque_maps_native/`,
+`proofsheets/` and `proofsheets_native/`.
+
+### Waiting on videodr0me
+
+1. Which coordinate space is the target. Everything else waits on it: either
+   the RTL whitelist and `expected_pixels` move to the full-raster canvas, or
+   `artwork/generated/` is replaced by the native pack.
+2. Whether the opaque-brightness option keys off alpha alone or alpha and
+   colour. Alpha is filter strength, not opacity: at 255 the beam arrives
+   tinted to the artwork's colour, so a pale region still passes light.
+3. Which box the crop uses. `artwork_box` exists for all 163 titles; 18 never
+   reach alpha 0 in any plane and only 28 of the other 145 have a clear
+   rectangle worth calling a play area.
+4. What happens to the five opaque-by-design titles.
+
+### Next here, once (1) is answered
+
+Hardware-verify the winning pack. Nothing in this branch has run on the bench:
+489 packages changed and the geometry question means the current pack would not
+have displayed at all. Then wire the contract check into the sweep with a
+two-point 100%/30% ambient render, which is `ALPHA_PLAN.md` step 6 and the only
+step still open.
+
 ## TODO
 
 1. **Beam constants wanting more references**: the 8-ticks/px dwell
