@@ -50,6 +50,19 @@ SOURCE_POOLS = (
 # Titles whose normalized key does not reach their own artwork.
 ALIASES = {"spacewar": "spacewars"}
 
+# Sly DC authored these as original designs and published them explicitly with
+# "no transparency" (archive.org/details/vect-overlays). They are opaque
+# because that is how they were drawn, not because anything corrupted them, and
+# substituting another artist's overlay for the same game would silently
+# replace the design. They keep their own artwork and are reported instead.
+KEEP_OWN_ARTWORK = {
+    "Frogsnfly01",
+    "Karl_Quappe01",
+    "Vecman01",
+    "Vecman02",
+    "Vector_Patrol01",
+}
+
 
 def title_key(stem: str) -> str:
     lowered = re.sub(r"(overlay|-vgo|_small|_200dpi|\(.*?\))", "", stem.lower())
@@ -95,6 +108,8 @@ def resolve_portrait(
     own = portrait_from_package(package)
     if is_transmissive(own):
         return own, "self"
+    if name in KEEP_OWN_ARTWORK:
+        return own, "self (opaque by design, kept)"
 
     key = ALIASES.get(title_key(name), title_key(name))
     for pool, png in index.get(key, []):
@@ -105,12 +120,17 @@ def resolve_portrait(
     return own, "self (opaque, no transmissive source found)"
 
 
-def rebuild_one(job: tuple[str, str, str]) -> dict[str, object]:
-    name, package_text, outdir_text = job
+def rebuild_one(job: tuple[str, str, str, str]) -> dict[str, object]:
+    name, package_text, outdir_text, geometry = job
     package = Path(package_text)
     index = build_source_index()
     portrait, origin = resolve_portrait(name, package, index)
-    normal, clockwise = build_vart.frame_orientations(portrait)
+    frame = (
+        build_vart.native_orientations
+        if geometry == "native"
+        else build_vart.frame_orientations
+    )
+    normal, clockwise = frame(portrait)
     with tempfile.TemporaryDirectory(prefix="vart-rebuild-") as workdir:
         packages = build_vart.encode_orientations(normal, clockwise, Path(workdir))
     sizes = build_vart.write_packages(packages, name, Path(outdir_text), verbose=False)
@@ -137,6 +157,9 @@ def main() -> int:
     parser.add_argument("--art", type=Path, default=Path("artwork/generated"),
                         help="packages to read the existing artwork from")
     parser.add_argument("--only", help="comma-separated title names, for spot checks")
+    parser.add_argument("--geometry", choices=("raster", "native"), default="raster",
+                        help="raster: the full-raster planes the converter targets. "
+                             "native: the plane sizes vfb_overlay.sv whitelists.")
     parser.add_argument("-j", "--jobs", type=int, default=min(8, os.cpu_count() or 1))
     args = parser.parse_args()
 
@@ -153,7 +176,7 @@ def main() -> int:
     if not names:
         parser.error("no packages to rebuild")
 
-    jobs = [(name, str(art / f"{name}.art"), str(outdir)) for name in names]
+    jobs = [(name, str(art / f"{name}.art"), str(outdir), args.geometry) for name in names]
     results: list[dict[str, object]] = []
     failures = 0
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.jobs) as pool:
@@ -169,13 +192,14 @@ def main() -> int:
             print(f"[{index}/{len(jobs)}] {name}")
 
     results.sort(key=lambda result: str(result["name"]).lower())
-    resourced = [r for r in results if r["source"] != "self"]
+    resourced = [r for r in results if r["source"] not in ("self", "self (opaque by design, kept)")]
     unresolved = [r for r in results if r["opaque_planes"]]
     violating = [r for r in results if r["violations"]]
 
     (outdir / "REBUILD.json").write_text(
         json.dumps(
             {
+                "geometry": args.geometry,
                 "titles": len(results),
                 "failures": failures,
                 "re_sourced": len(resourced),

@@ -1,0 +1,47 @@
+{
+  "geometry": "native",
+  "titles": 3,
+  "failures": 0,
+  "re_sourced": 0,
+  "still_opaque": [
+    "Vecman01",
+    "Vecman02",
+    "Vector_Patrol01"
+  ],
+  "contract_violations": {},
+  "results": [
+    {
+      "name": "Vecman01",
+      "source": "self (opaque by design, kept)",
+      "packages": {
+        "Vecman01.art": 208584,
+        "Vecman01_90CW.art": 203936,
+        "Vecman01_90CCW.art": 203896
+      },
+      "violations": 0,
+      "opaque_planes": 12
+    },
+    {
+      "name": "Vecman02",
+      "source": "self (opaque by design, kept)",
+      "packages": {
+        "Vecman02.art": 210152,
+        "Vecman02_90CW.art": 205456,
+        "Vecman02_90CCW.art": 205352
+      },
+      "violations": 0,
+      "opaque_planes": 12
+    },
+    {
+      "name": "Vector_Patrol01",
+      "source": "self (opaque by design, kept)",
+      "packages": {
+        "Vector_Patrol01.art": 211808,
+        "Vector_Patrol01_90CW.art": 210848,
+        "Vector_Patrol01_90CCW.art": 210832
+      },
+      "violations": 0,
+      "opaque_planes": 12
+    }
+  ]
+}

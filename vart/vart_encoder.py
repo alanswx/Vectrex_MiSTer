@@ -24,12 +24,38 @@ LEGACY_ROLE_NAMES = {
     1: "foreground",
 }
 
-VECTREX_PLANES = {
+# The full-raster set this converter was written for: whole renderer rasters
+# including the transparent margins either side of the artwork.
+VECTREX_RASTER_PLANES = {
     (1360, 1080),
     (916, 720),
     (720, 480),
     (720, 240),
 }
+
+# The set rtl/videodr0me_fb/vfb_overlay.sv actually whitelists
+# (valid_dimensions, lines 112-119): each plane is the artwork frame itself.
+# Portrait and quarter-turn packages use their own halves of this table.
+VECTREX_NATIVE_PORTRAIT = {
+    (810, 1080),
+    (540, 720),
+    (360, 480),
+    (180, 240),
+}
+VECTREX_NATIVE_ROTATED = {
+    (1080, 810),
+    (720, 540),
+    (480, 360),
+    (240, 180),
+}
+
+VECTREX_PLANE_SETS = (
+    VECTREX_RASTER_PLANES,
+    VECTREX_NATIVE_PORTRAIT,
+    VECTREX_NATIVE_ROTATED,
+)
+
+VECTREX_PLANES = VECTREX_RASTER_PLANES
 
 
 class ArtworkError(RuntimeError):
@@ -658,12 +684,15 @@ def validate_plane_set(planes: list[dict[str, object]]) -> None:
         (int(plane["width"]), int(plane["height"]))
         for plane in planes
     }
-    if actual != VECTREX_PLANES:
-        missing = sorted(VECTREX_PLANES - actual)
-        extra = sorted(actual - VECTREX_PLANES)
-        details = []
-        if missing:
-            details.append("missing " + ", ".join(f"{w}x{h}" for w, h in missing))
-        if extra:
-            details.append("unsupported " + ", ".join(f"{w}x{h}" for w, h in extra))
-        raise ArtworkError("invalid Vectrex plane set: " + "; ".join(details))
+    if actual in VECTREX_PLANE_SETS:
+        return
+    # Report against whichever accepted set this package came closest to.
+    expected = max(VECTREX_PLANE_SETS, key=lambda candidate: len(candidate & actual))
+    missing = sorted(expected - actual)
+    extra = sorted(actual - expected)
+    details = []
+    if missing:
+        details.append("missing " + ", ".join(f"{w}x{h}" for w, h in missing))
+    if extra:
+        details.append("unsupported " + ", ".join(f"{w}x{h}" for w, h in extra))
+    raise ArtworkError("invalid Vectrex plane set: " + "; ".join(details))

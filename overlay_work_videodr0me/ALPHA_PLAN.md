@@ -109,10 +109,11 @@ Fix the artwork, keep the core linear. The contract is:
 - 1 to 254 means genuine tint, allowed only for authored gels and for
   antialias rims within two pixels of a 255 or 0 region.
 
-If a core-side safety net is still wanted, `alpha >= 250 -> 255` is harmless:
-at 250 the filter already passes under 2%, so snapping costs nothing visible
-and touches only pixels that were meant to be solid. 127 is not in that
-category.
+No threshold is needed in the core. The artwork is correct: every source is
+clean and all 489 packages encode with no violation, so the classification the
+opaque-brightness option keys off is already unambiguous at the only value
+that matters. A core-side `alpha >= 250 -> 255` net would be harmless but is
+redundant, and 127 was never in that category.
 
 ## Status, 2026-08-30
 
@@ -179,12 +180,105 @@ plane is safe -- its artwork is pale, and the beam still gets through.
    0, so the crop cannot be found by looking for a transparent hole.
 
 5. Hand-repair what survives. Done for alpha; `repair_sources.py` covered all
-   94 affected images. What is left is not an alpha problem: Frogs'n'Fly and
-   Karl Quappe need transmissive artwork that does not exist in the tree, and
-   Berzerk and Narzod are single-value 255 scans.
+   94 affected images. What is left is not an alpha problem, and not ours to
+   decide -- see the opaque-by-design titles below.
 
 6. Gate it. Add the contract check to the sweep, plus a two-point visual test
    at 100% and 30% ambient over a bright vector field, where a leak is obvious.
+
+## The plane geometry does not match the core
+
+Found while checking whether the rotated framing is stretched. It is not, but
+the plane sizes are wrong for this core.
+
+`rtl/videodr0me_fb/vfb_overlay.sv` accepts exactly eight plane sizes
+(`valid_dimensions`, lines 112-119):
+
+    portrait   810x1080   540x720   360x480   180x240
+    rotated    1080x810   720x540   480x360   240x180
+
+`artwork/generated/` ships 1360x1080, 916x720, 720x480 and 720x240. None of
+those is on the list. `valid_dimensions` gates `metadata_valid` and then
+`package_valid` (line 656), and `active_plane_ready` requires `package_valid`
+(line 792), so an unlisted size does not degrade -- no overlay is drawn at all.
+
+This is the failure `rtl/videodr0me_fb/PROVENANCE.md` records being fixed on
+2026-08-06, when the whitelist was changed from the Asteroids cabinet rasters
+to the Vectrex ones. The `vart/` converter added on 2026-08-29 reintroduced
+Asteroids-shaped full-raster planes; `vart/README.md` documents them as
+intended and `vart_encoder.py` validated only that set, so the two halves of
+the tree have disagreed since.
+
+`TATE_STATUS.md` already named this as unfinished: the requested approximately
+1360x1080 artwork real estate against the core's actual 1080x810 rotated
+plane. The pack is built for the first and the core implements the second.
+That is a decision for videodr0me, not something to pick a side on quietly, so
+both now exist:
+
+- `artwork/generated/` keeps the full-raster geometry the converter targets.
+- `artwork/generated_native/` is the same artwork at the sizes the core
+  whitelists, built with `rebuild_pack.py --geometry native`.
+
+`vart_encoder.validate_plane_set` accepts either set instead of only the
+full-raster one.
+
+The aspect worry that started this dissolves: at the whitelisted sizes every
+portrait plane is exactly 3:4 and every rotated plane exactly 4:3, with no
+margins and no stretch. The 3:1 look of the rotated 240p plane is the
+full-raster framing, not a framing-policy error.
+
+## Five titles are opaque because that is how they were drawn
+
+Sly DC's overlay set (archive.org/details/vect-overlays) is the
+`slydc_homebrew` pack `tools/overlays/merge_sources.py` refers to and that is
+not in this tree. Its own descriptions label five of the files "no
+transparency":
+
+    Frogsnfly01       no transparency
+    Karl_Quappe01     no transparency
+    Vecman01          Pac-Man style, plain center, no transparency
+    Vecman02          Pac-Man style, with blue & red power pellets, no transparency
+    Vector_Patrol01   Moon Patrol style, no transparency
+
+These are original designs drawn without an alpha cut, not damaged scans, so
+there is no better version of them to find. That splits the eighteen opaque
+titles cleanly. Thirteen were scans of a real overlay, and re-sourcing the
+transmissive copy of the same design restores the artwork the author drew.
+Three -- Vecman01, Vecman02 and Vector_Patrol01 -- were Sly DC designs, and
+substituting another artist's overlay for the same game silently replaced
+them. `rebuild_pack.py` now carries a `KEEP_OWN_ARTWORK` set covering all five
+and reports them rather than substituting.
+
+What to do with those five is a decision, not a defect: leave them blocking,
+cut alpha into someone else's artwork, commission new art, or drop them. The
+originals are on archive.org at higher resolution than our copies if the
+answer is to keep them and cut alpha.
+
+Berzerk and Narzod are not in this group. An earlier note here called them
+unusable; that was about two redundant source files, not the titles.
+`overlays/Berzerk_Small.png` and `overlays/Narzod_Small.png` are fully opaque
+and superseded -- `Fortress_of_Narzod_Small.png` already replaces the latter --
+while `canonical/Berzerk.png` and `canonical/Fortress of Narzod.png` are 70.5%
+and 78.6% transmissive, and the shipping packages built from them measure
+70.4% and 78.7% across the artwork frame. Both titles are fine.
+
+## Opaque maps for the crop
+
+`vart/opaque_maps.py` answers videodr0me's third point with data rather than
+probing. Per package and plane it writes a three-class PNG and, in JSON:
+
+    artwork_box   tight bounds of everything not fully clear
+    filter_box    tight bounds of alpha 255
+    clear_box     largest inscribed all-clear rectangle -- the play area on
+                  artwork that cuts one. Not the bounding box: a frame with
+                  clear notches would otherwise report a box covering them
+    open_box      tight bounds of everything below the solid floor, which is
+                  the play area on gel artwork that never reaches alpha 0
+
+Each box is given in plane pixels and normalized to 0..1, so a crop carries
+between plane sizes and between orientations. `clear_box` runs on a min-pooled
+mask: conservative, never larger than the true rectangle and never covering a
+non-clear pixel.
 
 ## Resampling to 240p
 

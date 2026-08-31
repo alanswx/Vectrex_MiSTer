@@ -46,6 +46,31 @@ RASTERS = {
     "240p": ((720, 240), (157, 0, 405, 240), (0, 0, 720, 240)),
 }
 
+# The plane geometry rtl/videodr0me_fb/vfb_overlay.sv actually accepts
+# (valid_dimensions, lines 112-119). Each plane IS the artwork frame: no
+# margins, so portrait is exactly 3:4 and rotated exactly 4:3 at every size,
+# and the core does no resizing, centering or rotation.
+NATIVE_RASTERS = {
+    "1080p": ((810, 1080), (1080, 810)),
+    "720p": ((540, 720), (720, 540)),
+    "480p": ((360, 480), (480, 360)),
+    "240p": ((180, 240), (240, 180)),
+}
+
+
+def native_orientations(
+    portrait: Image.Image,
+) -> tuple[dict[str, Image.Image], dict[str, Image.Image]]:
+    """Frame a portrait source into the core's whitelisted plane sizes."""
+    turned = portrait.transpose(Image.Transpose.ROTATE_270)
+    normal: dict[str, Image.Image] = {}
+    clockwise: dict[str, Image.Image] = {}
+    for label, (upright, rotated) in NATIVE_RASTERS.items():
+        normal[label] = rgba_ops.resize_rgba(portrait, upright)
+        clockwise[label] = rgba_ops.resize_rgba(turned, rotated)
+    return normal, clockwise
+
+
 LEGACY_NORMAL = {
     "1080p": ((810, 1080), (1360, 1080)),
     "720p": ((540, 720), (916, 720)),
@@ -118,13 +143,8 @@ def load_exact_set(directory: Path) -> dict[str, Image.Image]:
 def encode_set(images: dict[str, Image.Image], workdir: Path) -> bytes:
     workdir.mkdir(parents=True, exist_ok=True)
     planes = []
-    for label, (raster, _, _) in RASTERS.items():
+    for label in RASTERS:
         image = images[label]
-        if image.size != raster:
-            raise vart.ArtworkError(
-                f"{label}: expected {raster[0]}x{raster[1]}, "
-                f"got {image.width}x{image.height}"
-            )
         plane_png = workdir / f"{label}.png"
         quantize_rgba(image).save(plane_png)
         planes.append(vart.encode_plane(plane_png))

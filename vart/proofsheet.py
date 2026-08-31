@@ -119,11 +119,18 @@ def alpha_map(art: np.ndarray) -> np.ndarray:
 
 
 def plane_rgba(package: Path, label: str) -> np.ndarray:
-    raster = build_vart.RASTERS[label][0]
-    for plane in vart.decode_container(package.read_bytes()):
-        if (plane["width"], plane["height"]) == raster:
-            return np.asarray(plane["image"].convert("RGBA"), dtype=np.uint8)
-    raise vart.ArtworkError(f"{package}: no {raster[0]}x{raster[1]} plane")
+    """Pick a plane by resolution slot rather than by size.
+
+    Packages exist in two geometries -- the full renderer raster and the
+    core's whitelisted artwork frame -- so the same slot has different
+    dimensions in each. Both are written in RASTERS order, so the slot index
+    is the stable handle.
+    """
+    index = list(build_vart.RASTERS).index(label)
+    planes = vart.decode_container(package.read_bytes())
+    if index >= len(planes):
+        raise vart.ArtworkError(f"{package}: no plane in slot {index}")
+    return np.asarray(planes[index]["image"].convert("RGBA"), dtype=np.uint8)
 
 
 def fit(array: np.ndarray, height: int) -> Image.Image:
